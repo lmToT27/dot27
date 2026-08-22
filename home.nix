@@ -38,7 +38,7 @@ in
 
     # --- CLI & System Tools ---
     thunar thunar-archive-plugin
-    gh lazygit psmisc fd ripgrep yazi papirus-icon-theme
+    kitty gh lazygit psmisc fd ripgrep yazi papirus-icon-theme
     wget fastfetch jq p7zip unrar unzip zip brightnessctl btop pavucontrol
 
     # --- Data Science & AI ---
@@ -82,6 +82,7 @@ in
     ".config/waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/waybar";
     ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/nvim";
     ".local/bin".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/scripts";
+    ".config/kitty".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/kitty";
   };
 
   # ==========================================
@@ -134,7 +135,7 @@ in
 
       oh-my-zsh = {
         enable = true;
-        theme = "agnoster";
+        theme = "lukerandall";
         plugins = [ "git" ];
       };
 
@@ -161,13 +162,11 @@ in
         ll = "eza -al --icons=always";
         tree = "eza --icons --tree";
         cat = "bat";
-        rebuild-os = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/dot27/#nixos";
       };
 
       initContent = ''
         export PATH="$HOME/.local/bin:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/go/bin:$HOME/.cargo/bin:$PATH"
         
-        # Agnoster Colors
         export AGNOSTER_DIR_BG="blue"
         export AGNOSTER_GIT_DIRTY_BG="black"
         export AGNOSTER_GIT_DIRTY_FG="white"
@@ -245,20 +244,6 @@ in
             sudo nix-store --optimise
             rm -rf ~/.cache/nix
         }
-      '';
-    };
-
-    kitty = {
-      enable = true;
-      font.name = "JetBrainsMono Nerd Font";
-      extraConfig = ''
-        font_size 21.0
-        map ctrl+equal change_font_size all +1.0
-        map ctrl+minus change_font_size all -1.0
-        cursor_shape beam
-        cursor_blink_interval 1
-        cursor_trail 2
-        cursor_trail_decay 0.1 0.4
       '';
     };
   };

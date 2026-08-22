@@ -9,5 +9,4 @@ fi
 killall swaybg
 swaybg -i "$WALLPAPER" -m fill &
 
-# GỌI LỆNH CHANGETHEME.SH
 changetheme.sh "$WALLPAPER"

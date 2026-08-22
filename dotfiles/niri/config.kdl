@@ -38,7 +38,7 @@ layout {
     border {
         on
         width 3
-        active-color "#7aa2f7"
+        active-color "#93acb7"
     }
 }
 
