@@ -37,6 +37,7 @@ in
     wayland-pipewire-idle-inhibit
 
     # --- CLI & System Tools ---
+    thunar thunar-archive-plugin
     gh lazygit psmisc fd ripgrep yazi papirus-icon-theme
     wget fastfetch jq p7zip unrar unzip zip brightnessctl btop pavucontrol
 
@@ -63,6 +64,7 @@ in
         "--enable-zero-copy"
         "--disable-gpu-memory-buffer-video-frames"
         "--process-per-site"
+        "--gtk-version=4"
       ];
     })
     obsidian

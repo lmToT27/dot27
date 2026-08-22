@@ -155,7 +155,14 @@
   security.polkit.enable = true;
   services.gvfs.enable = true;
   services.tumbler.enable = true;
-
+  xdg.portal = {
+    enable = true;
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+      pkgs.xdg-desktop-portal-gnome
+    ];
+    config.niri.default = [ "gnome" "gtk" ];
+  };
   services.accounts-daemon.enable = true;
   services.printing.enable = true;
 
