@@ -78,10 +78,10 @@ in
   # DOTFILES SYMLINKS
   # ==========================================
   home.file = {
-    ".config/niri".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/aero-tot27/dotfiles/niri";
-    ".config/waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/aero-tot27/dotfiles/waybar";
-    ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/aero-tot27/dotfiles/nvim";
-    ".local/bin".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/aero-tot27/dotfiles/scripts";
+    ".config/niri".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/niri";
+    ".config/waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/waybar";
+    ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/nvim";
+    ".local/bin".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/scripts";
   };
 
   # ==========================================
@@ -161,7 +161,7 @@ in
         ll = "eza -al --icons=always";
         tree = "eza --icons --tree";
         cat = "bat";
-        rebuild-os = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/aero-tot27/#nixos";
+        rebuild-os = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/dot27/#nixos";
       };
 
       initContent = ''
