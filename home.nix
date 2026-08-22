@@ -81,6 +81,7 @@ in
     ".config/niri".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/aero-tot27/dotfiles/niri";
     ".config/waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/aero-tot27/dotfiles/waybar";
     ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/aero-tot27/dotfiles/nvim";
+    ".local/bin".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/aero-tot27/dotfiles/scripts";
   };
 
   # ==========================================
@@ -251,7 +252,7 @@ in
       enable = true;
       font.name = "JetBrainsMono Nerd Font";
       extraConfig = ''
-        font_size 24.0
+        font_size 21.0
         map ctrl+equal change_font_size all +1.0
         map ctrl+minus change_font_size all -1.0
         cursor_shape beam
