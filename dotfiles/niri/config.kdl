@@ -2,6 +2,10 @@ spawn-at-startup "swaybg" "-i" "/home/lmtot27/Pictures/Wallpapers/spiderman.jpg"
 spawn-at-startup "waybar"
 spawn-at-startup "swaync"
 
+hotkey-overlay {
+    skip-at-startup
+}
+
 input {
     focus-follows-mouse
     warp-mouse-to-focus
