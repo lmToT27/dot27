@@ -1,24 +1,22 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
-  # ==========================================
-  # HARDWARE & IMPORTS
-  # ==========================================
   imports = [
     ./hardware-configuration.nix
+    # inputs.silentSDDM.nixosModules.default
   ];
 
   # ==========================================
-  # NIX CORE SETTINGS
+  # NIX & SYSTEM
   # ==========================================
-  # Enable Flakes and the new command-line tool
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  
-  # Allow proprietary software
+  system.stateVersion = "26.05";
   nixpkgs.config.allowUnfree = true;
-  
-  # DO NOT CHANGE THIS unless you read the NixOS release notes.
-  system.stateVersion = "26.05"; 
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
 
   # ==========================================
   # BOOTLOADER & KERNEL
@@ -33,51 +31,170 @@
     };
     efi.canTouchEfiVariables = true;
   };
-
-  # Load AMD GPU drivers early in the boot process
   boot.initrd.kernelModules = [ "amdgpu" ];
 
   # ==========================================
-  # NETWORKING & TIME
+  # NETWORK & BLUETOOTH
   # ==========================================
   networking = {
     hostName = "nixos";
     networkmanager.enable = true;
   };
 
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+  services.blueman.enable = true;
+
+  # ==========================================
+  # TIME & LOCALE
+  # ==========================================
   time.timeZone = "Asia/Ho_Chi_Minh";
 
-  # ==========================================
-  # PROGRAMS
-  # ==========================================
-  programs.zsh.enable = true;
-
-  # ==========================================
-  # USER ACCOUNTS
-  # ==========================================
-  users.users."lmtot27" = {
-    isNormalUser = true;
-    shell = pkgs.zsh;
-    description = "Le Minh Tuan";
-    # 'wheel' group allows the user to execute commands with sudo
-    extraGroups = [ "networkmanager" "wheel" ]; 
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "vi_VN";
+      LC_IDENTIFICATION = "vi_VN";
+      LC_MEASUREMENT = "vi_VN";
+      LC_MONETARY = "vi_VN";
+      LC_NAME = "vi_VN";
+      LC_NUMERIC = "vi_VN";
+      LC_PAPER = "vi_VN";
+      LC_TELEPHONE = "vi_VN";
+      LC_TIME = "vi_VN";
+    };
+    inputMethod = {
+      enable = true;
+      type = "fcitx5";
+      fcitx5.waylandFrontend = true;
+      fcitx5.addons = with pkgs; [
+        fcitx5-bamboo
+        fcitx5-gtk
+      ];
+    };
   };
 
   # ==========================================
-  # SYSTEM PACKAGES
+  # HARDWARE, GRAPHICS & FONTS
   # ==========================================
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      mesa
+      libva
+      libva-vdpau-driver
+      libvdpau-va-gl
+    ];
+  };
+
+  fonts.packages = with pkgs; [
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
+    nerd-fonts.jetbrains-mono
+  ];
+
+  services.xserver = {
+    enable = true;
+    videoDrivers = [ "amdgpu" "nvidia" ];
+    xkb = {
+      layout = "us";
+      variant = "";
+    };
+  };
+
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = true;
+    powerManagement.finegrained = false;
+    open = false;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.production;
+    prime = {
+      offload = {
+        enable = true;
+        enableOffloadCmd = true;
+      };
+      amdgpuBusId = "PCI:5:0:0"; 
+      nvidiaBusId = "PCI:1:0:0";
+    };
+  };
+
+  # ==========================================
+  # AUDIO (PIPEWIRE)
+  # ==========================================
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    wireplumber.extraConfig."51-disable-suspend" = {
+      "monitor.alsa.rules" = [
+        {
+          matches = [ { "node.name" = "~alsa_output.*"; } ];
+          actions = { update-props = { "session.suspend-timeout-seconds" = 0; }; };
+        }
+      ];
+    };
+  };
+
+  # ==========================================
+  # DESKTOP ENVIRONMENT & SERVICES
+  # ==========================================
+  # programs.silentSDDM = {
+  #   enable = true;
+  #   theme = "default";
+  # };
+  services.displayManager.sddm.enable = true;
+  
+  # Enable Niri System-wide for Wayland Session
+  programs.niri.enable = true;
+  security.polkit.enable = true;
+  services.gvfs.enable = true;
+  services.tumbler.enable = true;
+
+  services.accounts-daemon.enable = true;
+  services.printing.enable = true;
+
+  # ==========================================
+  # USERS & ENVIRONMENT
+  # ==========================================
+  environment.variables.EDITOR = "nvim";
+  programs.zsh.enable = true;
+  security.sudo.extraConfig = "Defaults pwfeedback";
+
+  system.activationScripts.sddm-avatar = ''
+    mkdir -p /var/lib/AccountsService/icons
+    mkdir -p /var/lib/AccountsService/users
+    cp /home/lmtot27/.face.icon /var/lib/AccountsService/icons/lmtot27
+    chmod 644 /var/lib/AccountsService/icons/lmtot27
+    echo -e "[User]\nIcon=/var/lib/AccountsService/icons/lmtot27" > /var/lib/AccountsService/users/lmtot27
+  '';
+
+  users.users."lmtot27" = {
+    isNormalUser = true;
+    description = "Le Minh Tuan";
+    extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.zsh;
+  };
+
   environment.systemPackages = with pkgs; [
-    git
     neovim
+    wtype
+    nodejs
+    pnpm
+    tree-sitter
+    lua-language-server
+    stylua
   ];
 
   # ==========================================
-  # WAYLAND COMPOSITOR 
+  # HOME MANAGER
   # ==========================================
-  programs.niri.enable = true;
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-    config.common.default = "gtk";
-  };
+  home-manager.backupFileExtension = "bak";
+  home-manager.extraSpecialArgs = { inherit inputs; };
+  home-manager.users."lmtot27" = import ./home.nix;
 }
