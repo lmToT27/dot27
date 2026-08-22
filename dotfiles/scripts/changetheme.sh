@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 WALLPAPER=$1
 if [ -z "$WALLPAPER" ]; then
     echo "Error: Please provide a valid wallpaper path."
@@ -16,13 +14,14 @@ except Exception:
     print('#7aa2f7')
 ")
 
-CACHE_DIR=\"$HOME/.cache/theme\"
-mkdir -p \"$CACHE_DIR\"
-echo \"@define-color accent $ACCENT_COLOR;\" > \"$CACHE_DIR/colors.css\"
-echo \"* { accent: $ACCENT_COLOR; }\" > \"$CACHE_DIR/colors.rasi\"
+CACHE_DIR="$HOME/.cache/theme"
+mkdir -p "$CACHE_DIR"
 
-NIRI_CONFIG=\"$HOME/dot27/dotfiles/niri/config.kdl\"
-sed -i \"s/active-color \\\".*\\\"/active-color \\\"$ACCENT_COLOR\\\"/\" \"$NIRI_CONFIG\"
+echo "@define-color accent $ACCENT_COLOR;" > "$CACHE_DIR/colors.css"
+echo "* { accent: $ACCENT_COLOR; }" > "$CACHE_DIR/colors.rasi"
 
-killall -SIGUSR2 waybar
-killall -SIGUSR2 swaync
+NIRI_CONFIG="$HOME/dot27/dotfiles/niri/config.kdl"
+sed -i "s/active-color \".*\"/active-color \"$ACCENT_COLOR\"/" "$NIRI_CONFIG"
+
+killall -SIGUSR2 waybar 2>/dev/null
+killall -SIGUSR2 swaync 2>/dev/null
