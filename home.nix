@@ -37,7 +37,7 @@ in
     wayland-pipewire-idle-inhibit
 
     # --- CLI & System Tools ---
-    thunar thunar-archive-plugin
+    thunar thunar-archive-plugin imagemagick
     kitty gh lazygit psmisc fd ripgrep yazi papirus-icon-theme
     wget fastfetch jq p7zip unrar unzip zip brightnessctl btop pavucontrol
 
@@ -47,7 +47,7 @@ in
     ruff
     pyright
     (python3.withPackages (ps: with ps; [
-      debugpy colorthief pygobject3 pip requests numpy pandas
+      debugpy pygobject3 pip requests numpy pandas
       scikit-learn opencv jupyter torch torchvision ortools matplotlib seaborn
     ]))
 
@@ -141,7 +141,7 @@ in
 
       oh-my-zsh = {
         enable = true;
-        theme = "lukerandall";
+        theme = "gnzh";
         plugins = [ "git" ];
       };
 

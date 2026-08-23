@@ -6,7 +6,7 @@ if [ -z "$WALLPAPER" ]; then
     exit 1
 fi
 
-if ! pgrep -x "awww-daemon" > /dev/null; then
+if ! pidof awww-daemon > /dev/null; then
     awww-daemon &
     sleep 0.5
 fi

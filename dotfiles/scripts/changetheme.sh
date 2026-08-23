@@ -23,21 +23,11 @@ else
         exit 1
     fi
 
-    ACCENT_COLOR=$(python3 -c "
-from colorthief import ColorThief
-import colorsys
-
-try:
-    ct = ColorThief('$WALLPAPER')
-    dom = ct.get_color(quality=1)
-    r, g, b = [x/255.0 for x in dom]
-    h, l, s = colorsys.rgb_to_hls(r, g, b)
-    l = max(0.65, l)
-    r, g, b = colorsys.hls_to_rgb(h, l, s)
-    print(f'#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}')
-except Exception:
-    print('#7aa2f7')
-")
+    ACCENT_COLOR=$(magick "$WALLPAPER" -resize 1x1 -modulate 100,200,100 -format "%[hex:u.p{0,0}]\n" info: | awk '{print "#"$1}')
+    
+    if [ -z "$ACCENT_COLOR" ] || [ "$ACCENT_COLOR" == "#" ]; then
+        ACCENT_COLOR="#7aa2f7"
+    fi
 fi
 
 CACHE_DIR="$HOME/.cache/theme"
