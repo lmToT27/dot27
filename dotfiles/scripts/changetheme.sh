@@ -23,8 +23,53 @@ else
         exit 1
     fi
 
-    ACCENT_COLOR=$(magick "$WALLPAPER" -resize 1x1 -modulate 200,200,100 -format "%[hex:u.p{0,0}]\n" info: | awk '{print "#"$1}')
+    ACCENT_COLOR=$(
+        area=$(magick "$WALLPAPER" -resize 200x200 -format "%[fx:w*h]" info:)
+        
+        magick "$WALLPAPER" -resize 200x200 -kmeans 10 -format "%c" histogram:info: \
+        | sed 's/://g' | awk -v area=$area '{print 100*$1/area, $3}' \
+        | python3 -c "
+import sys, colorsys
+
+lines = sys.stdin.readlines()
+best_hex = '#7aa2f7'
+best_score = -1
+
+grayscale_hex = '#e5e9f0' 
+max_gray_l = -1
+
+for line in lines:
+    parts = line.strip().split()
+    if len(parts) != 2: continue
     
+    percent = float(parts[0])
+    hx = parts[1][:7]
+    
+    if percent < 1.0: continue
+        
+    r, g, b = tuple(int(hx[i:i+2], 16)/255.0 for i in (1, 3, 5))
+    h, l, s = colorsys.rgb_to_hls(r, g, b)
+    
+    if s < 0.15:
+        if l > max_gray_l and l > 0.4:
+            max_gray_l = l
+            grayscale_hex = hx
+        continue
+        
+    if l < 0.15: continue
+        
+    score = (s * 3.0) + l
+    
+    if score > best_score:
+        best_score = score
+        best_hex = hx
+
+if best_score != -1:
+    print(best_hex)
+else:
+    print(grayscale_hex)
+"
+    )   
     if [ -z "$ACCENT_COLOR" ] || [ "$ACCENT_COLOR" == "#" ]; then
         ACCENT_COLOR="#7aa2f7"
     fi
