@@ -36,9 +36,7 @@ layout {
     default-column-width { proportion 0.5; }
 
     focus-ring {
-        on
-        width 2
-        active-color "#554545"
+        off
     }
 
     border {
@@ -49,15 +47,12 @@ layout {
 prefer-no-csd   
 
 window-rule {
-    opacity 0.9
+    opacity 0.92
 }
 
 window-rule {
     match is-active=false
-    opacity 0.8
-    focus-ring {
-        off
-    }
+    opacity 0.75
 }
 
 window-rule {
@@ -67,7 +62,7 @@ window-rule {
         xray true
         blur true
         noise 0.05
-        saturation 2
+        saturation 1.5
     }
 }
 
@@ -77,8 +72,8 @@ window-rule {
 }
 
 window-rule {
-    match app-id=r#"^brave-browser$"#
-    opacity 1.0
+    match app-id=r#"^brave-browser$"# is-active=true
+    opacity 0.98
 }
 
 window-rule {
@@ -101,7 +96,7 @@ animations {
     slowdown 2.0
 
     window-open {
-        duration-ms 120
+        duration-ms 200
         curve "ease-out-quad"
         custom-shader r"
             vec4 open_circular_iris_tl(vec3 coords_geo, vec3 size_geo) {
@@ -143,7 +138,7 @@ animations {
     }
 
     /-window-open {
-        duration-ms 120
+        duration-ms 200
         curve "ease-out-quad"
         custom-shader r"
             vec4 open_circular_iris(vec3 coords_geo, vec3 size_geo) {
@@ -185,7 +180,7 @@ animations {
     }
 
     window-close {
-        duration-ms 120
+        duration-ms 200
         curve "ease-out-quad"
         custom-shader r"
             vec4 close_circular_iris_tl(vec3 coords_geo, vec3 size_geo) {
@@ -227,7 +222,7 @@ animations {
     }
 
     /-window-close {
-        duration-ms 120
+        duration-ms 200
         curve "ease-out-quad"
         custom-shader r"
             vec4 close_circular_iris(vec3 coords_geo, vec3 size_geo) {

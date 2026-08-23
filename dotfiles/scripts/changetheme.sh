@@ -15,7 +15,7 @@ if [[ "$INPUT" =~ ^#?[0-9a-fA-F]{6}$ ]]; then
         ACCENT_COLOR="$INPUT"
     fi
 else
-    # Treat input as a wallpaper path and extract color using ColorThief
+    # Treat input as a wallpaper path and extract color using ImageMagick
     WALLPAPER="$INPUT"
     
     if [ ! -f "$WALLPAPER" ]; then
@@ -35,11 +35,6 @@ mkdir -p "$CACHE_DIR"
 echo "@define-color accent $ACCENT_COLOR;" > "$CACHE_DIR/colors.css"
 echo "* { accent: $ACCENT_COLOR; }" > "$CACHE_DIR/colors.rasi"
 echo "$ACCENT_COLOR" > "$CACHE_DIR/prompt_color.txt"
-
-NIRI_CONFIG="$HOME/dot27/dotfiles/niri/config.kdl"
-sed -i "s/active-color \".*\"/active-color \"$ACCENT_COLOR\"/" "$NIRI_CONFIG"
-
-niri msg action reload-config 2>/dev/null
 
 killall -SIGUSR2 waybar 2>/dev/null
 killall -SIGUSR2 swaync 2>/dev/null
