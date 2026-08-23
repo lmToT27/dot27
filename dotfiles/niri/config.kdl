@@ -1,4 +1,4 @@
-spawn-at-startup "swaybg" "-i" "/home/lmtot27/Pictures/Wallpapers/spiderman.jpg" "-m" "fill"
+spawn-at-startup "awww-daemon"
 spawn-at-startup "waybar"
 spawn-at-startup "swaync"
 
