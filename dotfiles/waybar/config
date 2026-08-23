@@ -1,0 +1,100 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 36,
+    "spacing": 8,
+    "margin-top": 6,
+    "margin-left": 12,
+    "margin-right": 12,
+    
+    "modules-left": ["niri/workspaces", "clock"],
+    "modules-center": ["cava"],
+    "modules-right": ["network", "bluetooth", "backlight", "pulseaudio", "battery", "custom/notification"],
+
+    // LEFT
+    "niri/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "active": "",
+            "default": ""
+        }
+    },
+    "clock": {
+        "format": "  {:%H:%M - %d/%m}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>"
+    },
+
+    // MIDDLE
+    "cava": {
+        "framerate": 60,
+        "autosens": 1,
+        "bars": 12,
+        "lower_cutoff_freq": 50,
+        "higher_cutoff_freq": 10000,
+        "method": "pulse",
+        "source": "auto",
+        "stereo": true,
+        "reverse": false,
+        "bar_delimiter": 0,
+        "monstercat": false,
+        "waves": false,
+        "noise_reduction": 0.77,
+        "input_delay": 2,
+        "format-icons" : [" ", "▂", "▃", "▄", "▅", "▆", "▇", "█" ]
+    },
+
+    // RIGHT
+    "network": {
+        "format-wifi": "  {essid}",
+        "format-ethernet": "󰈀  {ipaddr}",
+        "format-disconnected": "󰤮  Offline",
+        "tooltip-format": "IP: {ipaddr}\nGateway: {gwaddr}"
+    },
+    "bluetooth": {
+        "format": " {status}",
+        "format-connected": "󰂱 {device_alias}",
+        "format-connected-battery": "󰂱 {device_alias} {device_battery_percentage}%",
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected"
+    },
+    "backlight": {
+        "format": "{icon} {percent}%",
+        "format-icons": ["󰃞", "󰃟", "󰃠"]
+    },
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "󰝟 Muted",
+        "format-icons": {
+            "default": ["󰕿", "󰖀", "󰕾"]
+        },
+        "scroll-step": 5,
+        "on-click": "pavucontrol"
+    },
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "󰂄 {capacity}%",
+        "format-plugged": " {capacity}%",
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+    },
+    
+    // SWAYNC
+    "custom/notification": {
+        "tooltip": false,
+        "format": "{icon}",
+        "format-icons": {
+            "notification": "󱅫",
+            "none": "󰂚",
+            "dnd-notification": "󰂛",
+            "dnd-none": "󰂛"
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
+    }
+}
