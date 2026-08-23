@@ -22,7 +22,7 @@ in
   home.packages = with pkgs; [
     # --- Wayland & UI Core (Niri Focus) ---
     niri
-    swaybg
+    awww
     waybar
     rofi
     rofi-emoji

@@ -42,7 +42,7 @@ layout {
     border {
         on
         width 3
-        active-color "#93acb7"
+        active-color "#c0c0c0"
     }
 }
 
