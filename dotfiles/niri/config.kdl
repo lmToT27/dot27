@@ -23,7 +23,7 @@ cursor {
 }
 
 layout {
-    gaps 12
+    gaps 10
     center-focused-column "never"
 
     preset-column-widths {
@@ -36,13 +36,13 @@ layout {
     default-column-width { proportion 0.5; }
 
     focus-ring {
-        off
+        on
+        width 2
+        active-color "#554545"
     }
 
     border {
-        on
-        width 3
-        active-color "#c0c0c0"
+        off
     }
 }
 
@@ -55,6 +55,9 @@ window-rule {
 window-rule {
     match is-active=false
     opacity 0.8
+    focus-ring {
+        off
+    }
 }
 
 window-rule {
