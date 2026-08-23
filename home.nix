@@ -34,6 +34,7 @@ in
     slurp
     nwg-look
     xdg-utils
+    playerctl
     wayland-pipewire-idle-inhibit
 
     # --- CLI & System Tools ---
