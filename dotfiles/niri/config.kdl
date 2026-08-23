@@ -42,17 +42,33 @@ layout {
     border {
         off
     }
+
+    shadow {
+        on
+        softness 16
+        spread 2
+        offset x=0 y=0
+        draw-behind-window false
+        color "#00000050"
+    }
 }
 
 prefer-no-csd   
 
 window-rule {
-    opacity 0.92
+    opacity 0.85
 }
 
 window-rule {
     match is-active=false
     opacity 0.75
+}
+
+blur {
+    passes 4
+    offset 8
+    noise 0.08
+    saturation 1.2
 }
 
 window-rule {
@@ -61,8 +77,6 @@ window-rule {
     background-effect {
         xray true
         blur true
-        noise 0.05
-        saturation 1.5
     }
 }
 
@@ -73,7 +87,7 @@ window-rule {
 
 window-rule {
     match app-id=r#"^brave-browser$"# is-active=true
-    opacity 0.98
+    opacity 0.95
 }
 
 window-rule {
