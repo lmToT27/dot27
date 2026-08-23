@@ -1,0 +1,107 @@
+/* GLOBAL STYLES */
+@import url("../../.cache/theme/colors.css");
+
+* {
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-weight: bold;
+    border-radius: 20px;
+    transition: all 1s cubic-bezier(0, 0.5, 0.35, 1);
+    border: none;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: transparent;
+    color: @accent;
+    transition: background-color 0.3s ease;
+}
+
+/* MODULES LAYOUT */
+.modules-left {
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 0 0 30px 0;
+    padding: 4px 20px 4px 20px;
+    margin: 0 0 5px 0;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.4);
+}
+
+.modules-center {
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 0 0 30px 30px;
+    padding: 4px 20px 4px 20px;
+    margin: 0 0 5px 0;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.4);
+}
+
+.modules-right {
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 0 0 0 30px;
+    padding: 4px 20px 4px 20px;
+    margin: 0 0 5px 0;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* COMMON MODULE STYLES */
+#custom-lmtot27,
+#window,
+#custom-player,
+#cava,
+#clock,
+#network,
+#bluetooth,
+#battery,
+#custom-notification {
+    margin: 1px;
+    padding: 0 10px;
+    min-width: 20px;
+}
+
+#cava {
+    letter-spacing: -2px;
+}
+
+/* CUSTOM TEXT OVERVIEW */
+#custom-lmtot27 {
+    color: @accent;
+}
+
+#window {
+    color: @accent;
+}
+
+/* STATUS COLORS & BLINK ANIMATION */
+#battery.warning { color: #e0af68; }
+#battery.critical {
+    color: #f7768e;
+    animation: blink 1s infinite; 
+}
+#battery.charging { color: #9ece6a; }
+
+/* HOVER EFFECTS */
+#custom-lmtot27:hover,
+#custom-player:hover,
+#clock:hover,
+#network:hover,
+#bluetooth:hover,
+#custom-notification:hover {
+    color: #000000;
+    background-color: @accent;
+}
+
+/* TOOLTIPS */
+tooltip {
+    background: rgba(0, 0, 0, 1);
+    border-radius: 12px;
+    padding: 10px;
+}
+
+tooltip label {
+    color: @accent;
+}
+
+/* ANIMATIONS */
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
