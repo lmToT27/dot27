@@ -23,7 +23,7 @@ else
         exit 1
     fi
 
-    ACCENT_COLOR=$(magick "$WALLPAPER" -resize 1x1 -modulate 100,200,100 -format "%[hex:u.p{0,0}]\n" info: | awk '{print "#"$1}')
+    ACCENT_COLOR=$(magick "$WALLPAPER" -resize 1x1 -modulate 200,200,100 -format "%[hex:u.p{0,0}]\n" info: | awk '{print "#"$1}')
     
     if [ -z "$ACCENT_COLOR" ] || [ "$ACCENT_COLOR" == "#" ]; then
         ACCENT_COLOR="#7aa2f7"
