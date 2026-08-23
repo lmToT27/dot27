@@ -39,4 +39,7 @@ echo "$ACCENT_COLOR" > "$CACHE_DIR/prompt_color.txt"
 killall -SIGUSR2 waybar 2>/dev/null
 killall -SIGUSR2 swaync 2>/dev/null
 
+echo "export DYNAMIC_ACCENT=\"$ACCENT_COLOR\"" > "$CACHE_DIR/zsh_colors.zsh"
+killall -SIGUSR1 zsh 2>/dev/null
+
 echo "Accent color applied: $ACCENT_COLOR"
