@@ -8,7 +8,7 @@
     "margin-right": 0,
     "spacing": 0,
     
-    "modules-left": ["custom/lmtot27", "niri/window"],
+    "modules-left": ["custom/lmtot27", "custom/window"],
     "modules-center": ["clock", "cava", "custom/player"],
     "modules-right": ["network", "bluetooth", "battery", "custom/notification"],
 
@@ -18,10 +18,10 @@
         "on-click": "niri msg action toggle-overview",
         "tooltip": false
     },
-    "niri/window": {
-        "format": "  {title}",
-        "max-length": 20,
-        "separate-outputs": true
+    "custom/window": {
+        "exec": "~/dot27/dotfiles/scripts/niri_window.sh",
+        "return-type": "json",
+        "format": "{}"
     },
 
     /* === CENTER MODULES === */

@@ -4,7 +4,7 @@
 * {
     font-family: "JetBrainsMono Nerd Font", sans-serif;
     font-weight: bold;
-    border-radius: 20px;
+    border-radius: 10px;
     transition: background-color 0.3s ease, color 0.3s ease;
     border: none;
     min-height: 0;
@@ -18,29 +18,29 @@ window#waybar {
 
 /* MODULES LAYOUT */
 .modules-left {
-    background-color: rgba(0, 0, 0, 0.8);
-    border-radius: 0 0 30px 0;
-    padding: 4px 20px 4px 20px;
+    background-color: rgba(0, 0, 0, 0.85);
+    border-radius: 0 0 16px 0;
+    padding: 4px 12px 4px 12px;
     margin: 0 0 5px 0;
 }
 
 .modules-center {
-    background-color: rgba(0, 0, 0, 0.8);
-    border-radius: 0 0 30px 30px;
-    padding: 4px 20px 4px 20px;
+    background-color: rgba(0, 0, 0, 0.85);
+    border-radius: 0 0 16px 16px;
+    padding: 4px 12px 4px 12px;
     margin: 0 0 5px 0;
 }
 
 .modules-right {
-    background-color: rgba(0, 0, 0, 0.8);
-    border-radius: 0 0 0 30px;
-    padding: 4px 20px 4px 20px;
+    background-color: rgba(0, 0, 0, 0.85);
+    border-radius: 0 0 0 16px;
+    padding: 4px 12px 4px 12px;
     margin: 0 0 5px 0;
 }
 
 /* COMMON MODULE STYLES */
 #custom-lmtot27,
-#window,
+#custom-window,
 #custom-player,
 #cava,
 #clock,
@@ -50,8 +50,11 @@ window#waybar {
 #custom-notification {
     color: @accent;
     margin: 1px;
-    padding: 0 10px;
+    padding: 0 8px;
     min-width: 20px;
+}
+#custom-window.empty {
+    font-style: italic;
 }
 
 #cava {
@@ -63,7 +66,7 @@ window#waybar {
     color: @accent;
 }
 
-#window {
+#custom-window {
     color: @accent;
 }
 
