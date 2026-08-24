@@ -1,8 +1,9 @@
 {
-    "layer": "top",
+    "layer": "overlay",
     "position": "top",
-    "height": 30,
-    "margin-top": 0,
+    "height": 35,
+    "exclusive": false,
+    "margin-top": -32,
     "margin-left": 0,
     "margin-right": 0,
     "spacing": 0,
@@ -19,7 +20,7 @@
     },
     "niri/window": {
         "format": "  {title}",
-        "max-length": 25,
+        "max-length": 20,
         "separate-outputs": true
     },
 
@@ -43,8 +44,6 @@
                     },
         "actions":  {
                     "on-click-right": "mode",
-                    "on-scroll-up": "tz_up",
-                    "on-scroll-down": "tz_down",
                     "on-scroll-up": "shift_up",
                     "on-scroll-down": "shift_down"
                     }
@@ -64,12 +63,13 @@
         "format-icons" : [" ", "⡀", "⣀", "⣄", "⣤", "⣦", "⣶", "⣿"] 
     },
     "custom/player": {
-        "exec": "status=$(playerctl status 2>/dev/null); if [ \"$status\" = \"Playing\" ]; then playerctl metadata --format '  {{title}}' 2>/dev/null; elif [ \"$status\" = \"Paused\" ]; then playerctl metadata --format ' {{title}}' 2>/dev/null; else echo ' Nothing playing'; fi",
+        "exec": "~/dot27/dotfiles/scripts/waybar_player.sh",
+        "return-type": "json",
         "interval": 1,
         "signal": 10,
-        "tooltip": false,
-        "max-length": 16,
-        "on-click": "playerctl play-pause && sleep 0.1 && pkill -RTMIN+10 waybar",
+        "tooltip": true,
+        "max-length": 20,
+        "on-click": "~/dot27/dotfiles/scripts/waybar_player.sh --play-pause && sleep 0.1 && pkill -RTMIN+10 waybar",
         "format": "{}"
     },
 

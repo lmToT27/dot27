@@ -1,11 +1,11 @@
 /* GLOBAL STYLES */
-@import url("../../.cache/theme/colors.css");
+@import url("../../.local/state/my_theme/colors.css");
 
 * {
     font-family: "JetBrainsMono Nerd Font", sans-serif;
     font-weight: bold;
     border-radius: 20px;
-    transition: all 1s cubic-bezier(0, 0.5, 0.35, 1);
+    transition: background-color 0.3s ease, color 0.3s ease;
     border: none;
     min-height: 0;
 }
@@ -13,7 +13,7 @@
 window#waybar {
     background-color: transparent;
     color: @accent;
-    transition: background-color 0.3s ease;
+    animation: pop-down 0.6s ease-out forwards; 
 }
 
 /* MODULES LAYOUT */
@@ -22,7 +22,6 @@ window#waybar {
     border-radius: 0 0 30px 0;
     padding: 4px 20px 4px 20px;
     margin: 0 0 5px 0;
-    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.4);
 }
 
 .modules-center {
@@ -30,7 +29,6 @@ window#waybar {
     border-radius: 0 0 30px 30px;
     padding: 4px 20px 4px 20px;
     margin: 0 0 5px 0;
-    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.4);
 }
 
 .modules-right {
@@ -38,7 +36,6 @@ window#waybar {
     border-radius: 0 0 0 30px;
     padding: 4px 20px 4px 20px;
     margin: 0 0 5px 0;
-    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.4);
 }
 
 /* COMMON MODULE STYLES */
@@ -51,6 +48,7 @@ window#waybar {
 #bluetooth,
 #battery,
 #custom-notification {
+    color: @accent;
     margin: 1px;
     padding: 0 10px;
     min-width: 20px;
@@ -81,8 +79,6 @@ window#waybar {
 #custom-lmtot27:hover,
 #custom-player:hover,
 #clock:hover,
-#network:hover,
-#bluetooth:hover,
 #custom-notification:hover {
     color: #000000;
     background-color: @accent;
@@ -104,4 +100,22 @@ tooltip label {
     0% { opacity: 1; }
     50% { opacity: 0.5; }
     100% { opacity: 1; }
+}
+
+@keyframes pop-down {
+    0% { 
+        opacity: 0;
+        margin-top: -40px; 
+    }
+    50% {
+        opacity: 1;
+        margin-top: 6px; 
+    }
+    75% {
+        margin-top: -3px;
+    }
+    100% { 
+        opacity: 1;
+        margin-top: 0; 
+    }
 }

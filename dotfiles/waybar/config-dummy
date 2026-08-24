@@ -1,0 +1,9 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 32,
+    "exclusive": true,
+    "modules-left": [],
+    "modules-center": [],
+    "modules-right": []
+}
