@@ -1,5 +1,6 @@
 spawn-at-startup "awww-daemon"
-spawn-at-startup "waybar"
+spawn-at-startup "sh" "-c" "waybar -c ~/.config/waybar/config-dummy -s ~/.config/waybar/style-dummy.css"
+spawn-at-startup "sh" "-c" "waybar -c ~/.config/waybar/config -s ~/.config/waybar/style.css & echo $! > /tmp/waybar-main.pid"
 spawn-at-startup "swaync"
 
 hotkey-overlay {
@@ -23,7 +24,7 @@ cursor {
 }
 
 layout {
-    gaps 10
+    gaps 8
     center-focused-column "never"
 
     preset-column-widths {
@@ -54,6 +55,12 @@ layout {
 }
 
 prefer-no-csd   
+
+gestures {
+    hot-corners {
+        off
+    }
+}
 
 window-rule {
     opacity 0.85
