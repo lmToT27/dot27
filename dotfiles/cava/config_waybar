@@ -1,0 +1,24 @@
+[general]
+framerate = 45
+bars = 12
+autosens = 1
+lower_cutoff_freq = 30
+higher_cutoff_freq = 10000
+
+[output]
+method = raw
+raw_target = /dev/stdout
+data_format = ascii
+ascii_max_range = 7
+bar_delimiter = 59
+
+[smoothing]
+noise_reduction = 0.25
+monstercat = 1
+
+[eq]
+1 = 1.0
+2 = 1.0
+3 = 2.5
+4 = 3.0
+5 = 2.0

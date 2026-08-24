@@ -42,7 +42,6 @@ window#waybar {
 #custom-lmtot27,
 #custom-window,
 #custom-player,
-#cava,
 #clock,
 #network,
 #bluetooth,
@@ -55,10 +54,6 @@ window#waybar {
 }
 #custom-window.empty {
     font-style: italic;
-}
-
-#cava {
-    letter-spacing: -2px;
 }
 
 /* CUSTOM TEXT OVERVIEW */
@@ -85,6 +80,15 @@ window#waybar {
 #custom-notification:hover {
     color: #000000;
     background-color: @accent;
+}
+
+/* CAVA */
+#custom-cava {
+    letter-spacing: -2px; 
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 
 /* TOOLTIPS */
