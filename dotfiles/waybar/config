@@ -49,7 +49,7 @@
                     }
     },
     "cava": {
-        "framerate": 60,
+        "framerate": 40,
         "autosens": 1,
         "bars": 12,
         "lower_cutoff_freq": 50,
