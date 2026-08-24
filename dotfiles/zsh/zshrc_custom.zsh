@@ -116,14 +116,14 @@ function fif() {
         --delimiter : \
         --preview-window 'up:61%:+{2}-/2' \
         --preview '
-            file={2}
+            file={1}
             case "$file" in ~/*) file="$HOME/''${file#~/}" ;; esac
-            bat --style=numbers --color=always --highlight-line {3} -- "$file"
+            bat --style=numbers --color=always --highlight-line {2} -- "$file"
         ')
         
     if [ -n "$result" ]; then
-        local file=$(echo "$result" | cut -d: -f2)
-        local line=$(echo "$result" | cut -d: -f3)
+        local file=$(echo "$result" | cut -d: -f1)
+        local line=$(echo "$result" | cut -d: -f2)
         case "$file" in ~/*) file="$HOME/''${file#~/}" ;; esac
         nvim "+$line" "$file"
     fi
