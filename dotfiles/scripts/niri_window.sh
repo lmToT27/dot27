@@ -22,7 +22,7 @@ update_title() {
         FULL_TITLE="${FULL_TITLE//>/&gt;}"
         
         jq -n --unbuffered --compact-output \
-            --arg text "  $DISPLAY_TITLE" \
+            --arg text " $DISPLAY_TITLE" \
             --arg tooltip "$FULL_TITLE" \
             '{"text": $text, "tooltip": $tooltip, "class": "focused"}' 2>/dev/null
     fi
