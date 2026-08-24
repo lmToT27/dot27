@@ -32,7 +32,7 @@ update_title
 
 while true; do
     niri msg event-stream 2>/dev/null | while read -r event; do
-        if [[ "$event" == *"Window focus changed"* ]]; then
+        if [[ "$event" == *"Window focus changed"* || "$event" == *"Window opened or changed"* ]]; then
             update_title
         fi
     done
