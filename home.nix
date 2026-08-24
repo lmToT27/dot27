@@ -23,6 +23,7 @@ in
     # --- Wayland & UI Core (Niri Focus) ---
     niri
     awww
+    swaybg
     waybar
     rofi
     rofi-emoji

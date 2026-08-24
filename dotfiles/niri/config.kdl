@@ -3,6 +3,7 @@ spawn-at-startup "sh" "-c" "waybar -c ~/.config/waybar/config-dummy -s ~/.config
 spawn-at-startup "sh" "-c" "waybar -c ~/.config/waybar/config -s ~/.config/waybar/style.css & echo $! > /tmp/waybar-main.pid"
 spawn-at-startup "swaync"
 spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
+spawn-at-startup "swaybg" "-i" "~/.cache/theme/blurred_wallpaper.jpg" "-m" "fill"
 
 hotkey-overlay {
     skip-at-startup
@@ -26,7 +27,9 @@ cursor {
 
 layout {
     gaps 8
+    
     center-focused-column "never"
+    background-color "transparent"
 
     preset-column-widths {
         proportion 0.33333
@@ -60,6 +63,21 @@ prefer-no-csd
 gestures {
     hot-corners {
         off
+    }
+}
+
+layer-rule {
+    match namespace="^wallpaper$"
+    place-within-backdrop true
+}
+
+overview {
+    zoom 0.7
+    workspace-shadow {
+        softness 60
+        spread 5
+        offset x=0 y=-5
+        color "#000000ee"
     }
 }
 
