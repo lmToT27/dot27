@@ -76,6 +76,7 @@ else
     pkill -f "waybar -c ~/.config/waybar/config " 2>/dev/null
 fi
 
+pkill -x cava 2>/dev/null
 pkill -USR2 swaync 2>/dev/null
 pkill -SIGUSR1 zsh 2>/dev/null
 

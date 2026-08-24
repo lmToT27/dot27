@@ -2,14 +2,16 @@
 
 cava_config="$HOME/.config/cava/config_waybar"
 
-dict=("⣀" "⣄" "⣤" "⣦" "⣶" "⣷" "⣾" "⣿")
+echo "⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀"
 
-cava -p "$cava_config" | while read -r line; do
-    line="${line%;}"
-    out=""
-    IFS=';' read -ra values <<< "$line"
-    for val in "${values[@]}"; do
-        out+="${dict[val]}"
-    done
-    echo "$out"
-done
+stdbuf -oL cava -p "$cava_config" | awk -F';' 'BEGIN {
+    split("⣀ ⣄ ⣤ ⣦ ⣶ ⣷ ⣾ ⣿", dict, " ")
+}
+{
+    out = ""
+    for (i = 1; i < NF; i++) {
+        out = out dict[$i + 1]
+    }
+    print out
+    fflush(stdout)
+}'
