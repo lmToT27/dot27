@@ -27,6 +27,7 @@ in
     rofi
     rofi-emoji
     swaynotificationcenter
+    libnotify
     wlr-randr
     wl-clipboard
     cliphist
