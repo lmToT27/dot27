@@ -2,6 +2,7 @@ spawn-at-startup "awww-daemon"
 spawn-at-startup "sh" "-c" "waybar -c ~/.config/waybar/config-dummy -s ~/.config/waybar/style-dummy.css"
 spawn-at-startup "sh" "-c" "waybar -c ~/.config/waybar/config -s ~/.config/waybar/style.css & echo $! > /tmp/waybar-main.pid"
 spawn-at-startup "swaync"
+spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
 
 hotkey-overlay {
     skip-at-startup
@@ -327,8 +328,15 @@ binds {
     Mod+W { spawn "brave"; }
     Mod+E { spawn "thunar"; }
     Mod+S { spawn "spotify"; }
-    Mod+Return { spawn "rofi" "-show" "drun"; }
 
+    Mod+Return { spawn "rofi" "-show" "drun"; }
+    Mod+V { spawn "sh" "-c" "cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy"; }
+    Mod+Shift+V { spawn "sh" "-c" "cliphist wipe && notify-send 'Clipboard' 'Deleted all clipboard history!'"; }
+    Mod+Period { spawn "rofi" "-show" "emoji"; }
+
+    Mod+Shift+S { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy"; }
+
+    Mod+Shift+F { fullscreen-window; }
     Mod+F { toggle-window-floating; }
     Mod+Q { close-window; }
     Mod+M { quit; }
