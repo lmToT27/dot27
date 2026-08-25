@@ -1,0 +1,64 @@
+// ~/dot27/dotfiles/niri/visuals.kdl
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+prefer-no-csd   
+
+gestures {
+    hot-corners {
+        off
+    }
+}
+
+layout {
+    gaps 8
+    
+    center-focused-column "never"
+    background-color "transparent"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+        proportion 1.0
+    }
+
+    default-column-width { proportion 0.5; }
+
+    focus-ring {
+        off
+    }
+
+    border {
+        off
+    }
+
+    shadow {
+        on
+        softness 16
+        spread 2
+        offset x=0 y=0
+        draw-behind-window false
+        color "#00000050"
+    }
+}
+
+overview {
+    zoom 0.7
+    workspace-shadow {
+        softness 30
+        spread 5
+        offset x=0 y=0
+        color "#000000d0"
+    }
+}
+
+blur {
+    passes 4
+    offset 8
+    noise 0.08
+    saturation 1.2
+}
+

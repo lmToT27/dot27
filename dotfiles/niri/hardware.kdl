@@ -1,0 +1,22 @@
+// ~/dot27/dotfiles/niri/hardware.kdl
+
+output "eDP-1" {
+    mode "2560x1600@120.000"
+    scale 1.5
+}
+
+input {
+    focus-follows-mouse
+    warp-mouse-to-focus
+    keyboard {
+        xkb { layout "us"; }
+    }
+    touchpad {
+        tap
+        natural-scroll
+    }
+}
+
+cursor {
+    hide-after-inactive-ms 3000
+}

@@ -1,0 +1,47 @@
+binds {
+    Mod+T { spawn "kitty"; }
+    Mod+W { spawn "brave"; }
+    Mod+E { spawn "thunar"; }
+    Mod+S { spawn "spotify"; }
+
+    Mod+Return { spawn "rofi" "-show" "drun"; }
+    Mod+V { spawn "sh" "-c" "cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy"; }
+    Mod+Shift+V { spawn "sh" "-c" "cliphist wipe && notify-send 'Clipboard' 'Deleted all clipboard history!'"; }
+    Mod+Period { spawn "rofi" "-show" "emoji"; }
+
+    Mod+Shift+S { spawn "sh" "-c" "area=$(slurp) && grim -g \"$area\" - | wl-copy && notify-send 'Clipboard' 'Saved screenshot in clipboard!'"; }
+
+    Mod+Shift+F { fullscreen-window; }
+    Mod+F { toggle-window-floating; }
+    Mod+Q { close-window; }
+    Mod+M { quit; }
+
+    Mod+left { focus-column-left; }
+    Mod+right { focus-column-right; }
+
+    Mod+Shift+left { move-column-left; }
+    Mod+Shift+right { move-column-right; }
+    Mod+Shift+up { move-column-to-workspace-up; }
+    Mod+Shift+down { move-column-to-workspace-down; }
+    Mod+down { focus-workspace-down; }
+    Mod+up { focus-workspace-up; }
+
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
+    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+
+    XF86AudioPause allow-when-locked=true { spawn "sh" "-c" "playerctl play-pause && sleep 0.1 && pkill -RTMIN+10 waybar"; }
+    XF86AudioStop allow-when-locked=true { spawn "sh" "-c" "playerctl stop && sleep 0.1 && pkill -RTMIN+10 waybar"; }
+    XF86AudioPlay allow-when-locked=true { spawn "sh" "-c" "playerctl play-pause && sleep 0.1 && pkill -RTMIN+10 waybar"; }
+    XF86AudioNext allow-when-locked=true { spawn "sh" "-c" "playerctl next && sleep 0.1 && pkill -RTMIN+10 waybar"; }
+    XF86AudioPrev allow-when-locked=true { spawn "sh" "-c" "playerctl previous && sleep 0.1 && pkill -RTMIN+10 waybar"; }
+
+    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+
+    Mod+Tab repeat=false { toggle-overview; }
+}

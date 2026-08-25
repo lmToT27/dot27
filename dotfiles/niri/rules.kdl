@@ -1,0 +1,48 @@
+// ~/dot27/dotfiles/niri/rules.kdl
+
+layer-rule {
+    match namespace="^wallpaper$"
+    place-within-backdrop true
+}
+
+window-rule {
+    opacity 0.85
+}
+
+window-rule {
+    match is-active=false
+    opacity 0.75
+}
+
+window-rule {
+    match app-id=r#".*"#
+
+    background-effect {
+        xray true
+        blur true
+    }
+}
+
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+window-rule {
+    match app-id=r#"^brave-browser$"# is-active=true
+    opacity 0.95
+}
+
+window-rule {
+    match app-id=r#"^brave-browser$"#
+    match app-id=r#"^spotify$"#
+    default-column-width { proportion 1.0; }
+}
+
+window-rule {
+    match app-id=r#"^xdg-desktop-portal.*"#
+    match app-id=r#"^thunar$"# title="^File Operation Progress$"
+    match title="^Open File$"
+    match title="^Save File$"
+    open-floating true
+}
