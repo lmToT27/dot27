@@ -20,12 +20,6 @@ awww img "$WALLPAPER" --transition-fps 60 --transition-type wave --transition-an
 pkill -x swaybg 2>/dev/null
 swaybg -i "$CACHE_DIR/blurred_wallpaper.jpg" -m fill </dev/null >/dev/null 2>&1 &
 
-(
-    sleep 0.30
-    kill $(cat /tmp/waybar-main.pid 2>/dev/null) 2>/dev/null || pkill -x waybar
-    pkill -x cava
-    pkill -USR2 swaync
-    pkill -SIGUSR1 zsh
-    waybar -c "$HOME/.config/waybar/config" -s "$HOME/.config/waybar/style.css" </dev/null >/dev/null 2>&1 &
-    echo $! > /tmp/waybar-main.pid
-) &
+# changetheme.sh (called above) already handled the accent reload; the bar
+# picks it up live via Quickshell's FileView watch, no restart needed.
+pkill -SIGUSR1 zsh

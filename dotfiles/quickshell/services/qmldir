@@ -1,0 +1,3 @@
+singleton Theme 1.0 Theme.qml
+singleton Niri 1.0 Niri.qml
+singleton NotificationHistory 1.0 NotificationHistory.qml

@@ -24,10 +24,9 @@ in
     niri
     awww
     swaybg
-    waybar
+    quickshell
     rofi
     rofi-emoji
-    swaynotificationcenter
     libnotify
     wlr-randr
     wl-clipboard
@@ -92,8 +91,7 @@ in
   # ==========================================
   home.file = {
     ".config/niri".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/niri";
-    ".config/waybar".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/waybar";
-    ".config/swaync".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/swaync";
+    ".config/quickshell".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/quickshell";
     ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/nvim";
     ".local/bin".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/scripts";
     ".config/kitty".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/kitty";

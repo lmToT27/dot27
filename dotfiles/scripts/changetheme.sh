@@ -53,11 +53,6 @@ echo "export DYNAMIC_ACCENT=\"$ACCENT_COLOR\"" > "$CACHE_DIR/zsh_colors.zsh"
 
 [[ "$SKIP_RELOAD" == "1" ]] && exit 0
 
-(
-    kill $(cat /tmp/waybar-main.pid 2>/dev/null) 2>/dev/null || pkill -x waybar
-    pkill -x cava
-    pkill -USR2 swaync
-    pkill -SIGUSR1 zsh
-    waybar -c "$HOME/.config/waybar/config" -s "$HOME/.config/waybar/style.css" </dev/null >/dev/null 2>&1 &
-    echo $! > /tmp/waybar-main.pid
-) &
+# Quickshell watches colors.css directly (Theme.qml FileView), so the bar
+# picks up the new accent live — no process restart needed here anymore.
+pkill -SIGUSR1 zsh

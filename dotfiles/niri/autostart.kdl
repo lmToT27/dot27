@@ -1,10 +1,7 @@
 // ~/dot27/dotfiles/niri/autostart.kdl
 
-spawn-at-startup "swaync"
+spawn-at-startup "quickshell"
 spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
 
 spawn-at-startup "sh" "-c" "swaybg -i ~/.cache/theme/blurred_wallpaper.jpg -m fill"
 spawn-at-startup "sh" "-c" "awww-daemon & sleep 0.5 && awww restore"
-
-spawn-at-startup "sh" "-c" "waybar -c ~/.config/waybar/config-dummy -s ~/.config/waybar/style-dummy.css"
-spawn-at-startup "sh" "-c" "waybar -c ~/.config/waybar/config -s ~/.config/waybar/style.css & echo $! > /tmp/waybar-main.pid"
