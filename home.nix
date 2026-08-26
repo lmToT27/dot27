@@ -40,6 +40,7 @@ in
     wayland-pipewire-idle-inhibit
 
     # --- CLI & System Tools ---
+    claude-code
     thunar thunar-archive-plugin imagemagick
     kitty gh lazygit psmisc fd ripgrep yazi papirus-icon-theme
     wget fastfetch jq p7zip unrar unzip zip brightnessctl btop pavucontrol
