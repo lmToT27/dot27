@@ -5,7 +5,6 @@ output "eDP-1" {
 }
 
 input {
-    focus-follows-mouse
     warp-mouse-to-focus
     keyboard {
         xkb { layout "us"; }
