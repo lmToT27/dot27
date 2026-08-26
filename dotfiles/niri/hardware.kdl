@@ -1,8 +1,7 @@
 // ~/dot27/dotfiles/niri/hardware.kdl
 
 output "eDP-1" {
-    mode "2560x1600@120.000"
-    scale 1.5
+    scale 1.75
 }
 
 input {
