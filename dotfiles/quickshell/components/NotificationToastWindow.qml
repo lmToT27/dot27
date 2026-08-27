@@ -1,30 +1,22 @@
 import QtQuick
+import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import "./common"
 import "../config"
 import "../services"
 
-// Standalone OSD popup, floats at the top-right corner, independent of
-// NotificationCenterWindow (history sidebar) and NotificationIndicator
-// (topbar bell) — this is what actually alerts you when a notification
-// arrives.
-//
-// Reuses NotificationCard as-is for the card UI so the toast and the
-// history list never visually drift apart — this file only owns the
-// surface, queue, backdrop, and per-toast enter/auto-dismiss/exit choreography.
 PanelWindow {
     id: root
 
-    readonly property int toastWidth: Appearance.controlCenterWidth
-    readonly property int autoDismissMs: 4000
+    readonly property int toastWidth: Appearance.controlCenterWidth * 0.75
+    readonly property int autoDismissMs: 2000
 
     anchors { top: true; right: true }
-    // Below the topbar, not just below the screen edge.
     margins.top: Appearance.barHeight + 12
-    margins.right: 20
+    margins.right: 0
 
-    implicitWidth: toastWidth
+    implicitWidth: toastWidth + 20
     implicitHeight: column.implicitHeight
     color: "transparent"
     exclusionMode: ExclusionMode.Ignore
@@ -32,17 +24,10 @@ PanelWindow {
     WlrLayershell.namespace: "quickshell:notification-toast"
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-    // Unmapped whenever the queue is empty — same reasoning as
-    // ControlCenterWindow/NotificationCenterWindow.
     visible: toastModel.count > 0
 
     ListModel { id: toastModel }
 
-    // Removes by id, not index: several toasts can be in flight with
-    // independent timers, and an earlier removal would shift later
-    // indices. String() on both sides: entry.id is a DBus number,
-    // toastId is a `required property string` — comparing directly with
-    // === always fails across those two types.
     function removeToast(toastId) {
         for (let i = 0; i < toastModel.count; i++) {
             if (String(toastModel.get(i).toastId) === String(toastId)) {
@@ -52,8 +37,6 @@ PanelWindow {
         }
     }
 
-    // Dismissing a toast never touches NotificationHistory — it only
-    // clears the transient popup; the record stays for the sidebar.
     Connections {
         target: NotificationHistory
         function onNotified(entry) {
@@ -69,11 +52,9 @@ PanelWindow {
 
     Column {
         id: column
-        width: root.toastWidth
-        spacing: 12
+        width: root.width
+        spacing: 8
 
-        // Smooths the shift when a toast above/below this one is added or
-        // removed, mirroring BarPill's inner Row move Transition.
         move: Transition {
             NumberAnimation { properties: "y"; duration: Appearance.animMedium; easing.type: Easing.OutCubic }
         }
@@ -89,16 +70,12 @@ PanelWindow {
                 required property string summary
                 required property string body
 
-                width: root.toastWidth
+                width: root.width
                 height: container.height
                 clip: true
 
                 Component.onCompleted: enterAnim.start()
 
-                // alreadyOffscreen: the swipe gesture already slid the card
-                // away (see NotificationCard's dismissAnim), so that path
-                // only needs the container to collapse. The timeout path
-                // hasn't moved yet and needs the full slide first.
                 function dismiss(alreadyOffscreen) {
                     dismissTimer.stop()
                     if (alreadyOffscreen) {
@@ -108,51 +85,98 @@ PanelWindow {
                     }
                 }
 
-                // Same tooltipBg token as ControlCenterWindow/
-                // NotificationCenterWindow. Plain rounded corners (not the
-                // drip treatment) since this floats free of any screen edge.
                 Rectangle {
                     id: container
-                    width: toastWrapper.width
-                    height: card.implicitHeight
+                    width: root.toastWidth
+                    height: Math.max(50, toastContent.implicitHeight + 16)
                     x: 0
                     radius: Appearance.controlCenterCornerRadius
                     color: Appearance.tooltipBg
                     clip: true
 
-                    NotificationCard {
-                        id: card
-                        width: container.width
-                        icon: "󰂚"
-                        appName: toastWrapper.appName
-                        summary: toastWrapper.summary
-                        body: toastWrapper.body
-                        // container above already supplies the black fill.
-                        contentColor: "transparent"
-                        onClosed: toastWrapper.dismiss(true)
+                    RowLayout {
+                        id: toastContent
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.margins: 8
+                        spacing: 10
+
+                        Rectangle {
+                            Layout.preferredWidth: 28
+                            Layout.preferredHeight: 28
+                            Layout.alignment: Qt.AlignTop
+                            radius: width / 2
+                            color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.18)
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "󰂚"
+                                font.family: Appearance.fontFamily
+                                font.pixelSize: 14
+                                color: Theme.accent
+                            }
+                        }
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 0
+
+                            Text {
+                                Layout.fillWidth: true
+                                text: toastWrapper.appName
+                                font.family: Appearance.fontFamily
+                                font.pixelSize: 10
+                                color: Qt.rgba(1, 1, 1, 0.5)
+                                elide: Text.ElideRight
+                            }
+
+                            Text {
+                                Layout.fillWidth: true
+                                text: toastWrapper.summary
+                                font.family: Appearance.fontFamily
+                                font.bold: true
+                                font.pixelSize: 13
+                                color: "white"
+                                elide: Text.ElideRight
+                            }
+
+                            Text {
+                                Layout.fillWidth: true
+                                text: toastWrapper.body
+                                font.family: Appearance.fontFamily
+                                font.pixelSize: 11
+                                color: Qt.rgba(1, 1, 1, 0.55)
+                                wrapMode: Text.WordWrap
+                                maximumLineCount: 2
+                                elide: Text.ElideRight
+                            }
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        preventStealing: true
                     }
                 }
 
                 ParallelAnimation {
                     id: enterAnim
-                    NumberAnimation { target: container; property: "x"; from: root.toastWidth; to: 0; duration: Appearance.animMedium; easing.type: Easing.OutCubic }
+                    NumberAnimation { target: container; property: "x"; from: root.width; to: 0; duration: Appearance.animMedium; easing.type: Easing.OutCubic }
                     NumberAnimation { target: toastWrapper; property: "opacity"; from: 0; to: 1; duration: Appearance.animMedium; easing.type: Easing.OutCubic }
                 }
 
-                // Timeout path: slide the container out first, then
-                // collapse the leftover vertical space smoothly.
                 SequentialAnimation {
                     id: slideOutThenCollapseAnim
                     ParallelAnimation {
-                        NumberAnimation { target: container; property: "x"; to: root.toastWidth; duration: Appearance.animMedium; easing.type: Easing.OutCubic }
+                        NumberAnimation { target: container; property: "x"; to: root.width; duration: Appearance.animMedium; easing.type: Easing.OutCubic }
                         NumberAnimation { target: toastWrapper; property: "opacity"; to: 0; duration: Appearance.animMedium; easing.type: Easing.OutCubic }
                     }
                     NumberAnimation { target: toastWrapper; property: "height"; to: 0; duration: Appearance.animFast; easing.type: Easing.OutCubic }
                     onFinished: root.removeToast(toastWrapper.toastId)
                 }
 
-                // Swipe/X path: content's already gone, just fade and
-                // collapse the empty shell.
                 ParallelAnimation {
                     id: collapseAnim
                     NumberAnimation { target: container; property: "opacity"; to: 0; duration: Appearance.animFast; easing.type: Easing.OutCubic }

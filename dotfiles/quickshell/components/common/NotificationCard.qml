@@ -136,28 +136,6 @@ Item {
                 }
             }
         }
-
-        Text {
-            id: closeButton
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.margins: 8
-            text: "󰅖"
-            font.family: Appearance.fontFamily
-            font.pixelSize: 12
-            color: Qt.rgba(1, 1, 1, closeMouseArea.containsMouse ? 0.85 : 0.4)
-            Behavior on color { ColorAnimation { duration: Appearance.animFast } }
-            scale: closeMouseArea.pressed ? 0.9 : 1
-            Behavior on scale { NumberAnimation { duration: Appearance.animFast } }
-
-            MouseArea {
-                id: closeMouseArea
-                anchors.fill: parent
-                anchors.margins: -6
-                hoverEnabled: true
-                onClicked: root.closed()
-            }
-        }
     }
 
     // deleteBackground's opacity binding caps at 1 well before cardContent
