@@ -33,6 +33,7 @@ in
     cliphist
     grim
     slurp
+    wf-recorder
     nwg-look
     xdg-utils
     playerctl
@@ -51,7 +52,7 @@ in
     pyright
     (python3.withPackages (ps: with ps; [
       debugpy pygobject3 pip requests numpy pandas
-      scikit-learn opencv jupyter torch torchvision ortools matplotlib seaborn
+      ortools matplotlib seaborn
     ]))
 
     # --- C/C++ & Java Environment ---
