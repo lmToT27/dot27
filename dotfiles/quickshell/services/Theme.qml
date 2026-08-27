@@ -9,7 +9,11 @@ QtObject {
     readonly property color fallbackAccent: "#7aa2f7"
     property color accent: fallbackAccent
 
-    property FileView colorsFile: FileView {
+    // Text/icon color for on top of `accent`, picked by relative luminance
+    // so it stays readable regardless of the active theme's accent.
+    readonly property color onAccent: (0.299 * accent.r + 0.587 * accent.g + 0.114 * accent.b) > 0.6 ? "black" : "white"
+
+    readonly property FileView colorsFile: FileView {
         path: Quickshell.env("HOME") + "/.local/state/my_theme/colors.css"
         watchChanges: true
         onFileChanged: reload()

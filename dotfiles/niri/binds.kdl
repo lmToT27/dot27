@@ -10,11 +10,13 @@ binds {
     Mod+Period { spawn "rofi" "-show" "emoji"; }
 
     Mod+Shift+S { spawn "sh" "-c" "area=$(slurp) && grim -g \"$area\" - | wl-copy && notify-send 'Clipboard' 'Saved screenshot in clipboard!'"; }
+    Mod+Shift+R { spawn "quickshell" "ipc" "call" "recorder" "toggle"; }
 
     Mod+Shift+F { fullscreen-window; }
     Mod+F { toggle-window-floating; }
     Mod+Q { close-window; }
-    Mod+M { quit; }
+    Mod+M repeat=false { spawn "quickshell" "ipc" "call" "controlcenter" "toggle"; }
+    Mod+N repeat=false { spawn "quickshell" "ipc" "call" "notificationcenter" "toggle"; }
 
     Mod+left { focus-column-left; }
     Mod+right { focus-column-right; }
@@ -44,4 +46,6 @@ binds {
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
 
     Mod+Tab repeat=false { toggle-overview; }
+
+    Mod+Shift+E { quit; }
 }

@@ -14,9 +14,9 @@ QtObject {
         Quickshell.execDetached(["niri", "msg", "action", "toggle-overview"])
     }
 
-    // Long-running: niri streams one JSON event per line, so state stays
-    // in sync without ever polling on a Timer.
-    property Process eventStream: Process {
+    // Long-running: niri streams one JSON event per line — event-driven,
+    // no Timer poll.
+    readonly property Process eventStream: Process {
         command: ["niri", "msg", "--json", "event-stream"]
         running: true
         stdout: SplitParser {
@@ -24,7 +24,7 @@ QtObject {
         }
     }
 
-    property Process windowQuery: Process {
+    readonly property Process windowQuery: Process {
         command: ["niri", "msg", "--json", "focused-window"]
         stdout: StdioCollector {
             onStreamFinished: root._setActiveWindow(text)
@@ -42,7 +42,9 @@ QtObject {
 
         if (event.WindowFocusChanged || event.WindowOpenedOrChanged || event.WindowClosed) {
             root.windowQuery.running = true
-        } else if (event.OverviewOpenedOrClosed) {
+        }
+
+        if (event.OverviewOpenedOrClosed) {
             root.overviewOpen = event.OverviewOpenedOrClosed.is_open
         }
     }

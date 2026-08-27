@@ -33,7 +33,8 @@ HoverIcon {
     CalendarPopup {
         id: popup
         anchorItem: root
-        visible: root.infoOpen
+        panelOpen: root.infoOpen
         referenceDate: root.now
+        onDismissed: root.infoOpen = false
     }
 }

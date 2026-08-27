@@ -2,6 +2,28 @@
 
 let
   spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+
+  # Plain `pkgs.quickshell`'s own wrapQtAppsHook only scans its declared
+  # buildInputs for QML plugin dirs, and Qt5Compat.GraphicalEffects
+  # (needed for true OpacityMask-based rounded clipping in the Control
+  # Center's Media card — MultiEffect's own maskEnabled/maskSource
+  # produces zero output on this system, confirmed via a standalone test
+  # instance) isn't one of them, so `import Qt5Compat.GraphicalEffects`
+  # fails with "module ... is not installed". Rebuilding quickshell from
+  # source just to add one dependency is unnecessary — this re-wraps the
+  # already-built binary with qt5compat's QML dir appended to the same
+  # env vars its own wrapper already sets, verified working against the
+  # real quickshell binary before landing this.
+  quickshellWithQt5Compat = pkgs.symlinkJoin {
+    name = "quickshell-with-qt5compat";
+    paths = [ pkgs.quickshell ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/quickshell \
+        --suffix QML2_IMPORT_PATH : "${pkgs.qt6.qt5compat}/lib/qt-6/qml" \
+        --suffix NIXPKGS_QT6_QML_IMPORT_PATH : "${pkgs.qt6.qt5compat}/lib/qt-6/qml"
+    '';
+  };
 in
 {
   home.stateVersion = "26.05";
@@ -24,7 +46,7 @@ in
     niri
     awww
     swaybg
-    quickshell
+    quickshellWithQt5Compat
     rofi
     rofi-emoji
     libnotify

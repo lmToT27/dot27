@@ -7,6 +7,9 @@ QtObject {
 
     readonly property int barHeight: 35
 
+    readonly property int controlCenterWidth: 380
+    readonly property int controlCenterCornerRadius: 24
+
     readonly property int radiusOuter: 16
     readonly property int radiusInner: 10
 
@@ -14,8 +17,8 @@ QtObject {
     readonly property int paddingV: 4
     readonly property int moduleGap: 8
 
-    readonly property color surface: Qt.rgba(0, 0, 0, 0.85)
-    readonly property color tooltipBg: Qt.rgba(0, 0, 0, 0.88)
+    readonly property color surface: Qt.rgba(0, 0, 0, 1)
+    readonly property color tooltipBg: Qt.rgba(0, 0, 0, 1)
 
     readonly property color warning: "#e0af68"
     readonly property color critical: "#f7768e"

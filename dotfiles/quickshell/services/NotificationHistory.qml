@@ -9,18 +9,25 @@ QtObject {
     property bool dnd: false
     readonly property int unreadCount: history.filter(n => !n.read).length
 
-    property NotificationServer server: NotificationServer {
+    // Fired for every incoming notification regardless of dnd — whether a
+    // toast actually renders is NotificationToastWindow's own call.
+    signal notified(var entry)
+
+    readonly property NotificationServer server: NotificationServer {
         keepOnReload: false
 
         onNotification: notification => {
             notification.tracked = true
-            root.history = [{
+            const entry = {
                 id: notification.id,
                 appName: notification.appName,
                 summary: notification.summary,
                 body: notification.body,
-                read: false
-            }].concat(root.history).slice(0, 50)
+                // DND still logs it, just doesn't count as unread.
+                read: root.dnd
+            }
+            root.history = [entry].concat(root.history).slice(0, 50)
+            root.notified(entry)
         }
     }
 
@@ -34,5 +41,9 @@ QtObject {
 
     function clear() {
         root.history = []
+    }
+
+    function dismiss(id) {
+        root.history = root.history.filter(n => n.id !== id)
     }
 }

@@ -12,7 +12,7 @@ else
     [[ ! -f "$INPUT" ]] && exit 1
     
     ACCENT_COLOR=$(
-        magick "$INPUT" -resize 200x200 -kmeans 10 -format "%c" histogram:info: | \
+        magick -define jpeg:size=200x200 "$INPUT" -resize 100x100 -define kmeans:cluster-threshold=1% -kmeans 10 -format "%c" histogram:info: | \
         python3 -c "
 import sys, colorsys, re
 total = 0; colors = []

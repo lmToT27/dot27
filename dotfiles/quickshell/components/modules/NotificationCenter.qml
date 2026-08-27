@@ -1,80 +1,149 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
 import "../common"
 import "../../config"
 import "../../services"
 
-HoverIcon {
+// Notification Center's content: header (title + DND + Clear All) and a
+// scrolling list of notification cards, with a centered empty state. Pure
+// content Item, embedded by NotificationCenterWindow.qml which owns the
+// actual surface, slide animation, and corner shaping.
+//
+// Backed by the NotificationHistory singleton, which doesn't capture a
+// per-app icon today, so cards fall back to a generic bell glyph.
+Item {
     id: root
+    implicitHeight: 420
 
-    text: NotificationHistory.dnd ? "󰂛"
-        : NotificationHistory.unreadCount > 0 ? "󱅫" : "󰂚"
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 14
 
-    onClicked: {
-        panel.visible = !panel.visible
-        if (panel.visible) NotificationHistory.markAllRead()
-    }
-    onRightClicked: NotificationHistory.toggleDnd()
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 8
 
-    // Real separate popup surface — see StyledTooltip.qml for why (the
-    // bar's own PanelWindow surface is clipped to barHeight, so a plain
-    // child Item can't render below it). Anchored to the bottom-right
-    // corner of the icon, expanding down-left to stay right-aligned.
-    PopupWindow {
-        id: panel
-        anchor.item: root
-        anchor.edges: Edges.Bottom | Edges.Right
-        anchor.gravity: Edges.Bottom | Edges.Left
-        anchor.margins.top: 8
-        visible: false
-        implicitWidth: 300
-        implicitHeight: Math.min(360, list.contentHeight + 24)
-        color: "transparent"
+            Text {
+                text: NotificationHistory.history.length > 0
+                    ? "Notifications • " + NotificationHistory.history.length
+                    : "Notifications"
+                font.family: Appearance.fontFamily
+                font.bold: true
+                font.pixelSize: 18
+                font.capitalization: Font.AllUppercase
+                font.letterSpacing: 1.5
+                color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.8)
+            }
 
-        Rectangle {
-            anchors.fill: parent
-            radius: Appearance.radiusOuter
-            color: Appearance.tooltipBg
+            Item { Layout.fillWidth: true }
+
+            // DND toggle — reads/writes NotificationHistory.dnd directly so
+            // this stays in sync with the topbar bell's right-click toggle
+            // instead of tracking a second, divergent flag.
+            Rectangle {
+                id: dndButton
+                readonly property bool isDnd: NotificationHistory.dnd
+
+                Layout.preferredWidth: 32
+                Layout.preferredHeight: 32
+                radius: Appearance.radiusInner
+                color: isDnd ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.18) : Qt.rgba(1, 1, 1, 0.06)
+                scale: dndMouseArea.pressed ? 0.95 : 1
+                Behavior on color { ColorAnimation { duration: Appearance.animFast } }
+                Behavior on scale { NumberAnimation { duration: Appearance.animFast } }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: dndButton.isDnd ? "󰂛" : "󰂚"
+                    font.family: Appearance.fontFamily
+                    font.pixelSize: 15
+                    color: dndButton.isDnd ? Theme.accent : Qt.rgba(1, 1, 1, 0.5)
+                    Behavior on color { ColorAnimation { duration: Appearance.animFast } }
+                }
+
+                MouseArea {
+                    id: dndMouseArea
+                    anchors.fill: parent
+                    onClicked: NotificationHistory.toggleDnd()
+                }
+            }
+
+            // Clear All — pill button, same press-scale feedback as the
+            // DND button above.
+            Rectangle {
+                id: clearAllButton
+                radius: height / 2
+                implicitWidth: clearAllLabel.implicitWidth + 20
+                implicitHeight: 32
+                color: Qt.rgba(1, 1, 1, 0.08)
+                scale: clearMouseArea.pressed ? 0.95 : 1
+                Behavior on scale { NumberAnimation { duration: Appearance.animFast } }
+
+                Text {
+                    id: clearAllLabel
+                    anchors.centerIn: parent
+                    text: "Clear All"
+                    font.family: Appearance.fontFamily
+                    font.bold: true
+                    font.pixelSize: 12
+                    color: "white"
+                }
+
+                MouseArea {
+                    id: clearMouseArea
+                    anchors.fill: parent
+                    onClicked: NotificationHistory.clear()
+                }
+            }
+        }
+
+        // Fills the remaining space below the header with either the list
+        // or the centered empty state, never both.
+        Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            ColumnLayout {
+                anchors.centerIn: parent
+                visible: NotificationHistory.history.length === 0
+                opacity: 0.3
+                spacing: 8
+
+                Text {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: "󰒲"
+                    font.family: Appearance.fontFamily
+                    font.pixelSize: 64
+                    color: "white"
+                }
+
+                Text {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: "No notifications"
+                    font.family: Appearance.fontFamily
+                    font.pixelSize: 12
+                    color: "white"
+                }
+            }
 
             ListView {
                 id: list
                 anchors.fill: parent
-                anchors.margins: 12
-                spacing: 8
+                visible: NotificationHistory.history.length > 0
                 clip: true
+                spacing: 12
                 model: NotificationHistory.history
 
-                delegate: ColumnLayout {
-                    id: entry
-                    required property var modelData
+                // history is a plain JS array, not a ListModel — delegates
+                // read fields via `modelData`, not per-key `model.<role>`.
+                delegate: NotificationCard {
                     width: list.width
-                    spacing: 2
-
-                    Text {
-                        Layout.fillWidth: true
-                        text: entry.modelData.appName + " — " + entry.modelData.summary
-                        color: Theme.accent
-                        font.bold: true
-                        font.family: Appearance.fontFamily
-                        wrapMode: Text.Wrap
-                    }
-                    Text {
-                        Layout.fillWidth: true
-                        visible: entry.modelData.body.length > 0
-                        text: entry.modelData.body
-                        color: "#ecc6d9"
-                        wrapMode: Text.Wrap
-                    }
+                    icon: "󰂚"
+                    appName: modelData.appName
+                    summary: modelData.summary
+                    body: modelData.body
+                    onClosed: NotificationHistory.dismiss(modelData.id)
                 }
-            }
-
-            Text {
-                anchors.centerIn: parent
-                visible: list.count === 0
-                text: "Không có thông báo"
-                color: Theme.accent
-                font.family: Appearance.fontFamily
             }
         }
     }

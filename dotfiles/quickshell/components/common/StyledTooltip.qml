@@ -3,16 +3,36 @@ import Quickshell
 import "../../config"
 import "../../services"
 
-// A real separate popup surface (not a child Item) — the bar's own
-// PanelWindow surface is exactly barHeight tall, so anything drawn past
-// that edge as a plain child Item gets clipped by the Wayland surface
-// itself, no matter how it's positioned. PopupWindow gets its own
-// correctly-sized surface anchored below the triggering item instead.
+// A real separate popup surface — the bar's PanelWindow is clipped to
+// barHeight, so a plain child Item can't render past that edge.
 PopupWindow {
     id: root
 
     property string text: ""
     property Item anchorItem: null
+    property bool panelOpen: false
+
+    // Auto-dismisses on outside click. Deliberately does NOT write
+    // root.panelOpen here: HoverIcon binds it declaratively, and an
+    // imperative write would permanently destroy that binding.
+    signal dismissed()
+    grabFocus: true
+    onClosed: root.dismissed()
+
+    // Keeps the surface alive through the fade-out instead of cutting it short.
+    onPanelOpenChanged: {
+        if (panelOpen) {
+            root.visible = true
+        } else {
+            closeTimer.restart()
+        }
+    }
+
+    Timer {
+        id: closeTimer
+        interval: Appearance.animFast
+        onTriggered: root.visible = false
+    }
 
     anchor.item: anchorItem
     anchor.edges: Edges.Bottom
@@ -21,12 +41,18 @@ PopupWindow {
 
     implicitWidth: label.implicitWidth + Appearance.paddingH * 2
     implicitHeight: label.implicitHeight + Appearance.paddingV * 2
+    visible: false
     color: "transparent"
 
     Rectangle {
         anchors.fill: parent
         radius: Appearance.radiusInner
         color: Appearance.tooltipBg
+        opacity: root.panelOpen ? 1 : 0
+
+        Behavior on opacity {
+            NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutCubic }
+        }
 
         Text {
             id: label

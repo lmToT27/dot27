@@ -3,7 +3,15 @@ import Quickshell
 import "./modules"
 import "./common"
 import "../config"
+import "../services"
 
+// Purely visual — ExclusionZone.qml is the surface niri actually reserves
+// tiling space against, so this one stays non-exclusive.
+//
+// A wlr-layer-shell surface accepts pointer input across its whole
+// surface regardless of paint transparency, so `implicitHeight` is pinned
+// to `content`'s measured height and `mask` restricts input to the three
+// pills — gaps between them pass clicks through to the window below.
 PanelWindow {
     id: bar
 
@@ -13,15 +21,27 @@ PanelWindow {
         right: true
     }
 
-    implicitHeight: Appearance.barHeight
+    implicitHeight: content.implicitHeight
     color: "transparent"
     exclusionMode: ExclusionMode.Ignore
 
+    mask: Region {
+        Region { item: leftPill }
+        Region { item: middlePill }
+        Region { item: rightPill }
+    }
+
     Item {
         id: content
-        anchors.fill: parent
+
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        implicitHeight: childrenRect.height
+
         opacity: 0
-        y: -parent.height
+
+        y: -height
 
         ParallelAnimation {
             running: true
@@ -30,35 +50,39 @@ PanelWindow {
         }
 
         BarPill {
+            id: leftPill
             anchors.left: parent.left
             anchors.top: parent.top
-            cornerBottomRight: Appearance.radiusOuter
             spacing: 0
+            alignContentLeft: true
+            flushLeft: true
 
             OverviewButton {}
             ActiveWindow {}
         }
 
         BarPill {
+            id: middlePill
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            cornerBottomLeft: Appearance.radiusOuter
-            cornerBottomRight: Appearance.radiusOuter
 
             Clock {}
             CavaVisualizer {}
             MediaWidget {}
+            ScreenRecordIndicator {}
         }
 
         BarPill {
+            id: rightPill
             anchors.right: parent.right
             anchors.top: parent.top
-            cornerBottomLeft: Appearance.radiusOuter
-
+            flushRight: true
+            UptimeIndicator {}
             NetworkIndicator {}
             BluetoothIndicator {}
+            PowerProfileIndicator {}
             BatteryIndicator {}
-            NotificationCenter {}
+            NotificationIndicator {}
         }
     }
 }

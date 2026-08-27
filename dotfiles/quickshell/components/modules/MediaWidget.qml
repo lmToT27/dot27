@@ -1,54 +1,112 @@
-import Quickshell
-import Quickshell.Io
+import QtQuick
 import "../common"
+import "../../config"
+import "../../services"
 
-HoverIcon {
+Item {
     id: root
 
-    property string status: "Stopped"
-    property string mediaTitle: ""
-    property string mediaArtist: ""
+    readonly property string label: Mpris.title + (Mpris.artist ? " — " + Mpris.artist : "")
+    readonly property string displayText: Mpris.hasMedia ? label : "No Media"
+    readonly property string icon: Mpris.hasMedia
+        ? (Mpris.status === "Playing" ? "\u{F001}" : "\u{F04C}")
+        : "\u{F04D}"
+    readonly property int maxTextWidth: 140
 
-    readonly property bool hasMedia: status === "Playing" || status === "Paused"
-    readonly property string label: mediaTitle + (mediaArtist ? " — " + mediaArtist : "")
+    readonly property bool hovered: mouseArea.containsMouse
+    readonly property color contentColor: hovered ? "black" : Theme.accent
+    property bool infoOpen: false
 
-    text: hasMedia
-        ? ((status === "Playing" ? "  " : " ") + (label.length > 20 ? label.slice(0, 20) + "…" : label))
-        : " No Media"
-    tooltip: hasMedia
-    tooltipText: label
-    onClicked: Quickshell.execDetached(["playerctl", "play-pause"])
+    implicitWidth: Math.round(row.implicitWidth + Appearance.paddingH)
+    implicitHeight: Math.round(Math.max(row.implicitHeight, 20))
 
-    function applyLine(line) {
-        const parts = line.split("\t")
-        if (parts.length < 3 || parts[0].length === 0) {
-            root.status = "Stopped"
-            root.mediaTitle = ""
-            root.mediaArtist = ""
-        } else {
-            root.status = parts[0]
-            root.mediaTitle = parts[1]
-            root.mediaArtist = parts[2]
+    Rectangle {
+        anchors.fill: parent
+        radius: Appearance.radiusInner + 2
+        color: root.hovered ? Theme.accent : "transparent"
+        Behavior on color { ColorAnimation { duration: Appearance.animMedium } }
+    }
+
+    Row {
+        id: row
+        x: Math.round((parent.width - width) / 2)
+        y: Math.round((parent.height - height) / 2)
+        spacing: 6
+
+        Text {
+            anchors.verticalCenter: parent.verticalCenter
+            text: root.icon
+            font.family: Appearance.fontFamily
+            font.pixelSize: Appearance.fontSize
+            font.bold: true
+            color: root.contentColor
+            Behavior on color { ColorAnimation { duration: Appearance.animMedium } }
+        }
+
+        Item {
+            id: viewport
+            anchors.verticalCenter: parent.verticalCenter
+            width: Math.min(root.maxTextWidth, title1.implicitWidth)
+            height: title1.implicitHeight
+            clip: true
+
+            readonly property bool needsScroll: title1.implicitWidth > root.maxTextWidth
+            readonly property bool scrolling: needsScroll && Mpris.status === "Playing"
+            readonly property real scrollDistance: title1.implicitWidth + scrollRow.spacing
+
+            Row {
+                id: scrollRow
+                spacing: 40
+
+                Text {
+                    id: title1
+                    text: root.displayText
+                    font.family: Appearance.fontFamily
+                    font.pixelSize: Appearance.fontSize
+                    font.bold: true
+                    color: root.contentColor
+                    Behavior on color { ColorAnimation { duration: Appearance.animMedium } }
+                    onTextChanged: scrollRow.x = 0
+                }
+
+                Text {
+                    visible: viewport.needsScroll
+                    text: title1.text
+                    font: title1.font
+                    color: title1.color
+                }
+
+                NumberAnimation {
+                    id: marquee
+                    target: scrollRow
+                    property: "x"
+                    from: 0
+                    to: -viewport.scrollDistance
+                    duration: viewport.scrollDistance * 30
+                    loops: Animation.Infinite
+                    running: viewport.scrolling
+                    onRunningChanged: if (!running) scrollRow.x = 0
+                }
+            }
         }
     }
 
-    // One-shot initial read: playerctl --follow only emits a line once the
-    // state actually *changes*, not the current state at startup.
-    Process {
-        command: ["playerctl", "--format", "{{status}}\t{{title}}\t{{artist}}", "metadata"]
-        running: true
-        stdout: StdioCollector {
-            onStreamFinished: root.applyLine(text.trim())
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        anchors.margins: -4
+        hoverEnabled: true
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        onClicked: mouse => {
+            if (mouse.button === Qt.RightButton) root.infoOpen = !root.infoOpen
+            else Mpris.playPause()
         }
     }
 
-    // Event-driven: blocks and only prints when playback status or metadata
-    // actually changes, so no Timer polling is needed.
-    Process {
-        command: ["playerctl", "--follow", "--format", "{{status}}\t{{title}}\t{{artist}}", "metadata"]
-        running: true
-        stdout: SplitParser {
-            onRead: line => root.applyLine(line)
-        }
+    StyledTooltip {
+        anchorItem: root
+        panelOpen: Mpris.hasMedia && root.infoOpen
+        text: root.label
+        onDismissed: root.infoOpen = false
     }
 }

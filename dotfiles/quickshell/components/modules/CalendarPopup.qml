@@ -11,9 +11,35 @@ PopupWindow {
     id: root
 
     property Item anchorItem: null
+    property bool panelOpen: false
     property date referenceDate: new Date()
     property int viewYear: referenceDate.getFullYear()
     property int viewMonth: referenceDate.getMonth()
+
+    // Auto-dismisses (fires closed()) when the user clicks anywhere outside
+    // the popup, instead of staying open until Clock.qml toggles it again.
+    // Deliberately does NOT write root.panelOpen here: Clock.qml binds it
+    // declaratively (`panelOpen: root.infoOpen`), so an imperative write
+    // would permanently destroy that binding after the first dismiss.
+    signal dismissed()
+    grabFocus: true
+    onClosed: root.dismissed()
+
+    // Simple fade in/out — keeps the surface alive through the fade-out
+    // instead of cutting it short (same reasoning as ControlCenterWindow.qml).
+    onPanelOpenChanged: {
+        if (panelOpen) {
+            root.visible = true
+        } else {
+            closeTimer.restart()
+        }
+    }
+
+    Timer {
+        id: closeTimer
+        interval: Appearance.animFast
+        onTriggered: root.visible = false
+    }
 
     readonly property var weekdays: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
     readonly property date firstOfMonth: new Date(viewYear, viewMonth, 1)
@@ -26,12 +52,6 @@ PopupWindow {
     readonly property color weekdayColor: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.6)
     readonly property color dayColor: Qt.rgba(1, 1, 1, 0.82)
 
-    // Perceived luminance of the accent — picks a readable mark for whatever
-    // accent color the active theme sets (light pastel vs. dark saturated).
-    function contrastOn(c) {
-        return (0.299 * c.r + 0.587 * c.g + 0.114 * c.b) > 0.6 ? "#1a1a1a" : "#ffffff"
-    }
-
     function shiftMonth(delta) {
         const d = new Date(viewYear, viewMonth + delta, 1)
         viewYear = d.getFullYear()
@@ -41,10 +61,11 @@ PopupWindow {
     anchor.item: anchorItem
     anchor.edges: Edges.Bottom
     anchor.gravity: Edges.Bottom
-    anchor.margins.top: 8
+    anchor.margins.top: 32
 
     implicitWidth: cellSize * 7 + gridSpacing * 6 + cardMargin * 2
     implicitHeight: content.implicitHeight + cardMargin * 2
+    visible: false
     color: "transparent"
 
     Rectangle {
@@ -52,6 +73,11 @@ PopupWindow {
         anchors.fill: parent
         radius: Appearance.radiusOuter
         color: Appearance.tooltipBg
+        opacity: root.panelOpen ? 1 : 0
+
+        Behavior on opacity {
+            NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutCubic }
+        }
 
         MouseArea {
             anchors.fill: parent
@@ -113,14 +139,16 @@ PopupWindow {
                         Layout.preferredWidth: root.cellSize
                         Layout.preferredHeight: root.cellSize
                         radius: width / 2
-                        color: isToday ? Theme.accent : "transparent"
+                        // Today gets a soft accent glow instead of a solid
+                        // filled circle — the number itself lights up.
+                        color: isToday ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.18) : "transparent"
 
                         Text {
                             anchors.fill: parent
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             text: cell.day
-                            color: cell.isToday ? root.contrastOn(Theme.accent) : root.dayColor
+                            color: cell.isToday ? Theme.accent : root.dayColor
                             font.bold: true
                             font.pixelSize: 13
                         }

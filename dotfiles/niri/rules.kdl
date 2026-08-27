@@ -46,3 +46,27 @@ window-rule {
     match title="^Save File$"
     open-floating true
 }
+
+// Control Center's Wi-Fi/Bluetooth long-press launchers (see
+// ConnectionCard's onLongPressed in ControlCenter.qml) — floated instead
+// of living in a tiled column so they read as transient utility windows.
+window-rule {
+    // `--class wifi-float` on the spawned kitty is what makes this rule
+    // specific to that one instance instead of floating every terminal.
+    match app-id=r#"^wifi-float$"#
+    open-floating true
+    default-column-width { fixed 700; }
+    default-window-height { fixed 500; }
+}
+
+window-rule {
+    // Not "blueman-manager" and not "org.blueman.manager" either — this
+    // is a NixOS-wrapped binary, and the wrapper script's own basename
+    // (".blueman-manager-wrapped") is what actually gets reported as the
+    // Wayland app-id, not the GApplication id blueman sets internally.
+    // Confirmed via `niri msg -j windows` while the window was open.
+    match app-id=r#"^\.blueman-manager-wrapped$"#
+    open-floating true
+    default-column-width { fixed 480; }
+    default-window-height { fixed 420; }
+}

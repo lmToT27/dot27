@@ -6,7 +6,7 @@ HoverIcon {
 
     invertOnHover: false
     text: " " + (fullTitle.length > 0
-        ? (fullTitle.length > 20 ? fullTitle.slice(0, 20) + "…" : fullTitle)
+        ? (fullTitle.length > 18 ? fullTitle.slice(0, 18) + "…" : fullTitle)
         : "Desktop")
     tooltip: fullTitle.length > 0
     tooltipText: fullTitle
