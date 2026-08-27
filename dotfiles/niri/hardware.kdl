@@ -1,7 +1,7 @@
 // ~/dot27/dotfiles/niri/hardware.kdl
 
 output "eDP-1" {
-    scale 1.75
+    scale 1.8 // adjust the scale if the UI does not work right 
 }
 
 input {
