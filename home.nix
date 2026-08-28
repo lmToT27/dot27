@@ -3,17 +3,6 @@
 let
   spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 
-  # Plain `pkgs.quickshell`'s own wrapQtAppsHook only scans its declared
-  # buildInputs for QML plugin dirs, and Qt5Compat.GraphicalEffects
-  # (needed for true OpacityMask-based rounded clipping in the Control
-  # Center's Media card — MultiEffect's own maskEnabled/maskSource
-  # produces zero output on this system, confirmed via a standalone test
-  # instance) isn't one of them, so `import Qt5Compat.GraphicalEffects`
-  # fails with "module ... is not installed". Rebuilding quickshell from
-  # source just to add one dependency is unnecessary — this re-wraps the
-  # already-built binary with qt5compat's QML dir appended to the same
-  # env vars its own wrapper already sets, verified working against the
-  # real quickshell binary before landing this.
   quickshellWithQt5Compat = pkgs.symlinkJoin {
     name = "quickshell-with-qt5compat";
     paths = [ pkgs.quickshell ];
@@ -55,14 +44,17 @@ in
     cliphist
     grim
     slurp
-    wf-recorder
+    hyprpicker
+    wl-screenrec
     nwg-look
     xdg-utils
     playerctl
     wayland-pipewire-idle-inhibit
+    mpv
+    xfconf
 
     # --- CLI & System Tools ---
-    claude-code
+    claude-code chafa
     thunar thunar-archive-plugin imagemagick
     kitty gh lazygit psmisc fd ripgrep yazi papirus-icon-theme
     wget fastfetch jq p7zip unrar unzip zip brightnessctl btop pavucontrol
@@ -104,7 +96,7 @@ in
     enable = true;
     name = "Bibata-Modern-Ice";
     package = pkgs.bibata-cursors;
-    size = 24;
+    size = 18;
     gtk.enable = true;
     x11.enable = true;
   };
@@ -239,4 +231,28 @@ in
   };
 
   programs.home-manager.enable = true;
+
+  xdg.desktopEntries.nvim = {
+    name = "Neovim";
+    genericName = "Text Editor";
+    exec = "kitty --title neovim nvim %F";
+    terminal = false;
+    icon = "nvim";
+    categories = [ "Utility" "TextEditor" ];
+    mimeType = [ "text/plain" ];
+  };
+
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "video/mp4" = "mpv.desktop";
+      "video/x-matroska" = "mpv.desktop";
+      "video/webm" = "mpv.desktop";
+      "video/x-msvideo" = "mpv.desktop";
+      "video/quicktime" = "mpv.desktop";
+      "video/mpeg" = "mpv.desktop";
+      "video/ogg" = "mpv.desktop";
+      "text/plain" = "nvim.desktop";
+    };
+  };
 }

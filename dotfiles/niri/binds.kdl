@@ -1,16 +1,16 @@
 binds {
     Mod+T { spawn "kitty"; }
     Mod+W { spawn "brave"; }
-    Mod+E { spawn "thunar"; }
+    Mod+E { spawn "sh" "-c" "GTK_CSD=0 thunar"; }
     Mod+S { spawn "spotify"; }
 
-    Mod+Return { spawn "rofi" "-show" "drun"; }
+    Mod+Return repeat=false { spawn "quickshell" "ipc" "call" "applauncher" "toggle"; }
     Mod+V { spawn "sh" "-c" "cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy"; }
     Mod+Shift+V { spawn "sh" "-c" "cliphist wipe && notify-send 'Clipboard' 'Deleted all clipboard history!'"; }
     Mod+Period { spawn "rofi" "-show" "emoji"; }
 
-    Mod+Shift+S { spawn "sh" "-c" "area=$(slurp) && grim -g \"$area\" - | wl-copy && notify-send 'Clipboard' 'Saved screenshot in clipboard!'"; }
-    Mod+Shift+R { spawn "quickshell" "ipc" "call" "recorder" "toggle"; }
+    Mod+Shift+S { screenshot; }
+    Mod+Shift+R { spawn "quickshell" "ipc" "call" "screenrecorder" "toggle"; }
 
     Mod+Shift+F { fullscreen-window; }
     Mod+F { toggle-window-floating; }
@@ -31,9 +31,9 @@ binds {
     Mod+Minus { set-column-width "-10%"; }
     Mod+Equal { set-column-width "+10%"; }
 
-    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
-    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "~/.local/bin/osd-control.sh" "vol" "up"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "~/.local/bin/osd-control.sh" "vol" "down"; }
+    XF86AudioMute        allow-when-locked=true { spawn "~/.local/bin/osd-control.sh" "vol" "mute"; }
     XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
 
     XF86AudioPause allow-when-locked=true { spawn "playerctl" "play-pause"; }
@@ -42,8 +42,8 @@ binds {
     XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
     XF86AudioPrev allow-when-locked=true { spawn "playerctl" "previous"; }
 
-    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn "~/.local/bin/osd-control.sh" "bri" "up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "~/.local/bin/osd-control.sh" "bri" "down"; }
 
     Mod+Tab repeat=false { toggle-overview; }
 

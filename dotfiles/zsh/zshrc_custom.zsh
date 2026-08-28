@@ -61,10 +61,12 @@ alias tree="eza --icons --tree"
 alias cat="bat"
 
 export PATH="$HOME/.local/bin:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/go/bin:$HOME/.cargo/bin:$PATH"
+export FZF_DEFAULT_OPTS="--preview 'if [ -d \"{}\" ]; then eza --tree --level=4 --icons=always --color=always \"{}\" 2>/dev/null; else case \"{}\" in *.[jJ][pP][gG]|*.[jJ][pP][eE][gG]|*.[pP][nN][gG]|*.[gG][iI][fF]|*.[wW][eE][bB][pP]) chafa -f symbols -s 40x30 \"{}\" 2>/dev/null ;; *) bat --style=numbers --color=always --line-range :300 \"{}\" 2>/dev/null ;; esac; fi'"
+export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS"
 
 zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
-zstyle ':fzf-tab:complete:*' fzf-preview 'if [ -d "$realpath" ]; then eza --tree --level=4 --icons=always --color=always "$realpath" 2>/dev/null; else bat --style=numbers --color=always --line-range :300 "$realpath" 2>/dev/null; fi'
+zstyle ':fzf-tab:complete:*' fzf-preview 'if [ -d "$realpath" ]; then eza --tree --level=4 --icons=always --color=always "$realpath" 2>/dev/null; else case "$realpath" in *.[jJ][pP][gG]|*.[jJ][pP][eE][gG]|*.[pP][nN][gG]|*.[gG][iI][fF]|*.[wW][eE][bB][pP]) chafa -f symbols -s 40x30 "$realpath" 2>/dev/null ;; *) bat --style=numbers --color=always --line-range :300 "$realpath" 2>/dev/null ;; esac; fi'
 zstyle ':fzf-tab:*' fzf-flags --height=51% --layout=reverse --border
 
 bindkey '^F' fzf-file-widget

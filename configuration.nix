@@ -151,6 +151,7 @@
   services.displayManager.sddm.enable = true;
   
   # Enable Niri System-wide for Wayland Session
+  programs.xfconf.enable = true;
   programs.niri.enable = true;
   security.polkit.enable = true;
   services.gvfs.enable = true;
