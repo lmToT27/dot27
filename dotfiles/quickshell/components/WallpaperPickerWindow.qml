@@ -131,6 +131,8 @@ PanelWindow {
                     source: thumb.fileUrl
                     fillMode: Image.PreserveAspectCrop
                     asynchronous: true
+                    sourceSize.width: root.thumbWidth
+                    sourceSize.height: root.thumbHeight
                 }
 
                 MouseArea {

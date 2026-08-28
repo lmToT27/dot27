@@ -5,9 +5,9 @@ binds {
     Mod+S { spawn "spotify"; }
 
     Mod+Return repeat=false { spawn "quickshell" "ipc" "call" "applauncher" "toggle"; }
-    Mod+V { spawn "sh" "-c" "cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy"; }
+    Mod+V { spawn "~/.local/bin/cliphist-rofi.sh"; }
     Mod+Shift+V { spawn "sh" "-c" "cliphist wipe && notify-send 'Clipboard' 'Deleted all clipboard history!'"; }
-    Mod+Period { spawn "rofi" "-show" "emoji"; }
+    Mod+Period { spawn "rofimoji" "--action" "copy" "--max-recent" "0" "--prompt" " 󰍉 " "--selector-args" "-theme ~/.config/rofi/theme.rasi"; }
 
     Mod+Shift+S { screenshot; }
     Mod+Shift+R { spawn "quickshell" "ipc" "call" "screenrecorder" "toggle"; }

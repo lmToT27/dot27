@@ -55,14 +55,8 @@ overview {
     }
 }
 
-// Alt-Tab (niri's native recent-windows switcher). Defaults are gray with
-// square corners, which clashes with the quickshell bar's accent/rounding —
-// this matches it to that look (see dotfiles/quickshell/config/Appearance.qml
-// and services/Theme.qml's fallbackAccent).
 recent-windows {
     highlight {
-        active-color "#7aa2f7ff"
-        urgent-color "#f7768eff"
         corner-radius 16
     }
 }

@@ -1,0 +1,89 @@
+// Mirrors the Quickshell floating-pill look (see AppLauncherWindow.qml).
+// Only @accent is pulled from colors.rasi (written by changetheme.sh) —
+// its accent-soft/accent-highlight fields have gone stale before, so
+// selected/highlight styling below is derived from @accent and this
+// file's own bg-hover instead.
+@import "~/.cache/theme/colors.rasi"
+
+* {
+    bg-base:        #000000;
+    bg-hover:       #1a1a1a;
+    border-color:   #333333;
+    fg:             #ffffff;
+
+    background-color: transparent;
+    text-color:       @fg;
+    font:             "JetBrainsMono Nerd Font 11";
+}
+
+window {
+    width:            520px;
+    border-radius:    20px;
+    border:           0px;
+    background-color: @bg-base;
+    padding:          16px;
+    location:         center;
+    anchor:           center;
+}
+
+mainbox {
+    spacing: 12px;
+}
+
+inputbar {
+    background-color: @bg-hover;
+    border-radius:    12px;
+    padding:          10px 14px;
+    spacing:          12px;
+    children:         [ prompt, entry ];
+}
+
+prompt {
+    text-color:     @accent;
+    font:           "JetBrainsMono Nerd Font Bold 12";
+    vertical-align: 0.5;
+}
+
+entry {
+    placeholder:       "Search...";
+    placeholder-color: #ffffff4d;
+    cursor:            text;
+    vertical-align:    0.5;
+}
+
+listview {
+    lines:         6;
+    spacing:       8px;
+    scrollbar:     false;
+    border:        0px;
+    require-input: false;
+}
+
+element {
+    padding:       8px 12px;
+    border-radius: 12px;
+    spacing:       16px;
+    cursor:        pointer;
+}
+
+element normal.normal, element alternate.normal {
+    background-color: transparent;
+}
+
+element selected.normal {
+    background-color: @bg-hover;
+    text-color:       @accent;
+}
+
+element-text {
+    background-color: transparent;
+    text-color:       inherit;
+    vertical-align:   0.5;
+    highlight:        @accent;
+}
+
+element-icon {
+    background-color: transparent;
+    size:             48px;
+    vertical-align:   0.5;
+}

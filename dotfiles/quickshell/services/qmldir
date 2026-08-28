@@ -7,6 +7,7 @@ singleton WallpaperPickerState 1.0 WallpaperPickerState.qml
 singleton ThemePickerState 1.0 ThemePickerState.qml
 singleton ScreenRecorderState 1.0 ScreenRecorderState.qml
 singleton OsdState 1.0 OsdState.qml
+singleton DropzoneState 1.0 DropzoneState.qml
 singleton NotificationHistory 1.0 NotificationHistory.qml
 singleton ScreenRecorder 1.0 ScreenRecorder.qml
 singleton NetworkService 1.0 NetworkService.qml

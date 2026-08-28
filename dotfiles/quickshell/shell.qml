@@ -158,4 +158,13 @@ ShellRoot {
             screen: modelData
         }
     }
+
+    Variants {
+        model: Quickshell.screens
+
+        DropzoneWindow {
+            required property var modelData
+            screen: modelData
+        }
+    }
 }
