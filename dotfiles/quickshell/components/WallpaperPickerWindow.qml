@@ -42,7 +42,10 @@ PanelWindow {
 
     function executeCurrentWallpaper() {
         if (!pathView.currentItem) return
-        Quickshell.execDetached(["changewallpaper.sh", pathView.currentItem.filePath])
+        // Bare "changewallpaper.sh" would rely on quickshell's own PATH,
+        // which (inherited from the niri session) doesn't include
+        // ~/.local/bin — spell it out so this doesn't silently no-op.
+        Quickshell.execDetached([Quickshell.env("HOME") + "/.local/bin/changewallpaper.sh", pathView.currentItem.filePath])
         WallpaperPickerState.hide()
     }
 

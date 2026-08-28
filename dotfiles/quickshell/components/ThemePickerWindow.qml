@@ -44,7 +44,9 @@ PanelWindow {
 
     function applyTheme(hexCode) {
         if (!root.isValidHex(hexCode)) return
-        Quickshell.execDetached(["changetheme.sh", hexCode])
+        // Same PATH gap as WallpaperPickerWindow.executeCurrentWallpaper —
+        // quickshell's PATH doesn't include ~/.local/bin.
+        Quickshell.execDetached([Quickshell.env("HOME") + "/.local/bin/changetheme.sh", hexCode])
         ThemePickerState.hide()
     }
 
