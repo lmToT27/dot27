@@ -44,6 +44,7 @@ in
     grim
     slurp
     hyprpicker
+    hyprlock
     wl-screenrec
     xdg-utils
     playerctl
@@ -109,6 +110,7 @@ in
     ".config/kitty".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/kitty";
     ".config/zsh".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/zsh";
     ".config/cava".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/cava";
+    ".config/hypr/hyprlock.conf".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dot27/dotfiles/hyprlock/hyprlock.conf";
   };
 
   # ==========================================

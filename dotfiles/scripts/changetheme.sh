@@ -70,6 +70,7 @@ echo "@define-color accent $ACCENT_COLOR;" > "$CACHE_DIR/colors.css"
 echo "* { accent: $ACCENT_COLOR; accent-soft: ${ACCENT_COLOR}33; accent-highlight: bold $ACCENT_COLOR; }" > "$CACHE_DIR/colors.rasi"
 echo "$ACCENT_COLOR" > "$CACHE_DIR/prompt_color.txt"
 echo "export DYNAMIC_ACCENT=\"$ACCENT_COLOR\"" > "$CACHE_DIR/zsh_colors.zsh"
+echo "\$accent = rgb(${ACCENT_COLOR//#/})" > "$CACHE_DIR/hyprlock-colors.conf"
 
 [[ "$SKIP_RELOAD" == "1" ]] && exit 0
 

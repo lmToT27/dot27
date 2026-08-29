@@ -35,7 +35,7 @@ PanelWindow {
           exec: [Quickshell.env("HOME") + "/.local/bin/noisetorch-toggle.sh"] },
         { name: "Screenshot Region", subtitle: "System Command", icon: "󰹑",
           exec: ["sh", "-c", "niri msg action screenshot && notify-send 'Clipboard' 'Saved screenshot in clipboard!'"] },
-        { name: "Lock", subtitle: "System Command", icon: "\u{f033e}", exec: ["loginctl", "lock-session"] },
+        { name: "Lock", subtitle: "System Command", icon: "\u{f033e}", exec: ["hyprlock"] },
         { name: "Sleep", subtitle: "System Command", icon: "\u{f04b2}", exec: ["systemctl", "suspend"] },
         { name: "Hibernate", subtitle: "System Command", icon: "\u{f0717}", exec: ["systemctl", "hibernate"] },
         { name: "Log Out", subtitle: "System Command", icon: "\u{f0343}", exec: ["niri", "msg", "action", "quit"] },

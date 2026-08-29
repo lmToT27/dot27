@@ -5,18 +5,14 @@ import Quickshell
 import "../../../config"
 import "../../../services"
 
-// Bottom-row power actions. Lock relies on `loginctl lock-session`
-// triggering whatever session-lock listener is configured (e.g. a
-// swaylock/hyprlock-style daemon bound to the logind Lock signal) — this
-// shell doesn't ship or assume one, so wire one up for this button to
-// actually do anything.
+// Bottom-row power actions.
 RowLayout {
     id: root
 
     spacing: 8
 
     readonly property var actions: [
-        { icon: "\u{f033e}", tooltip: "Lock", command: ["loginctl", "lock-session"], danger: false },
+        { icon: "\u{f033e}", tooltip: "Lock", command: ["hyprlock"], danger: false },
         { icon: "\u{f0343}", tooltip: "Log Out", command: ["niri", "msg", "action", "quit"], danger: false },
         { icon: "\u{f0709}", tooltip: "Reboot", command: ["systemctl", "reboot"], danger: false },
         { icon: "\u{f0425}", tooltip: "Power Off", command: ["systemctl", "poweroff"], danger: true }

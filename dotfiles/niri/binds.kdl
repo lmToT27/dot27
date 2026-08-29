@@ -11,6 +11,7 @@ binds {
 
     Mod+Shift+S { screenshot; }
     Mod+Shift+R { spawn "quickshell" "ipc" "call" "screenrecorder" "toggle"; }
+    Mod+L { spawn "hyprlock"; }
 
     Mod+Shift+F { fullscreen-window; }
     Mod+F { toggle-window-floating; }

@@ -38,6 +38,7 @@ if [[ -f "$ENTRY.jpg" && -f "$ENTRY.css" ]]; then
     echo "* { accent: $ACCENT; accent-soft: ${ACCENT}33; accent-highlight: bold $ACCENT; }" > "$CACHE_DIR/colors.rasi"
     echo "$ACCENT" > "$CACHE_DIR/prompt_color.txt"
     echo "export DYNAMIC_ACCENT=\"$ACCENT\"" > "$CACHE_DIR/zsh_colors.zsh"
+    echo "\$accent = rgb(${ACCENT//#/})" > "$CACHE_DIR/hyprlock-colors.conf"
 else
     magick -define jpeg:size=1280x720 "$WALLPAPER" -resize "640x360>" -resize 10% -blur 0x2 -resize 1000% "$CACHE_DIR/blurred_wallpaper.jpg" &
     PID_BLUR=$!
