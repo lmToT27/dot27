@@ -176,8 +176,6 @@
   };
   services.accounts-daemon.enable = true;
   services.printing.enable = true;
-  # Backs the Quickshell topbar's power-mode toggle (power-saver/balanced/
-  # performance) via `powerprofilesctl`. Needs a rebuild to take effect.
   services.power-profiles-daemon.enable = true;
 
   # ==========================================
