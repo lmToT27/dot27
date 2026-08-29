@@ -44,9 +44,24 @@ PanelWindow {
         y: -height
 
         ParallelAnimation {
-            running: true
+            id: popIn
             NumberAnimation { target: content; property: "opacity"; to: 1; duration: Appearance.popDuration; easing.type: Easing.OutCubic }
             NumberAnimation { target: content; property: "y"; to: 0; duration: Appearance.popDuration; easing.type: Easing.OutCubic }
+        }
+
+        ParallelAnimation {
+            id: popOut
+            NumberAnimation { target: content; property: "opacity"; to: 0; duration: Appearance.popDuration; easing.type: Easing.OutCubic }
+            NumberAnimation { target: content; property: "y"; to: -content.height; duration: Appearance.popDuration; easing.type: Easing.OutCubic }
+        }
+
+        Component.onCompleted: popIn.start()
+
+        Connections {
+            target: TopbarState
+            function onOpenChanged() {
+                if (TopbarState.open) popIn.start(); else popOut.start()
+            }
         }
 
         BarPill {

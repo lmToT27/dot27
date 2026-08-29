@@ -1,6 +1,7 @@
 singleton Theme 1.0 Theme.qml
 singleton Niri 1.0 Niri.qml
 singleton ControlCenterState 1.0 ControlCenterState.qml
+singleton TopbarState 1.0 TopbarState.qml
 singleton NotificationCenterState 1.0 NotificationCenterState.qml
 singleton AppLauncherState 1.0 AppLauncherState.qml
 singleton WallpaperPickerState 1.0 WallpaperPickerState.qml

@@ -16,6 +16,7 @@ binds {
     Mod+F { toggle-window-floating; }
     Mod+Q { close-window; }
     Mod+M repeat=false { spawn "quickshell" "ipc" "call" "controlcenter" "toggle"; }
+    Mod+J repeat=false { spawn "quickshell" "ipc" "call" "topbar" "toggle"; }
     Mod+N repeat=false { spawn "quickshell" "ipc" "call" "notificationcenter" "toggle"; }
 
     Mod+left { focus-column-left; }

@@ -17,8 +17,8 @@ RowLayout {
 
     readonly property var actions: [
         { icon: "\u{f033e}", tooltip: "Lock", command: ["loginctl", "lock-session"], danger: false },
-        { icon: "\u{f04b2}", tooltip: "Sleep", command: ["systemctl", "suspend"], danger: false },
-        { icon: "\u{f0717}", tooltip: "Hibernate", command: ["systemctl", "hibernate"], danger: false },
+        { icon: "\u{f0343}", tooltip: "Log Out", command: ["niri", "msg", "action", "quit"], danger: false },
+        { icon: "\u{f0709}", tooltip: "Reboot", command: ["systemctl", "reboot"], danger: false },
         { icon: "\u{f0425}", tooltip: "Power Off", command: ["systemctl", "poweroff"], danger: true }
     ]
 
