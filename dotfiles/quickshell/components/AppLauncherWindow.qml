@@ -31,6 +31,8 @@ PanelWindow {
           exec: ["quickshell", "ipc", "call", "notificationcenter", "toggle"] },
         { name: "Screen Recorder", subtitle: "System Command", icon: "󰑋",
           exec: ["quickshell", "ipc", "call", "screenrecorder", "toggle"] },
+        { name: "Toggle Noise Suppression", subtitle: "System Command", icon: "󰍬",
+          exec: [Quickshell.env("HOME") + "/.local/bin/noisetorch-toggle.sh"] },
         { name: "Screenshot Region", subtitle: "System Command", icon: "󰹑",
           exec: ["sh", "-c", "niri msg action screenshot && notify-send 'Clipboard' 'Saved screenshot in clipboard!'"] },
         { name: "Lock", subtitle: "System Command", icon: "\u{f033e}", exec: ["loginctl", "lock-session"] },

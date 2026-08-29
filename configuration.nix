@@ -139,7 +139,17 @@
         }
       ];
     };
+    extraConfig.pipewire."92-min-quantum" = {
+      "context.properties" = {
+        "default.clock.min-quantum" = 256;
+      };
+    };
   };
+
+  programs.noisetorch.enable = true;
+
+  systemd.user.services.pipewire-pulse.environment.LADSPA_PATH =
+    "/tmp:${config.systemd.user.services.pipewire.environment.LADSPA_PATH}";
 
   # ==========================================
   # DESKTOP ENVIRONMENT & SERVICES
