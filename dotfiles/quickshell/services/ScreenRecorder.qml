@@ -7,7 +7,7 @@ QtObject {
     id: root
 
     readonly property bool recording: proc.running
-    readonly property string outputDir: Quickshell.env("HOME") + "/Videos"
+    readonly property string outputDir: Quickshell.env("HOME") + "/Videos/ScreenCasts"
     property string currentFile: ""
     property int elapsedSeconds: 0
 
