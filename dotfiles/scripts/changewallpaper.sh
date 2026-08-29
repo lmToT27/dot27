@@ -42,7 +42,7 @@ else
     magick -define jpeg:size=1280x720 "$WALLPAPER" -resize "640x360>" -resize 10% -blur 0x2 -resize 1000% "$CACHE_DIR/blurred_wallpaper.jpg" &
     PID_BLUR=$!
 
-    SKIP_RELOAD=1 changetheme.sh "$WALLPAPER" &
+    SKIP_RELOAD=1 "$HOME/.local/bin/changetheme.sh" "$WALLPAPER" &
     PID_THEME=$!
 
     wait $PID_BLUR
@@ -52,7 +52,9 @@ else
     cp "$CACHE_DIR/colors.css" "$ENTRY.css"
 fi
 
-pkill -x swaybg 2>/dev/null
+# swaybg is nix-wrapped, so its /proc comm is ".swaybg-wrapped" — pkill -x
+# against the literal name never matches and old instances pile up forever.
+pkill -f 'swaybg -i' 2>/dev/null
 swaybg -i "$CACHE_DIR/blurred_wallpaper.jpg" -m fill </dev/null >/dev/null 2>&1 &
 
 pkill -SIGUSR1 zsh

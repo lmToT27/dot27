@@ -125,7 +125,7 @@ PanelWindow {
 
                     onClicked: {
                         ThemePickerState.hide()
-                        Quickshell.execDetached(["sh", "-c", "color=$(hyprpicker --format=hex) && [ -n \"$color\" ] && changetheme.sh \"$color\""])
+                        Quickshell.execDetached(["sh", "-c", "color=$(hyprpicker --format=hex) && [ -n \"$color\" ] && \"$HOME/.local/bin/changetheme.sh\" \"$color\""])
                     }
                 }
             }
