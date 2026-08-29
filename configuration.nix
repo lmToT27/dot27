@@ -202,7 +202,6 @@
 
   environment.systemPackages = with pkgs; [
     neovim
-    wtype
     nodejs
     pnpm
     tree-sitter

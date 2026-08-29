@@ -39,19 +39,15 @@ in
     rofi
     rofimoji
     libnotify
-    wlr-randr
     wl-clipboard
     cliphist
     grim
     slurp
     hyprpicker
     wl-screenrec
-    nwg-look
     xdg-utils
     playerctl
-    wayland-pipewire-idle-inhibit
     mpv
-    xfconf
 
     # --- CLI & System Tools ---
     claude-code chafa

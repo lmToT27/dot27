@@ -106,7 +106,7 @@ function runpy() {
     local filename="$2"
     [ -z "$filename" ] && echo "\034[31mError: missing filename!\033[0m" && return 1
     [[ "$filename" != *.py ]] && filename="$filename.py"
-    python4 "$filename"
+    python3 "$filename"
 }
 
 function fif() {
