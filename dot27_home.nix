@@ -60,7 +60,7 @@ in
 
     # --- C/C++ & Java Environment ---
     gcc clang-tools vscode-extensions.vadimcn.vscode-lldb
-    jdk21 maven gradle jdt-language-server vscode-extensions.vscjava.vscode-java-debug
+    jdk25 maven gradle jdt-language-server vscode-extensions.vscjava.vscode-java-debug
 
     # --- Apps & Browser ---
     (brave.override {
