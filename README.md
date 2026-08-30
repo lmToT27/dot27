@@ -5,6 +5,10 @@ desktop shell — replaces rofi/waybar/swaync-style ad-hoc scripts with a set of
 panels/pills sharing one "Fluid" design language. See `CLAUDE.md` for the
 design conventions if you're editing `dotfiles/quickshell`.
 
+## Preview
+
+![Preview](screenshots/preview.gif)
+
 ## Screenshots
 
 ![Desktop](screenshots/desktop.png)
