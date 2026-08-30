@@ -3,7 +3,6 @@
 {
   imports = [
     ./hardware-configuration.nix
-    # inputs.silentSDDM.nixosModules.default
   ];
 
   # ==========================================
@@ -154,12 +153,19 @@
   # ==========================================
   # DESKTOP ENVIRONMENT & SERVICES
   # ==========================================
-  # programs.silentSDDM = {
-  #   enable = true;
-  #   theme = "default";
-  # };
-  services.displayManager.sddm.enable = true;
-  
+  system.activationScripts.sddm-theme = ''
+    mkdir -p /etc/sddm/themes
+    rm -rf /etc/sddm/themes/where_is_my_sddm_theme
+    cp -r /home/lmtot27/dot27/sddm/where_is_my_sddm_theme /etc/sddm/themes/where_is_my_sddm_theme
+  '';
+
+  services.displayManager.sddm = {
+    enable = true;
+    theme = "where_is_my_sddm_theme";
+    extraPackages = with pkgs; [ qt6.qt5compat ];
+    settings.Theme.ThemeDir = "/etc/sddm/themes";
+  };
+
   # Enable Niri System-wide for Wayland Session
   programs.xfconf.enable = true;
   programs.niri.enable = true;

@@ -9,10 +9,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # silentSDDM = {
-    #   url = "path:./SilentSDDM";
-    # };
-    
     spicetify-nix = {
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -28,7 +24,6 @@
           ./hardware-configuration.nix
           ./configuration.nix
           inputs.home-manager.nixosModules.home-manager
-          # inputs.silentSDDM.nixosModules.default
           {
             home-manager.extraSpecialArgs = { inherit inputs; };
           }
