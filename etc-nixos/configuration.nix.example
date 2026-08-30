@@ -219,6 +219,4 @@
   # HOME MANAGER
   # ==========================================
   home-manager.backupFileExtension = "bak";
-  home-manager.extraSpecialArgs = { inherit inputs; };
-  home-manager.users."lmtot27" = import ./home.nix;
 }

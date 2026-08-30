@@ -54,17 +54,9 @@ in
     claude-code chafa
     thunar thunar-archive-plugin imagemagick
     kitty gh lazygit psmisc fd ripgrep yazi papirus-icon-theme
-    wget fastfetch jq p7zip unrar unzip zip brightnessctl btop pavucontrol
+    wget fastfetch jq p7zip unrar unzip zip brightnessctl btop pavucontrol glow
 
-    # --- Data Science & AI ---
-    kaggle
-    visidata
-    ruff
     pyright
-    (python3.withPackages (ps: with ps; [
-      debugpy pygobject3 pip requests numpy pandas
-      ortools matplotlib seaborn
-    ]))
 
     # --- C/C++ & Java Environment ---
     gcc clang-tools vscode-extensions.vadimcn.vscode-lldb
@@ -216,13 +208,7 @@ in
     ];
   };
 
-  programs.git = {
-    enable = true;
-    settings = {
-        user.name = "lmToT27";
-        user.email = "168084827+lmToT27@users.noreply.github.com";
-    };
-  };
+  programs.git.enable = true;
 
   programs.gh = {
     enable = true;

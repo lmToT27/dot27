@@ -1,7 +1,8 @@
+import Quickshell
 import "../common"
 import "../../services"
 
 HoverIcon {
-    text: "lmToT27"
+    text: Quickshell.env("USER")
     onClicked: Niri.toggleOverview()
 }

@@ -1,5 +1,5 @@
 {
-  description = "System Configuration powered by NixOS";
+  description = "dot27 — shared home-manager module (Quickshell/Niri dotfiles)";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
@@ -16,19 +16,6 @@
   };
 
   outputs = inputs: {
-    nixosConfigurations = {
-      nixos = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; }; 
-        modules = [
-          ./hardware-configuration.nix
-          ./configuration.nix
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager.extraSpecialArgs = { inherit inputs; };
-          }
-        ];
-      };
-    };
+    homeManagerModules.default = import ./dot27_home.nix;
   };
 }

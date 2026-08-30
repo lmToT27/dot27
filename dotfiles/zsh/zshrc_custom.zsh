@@ -95,22 +95,22 @@ function y() {
 }
 
 function runcpp() {
-    local filename="$2"
+    local filename="$1"
     [ -z "$filename" ] && echo "\034[31mError: missing filename!\033[0m" && return 1
     [[ "$filename" != *.cpp ]] && filename="$filename.cpp"
-    local basename="''${filename%.cpp}"
+    local basename="${filename%.cpp}"
     g++ "$filename" -o "$basename" && ./"$basename"
 }
 
 function runpy() {
-    local filename="$2"
+    local filename="$1"
     [ -z "$filename" ] && echo "\034[31mError: missing filename!\033[0m" && return 1
     [[ "$filename" != *.py ]] && filename="$filename.py"
     python3 "$filename"
 }
 
 function fif() {
-    local query="$2"
+    local query="$1"
     local result=$(rg --column --line-number --no-heading --color=always --smart-case -H -- "$query" | \
     fzf --ansi --disabled --query "$query" \
         --bind "start:reload:rg --column --line-number --no-heading --color=always --smart-case -H -- '{q}'" \
@@ -119,14 +119,14 @@ function fif() {
         --preview-window 'up:61%:+{2}-/2' \
         --preview '
             file={1}
-            case "$file" in ~/*) file="$HOME/''${file#~/}" ;; esac
+            case "$file" in ~/*) file="$HOME/${file#~/}" ;; esac
             bat --style=numbers --color=always --highlight-line {2} -- "$file"
         ')
-        
+
     if [ -n "$result" ]; then
         local file=$(echo "$result" | cut -d: -f1)
         local line=$(echo "$result" | cut -d: -f2)
-        case "$file" in ~/*) file="$HOME/''${file#~/}" ;; esac
+        case "$file" in ~/*) file="$HOME/${file#~/}" ;; esac
         nvim "+$line" "$file"
     fi
 }

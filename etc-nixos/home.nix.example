@@ -1,0 +1,17 @@
+{ pkgs, ... }:
+{
+  home.packages = with pkgs; [
+    kaggle
+    visidata
+    ruff
+    (python3.withPackages (ps: with ps; [
+      debugpy pygobject3 pip requests numpy pandas
+      ortools matplotlib seaborn
+    ]))
+  ];
+
+  programs.git.settings = {
+    user.name = "lmToT27";
+    user.email = "168084827+lmToT27@users.noreply.github.com";
+  };
+}

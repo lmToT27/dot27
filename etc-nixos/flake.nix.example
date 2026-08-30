@@ -1,0 +1,41 @@
+{
+  description = "System Configuration powered by NixOS";
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
+
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    dot27 = {
+      url = "path:/home/lmtot27/dot27";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
+  };
+
+  outputs = inputs: {
+    nixosConfigurations = {
+      nixos = inputs.nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./hardware-configuration.nix
+          ./configuration.nix
+          inputs.home-manager.nixosModules.home-manager
+          {
+            home-manager.extraSpecialArgs = {
+              inputs = inputs // { spicetify-nix = inputs.dot27.inputs.spicetify-nix; };
+            };
+            home-manager.users."lmtot27".imports = [
+              inputs.dot27.homeManagerModules.default
+              ./home.nix
+            ];
+          }
+        ];
+      };
+    };
+  };
+}
