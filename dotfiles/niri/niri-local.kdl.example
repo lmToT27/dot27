@@ -1,0 +1,8 @@
+binds {
+    Mod+T { spawn "alacritty"; }
+}
+
+window-rule {
+    match app-id=r"^org\.telegram\.desktop$"
+    open-on-workspace "chat"
+}

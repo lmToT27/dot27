@@ -200,3 +200,25 @@ call in `/etc/nixos/home.nix` — don't declare a second one.
 
 Changes here never touch git — this repo stays identical for every machine
 that uses it.
+
+## Overriding niri keybinds/rules
+
+Create `~/.config/niri-local.kdl` (see `dotfiles/niri/niri-local.kdl.example`
+for the format) — niri includes it automatically if present:
+
+```kdl
+binds {
+    Mod+T { spawn "alacritty"; }
+}
+
+window-rule {
+    match app-id=r"^org\.telegram\.desktop$"
+    open-on-workspace "chat"
+}
+```
+
+Binds here override the same key from `dotfiles/niri/binds.kdl`; window rules
+are added alongside the existing ones. The file is optional — niri just logs
+a warning if it's missing — and niri live-reloads it on save, no rebuild or
+`niri msg` needed. It lives outside `~/.config/niri` on purpose, since that
+whole directory is a symlink into this repo.

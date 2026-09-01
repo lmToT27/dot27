@@ -6,3 +6,5 @@ include "hardware.kdl"
 include "visuals.kdl"
 include "rules.kdl"
 include "binds.kdl"
+
+include optional=true "~/.config/niri-local.kdl" // you can override my config by modifying this file
