@@ -1,5 +1,8 @@
 local jdtls = require('jdtls')
 
+local nvchad_on_attach = require('nvchad.configs.lspconfig').on_attach
+local capabilities = require('nvchad.configs.lspconfig').capabilities
+
 local debug_paths = vim.fn.glob("/run/current-system/sw/share/vscode/extensions/vscjava.vscode-java-debug/server/com.microsoft.java.debug.plugin-*.jar", true, true)
 if #debug_paths == 0 then
   debug_paths = vim.fn.glob(vim.fn.expand("~/.nix-profile/share/vscode/extensions/vscjava.vscode-java-debug/server/com.microsoft.java.debug.plugin-*.jar"), true, true)
@@ -37,7 +40,9 @@ local config = {
       },
     },
   },
+  capabilities = capabilities,
   on_attach = function(client, bufnr)
+    nvchad_on_attach(client, bufnr)
     require('jdtls').setup_dap({ hotcodereplace = 'auto' })
     require('jdtls.dap').setup_dap_main_class_configs()
   end,

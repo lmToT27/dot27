@@ -1,22 +1,20 @@
 local M = {}
 
-local function get_kitty_accent()
-  local kitty_conf = vim.fn.expand("~/.local/state/haku_theme/kitty-style.conf")
-  local file = io.open(kitty_conf, "r")
-  local accent = "#f38ba8" -- Màu dự phòng
+local function get_dot27_accent()
+  local accent_file = vim.fn.expand("~/.cache/theme/prompt_color.txt")
+  local file = io.open(accent_file, "r")
+  local accent = "#f38ba8"
   if file then
-    for line in file:lines() do
-      local hex = line:match("^foreground%s+(#[a-fA-F0-9]+)") or line:match("^color[45]%s+(#[a-fA-F0-9]+)")
-      if hex then
-        accent = hex
-      end
+    local hex = file:read("l")
+    if hex and hex:match("^#%x%x%x%x%x%x$") then
+      accent = hex
     end
     file:close()
   end
   return accent
 end
 
-local my_accent = get_kitty_accent()
+local my_accent = get_dot27_accent()
 
 vim.api.nvim_create_autocmd({"UIEnter", "ColorScheme"}, {
   callback = function()
@@ -46,23 +44,37 @@ M.ui = {
   },
 }
 
+local nvdash_center_pad = string.rep(" ", 8)
+
+local function nvdash_center(s)
+  return nvdash_center_pad .. s
+end
+
 M.nvdash = {
   load_on_startup = true,
-  header = {
-    "          ███╗   ██╗ ███████╗  ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗  ",
-    "          ████╗  ██║ ██╔════╝ ██╔═══██╗ ██║   ██║ ██║ ████╗ ████║  ",
-    "          ██╔██╗ ██║ █████╗   ██║   ██║ ██║   ██║ ██║ ██╔████╔██║  ",
-    "          ██║╚██╗██║ ██╔══╝   ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║  ",
-    "          ██║ ╚████║ ███████╗ ╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║  ",
-    "          ╚═╝  ╚═══╝ ╚══════╝  ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝  ",
-    "                                                                   ",
-  },
+  header = function()
+    local lines
+    if vim.o.columns < 79 then
+      lines = { "", "NEOVIM", "" }
+    else
+      lines = {
+        "███╗   ██╗ ███████╗  ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗",
+        "████╗  ██║ ██╔════╝ ██╔═══██╗ ██║   ██║ ██║ ████╗ ████║",
+        "██╔██╗ ██║ █████╗   ██║   ██║ ██║   ██║ ██║ ██╔████╔██║",
+        "██║╚██╗██║ ██╔══╝   ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║",
+        "██║ ╚████║ ███████╗ ╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║",
+        "╚═╝  ╚═══╝ ╚══════╝  ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝",
+        "",
+      }
+    end
+    return vim.tbl_map(nvdash_center, lines)
+  end,
   buttons = {
-      { txt = "         Find File", keys = "ff", cmd = "Telescope find_files" },
-      { txt = "         Recent Files", keys = "fo", cmd = "Telescope oldfiles" },
-      { txt = "       󰈭  Find Word", keys = "fw", cmd = "Telescope live_grep" },
-      { txt = "       󱥚  Themes", keys = "th", cmd = ":lua require('nvchad.themes').open()" },
-      { txt = "         Mappings", keys = "ch", cmd = "NvCheatsheet" },
+    { txt = nvdash_center("  Find File"), keys = "ff", cmd = "Telescope find_files" },
+    { txt = nvdash_center("  Recent Files"), keys = "fo", cmd = "Telescope oldfiles" },
+    { txt = nvdash_center("󰈭  Find Word"), keys = "fw", cmd = "Telescope live_grep" },
+    { txt = nvdash_center("󱥚  Themes"), keys = "th", cmd = ":lua require('nvchad.themes').open()" },
+    { txt = nvdash_center("  Mappings"), keys = "ch", cmd = "NvCheatsheet" },
   },
 }
 
