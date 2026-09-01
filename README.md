@@ -119,6 +119,11 @@ outside git entirely, at `/etc/nixos/`:
                            # this repo's home-manager module
 ```
 
+A third, lighter-weight spot for per-machine tweaks is `~/override/` — a plain
+directory (created by `install.sh`) that sits next to `~/dot27`, outside git,
+for small untracked overrides that don't warrant a NixOS module (see
+"Overriding niri keybinds/rules" below).
+
 `nixos-rebuild switch` defaults to `/etc/nixos`, so once set up you just run
 `sudo nixos-rebuild switch --update-input dot27` from anywhere. The
 `--update-input dot27` part matters: `/etc/nixos/flake.lock` pins this repo's
@@ -203,7 +208,7 @@ that uses it.
 
 ## Overriding niri keybinds/rules
 
-Create `~/.config/niri-local.kdl` (see `dotfiles/niri/niri-local.kdl.example`
+Create `~/override/niri-local.kdl` (see `dotfiles/niri/niri-local.kdl.example`
 for the format) — niri includes it automatically if present:
 
 ```kdl
@@ -220,5 +225,7 @@ window-rule {
 Binds here override the same key from `dotfiles/niri/binds.kdl`; window rules
 are added alongside the existing ones. The file is optional — niri just logs
 a warning if it's missing — and niri live-reloads it on save, no rebuild or
-`niri msg` needed. It lives outside `~/.config/niri` on purpose, since that
-whole directory is a symlink into this repo.
+`niri msg` needed. It lives in `~/override/`, a sibling directory of `~/dot27`
+(created by `install.sh`), not under `~/.config/niri`, since that whole
+directory is a symlink into this repo. `~/override/` is the general home for
+this kind of untracked, per-machine dotfile override — not just niri's.

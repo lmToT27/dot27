@@ -11,4 +11,4 @@ debug {
     honor-xdg-activation-with-invalid-serial
 }
 
-include optional=true "~/.config/niri-local.kdl" // you can override my config by modifying this file
+include optional=true "~/override/niri-local.kdl" // you can override my config by modifying this file
