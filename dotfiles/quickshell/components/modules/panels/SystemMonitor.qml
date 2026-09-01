@@ -25,7 +25,7 @@ Rectangle {
     Layout.fillWidth: true
     Layout.preferredHeight: 84
     radius: Appearance.radiusInner
-    color: Qt.rgba(1, 1, 1, 0.05)
+    color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.05)
 
     ColumnLayout {
         anchors.fill: parent
@@ -69,7 +69,7 @@ Rectangle {
                         Layout.fillWidth: true
                         height: 6
                         radius: height / 2
-                        color: Qt.rgba(1, 1, 1, 0.12)
+                        color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.12)
 
                         Rectangle {
                             height: parent.height
@@ -93,7 +93,7 @@ Rectangle {
                         font.family: "JetBrainsMono Nerd Font"
                         font.bold: true
                         font.pixelSize: 10
-                        color: Qt.rgba(1, 1, 1, 0.7)
+                        color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.7)
                         Layout.preferredWidth: 28
                         horizontalAlignment: Text.AlignRight
                     }
@@ -116,7 +116,7 @@ Rectangle {
                     text: statRow.modelData.label + " Usage"
 
                     background: Rectangle {
-                        color: "black"
+                        color: Appearance.tooltipBg
                         radius: Appearance.radiusInner
                     }
 

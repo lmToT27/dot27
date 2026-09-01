@@ -131,7 +131,7 @@ PanelWindow {
                 // without a reliable input region to hit-test drag-and-drop
                 // against. Ghost is still visually invisible (alpha ~0.4%).
                 fillColor: root.uiState === "ghost" ? "#01000000" : Qt.rgba(Appearance.tooltipBg.r, Appearance.tooltipBg.g, Appearance.tooltipBg.b, 0.95)
-                strokeColor: Qt.rgba(1, 1, 1, 0.15)
+                strokeColor: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
                 strokeWidth: root.uiState === "ghost" ? -1 : 1
 
                 readonly property real d: visualPill.drip
@@ -229,7 +229,7 @@ PanelWindow {
                     font.family: Appearance.fontFamily
                     font.pixelSize: 12
                     font.weight: Font.DemiBold
-                    color: "white"
+                    color: Theme.fg
                 }
             }
         }
@@ -260,14 +260,14 @@ PanelWindow {
                         font.family: Appearance.fontFamily
                         font.pixelSize: 14
                         font.weight: Font.DemiBold
-                        color: Qt.rgba(1, 1, 1, 0.6)
+                        color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.6)
                     }
 
                     Text {
                         text: "󰃢"
                         font.family: Appearance.fontFamily
                         font.pixelSize: 16
-                        color: clearMouse.containsMouse ? Appearance.critical : Qt.rgba(1, 1, 1, 0.4)
+                        color: clearMouse.containsMouse ? Appearance.critical : Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.4)
 
                         MouseArea {
                             id: clearMouse
@@ -316,7 +316,7 @@ PanelWindow {
                                 text: fileRow.fileName
                                 font.family: Appearance.fontFamily
                                 font.pixelSize: 13
-                                color: "white"
+                                color: Theme.fg
                                 elide: Text.ElideMiddle
                             }
                         }
@@ -350,14 +350,14 @@ PanelWindow {
                                     text: fileRow.isFolder ? "󰉋" : "󰈔"
                                     font.family: Appearance.fontFamily
                                     font.pixelSize: 16
-                                    color: "white"
+                                    color: Theme.accentContrast
                                 }
                                 Text {
                                     Layout.fillWidth: true
                                     text: fileRow.fileName
                                     font.family: Appearance.fontFamily
                                     font.pixelSize: 13
-                                    color: "white"
+                                    color: Theme.accentContrast
                                     elide: Text.ElideMiddle
                                 }
                             }
@@ -391,7 +391,7 @@ PanelWindow {
                     text: "Drop files here"
                     font.family: Appearance.fontFamily
                     font.pixelSize: 13
-                    color: Qt.rgba(1, 1, 1, 0.3)
+                    color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.3)
                     visible: DropzoneState.files.count === 0
                 }
             }

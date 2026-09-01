@@ -67,7 +67,7 @@ PanelWindow {
             anchors.centerIn: parent
             visible: wallpaperFolder.count === 0
             text: "No images found in:\n" + wallpaperFolder.folder
-            color: "white"
+            color: Theme.fg
             font.family: Appearance.fontFamily
             font.pixelSize: 16
             horizontalAlignment: Text.AlignHCenter

@@ -25,6 +25,8 @@ PanelWindow {
           exec: ["quickshell", "ipc", "call", "wallpaperpicker", "toggle"] },
         { name: "Change Theme", subtitle: "System Command", icon: "󰏘",
           exec: ["quickshell", "ipc", "call", "themepicker", "toggle"] },
+        { name: "Toggle Light/Dark Mode", subtitle: "System Command", icon: "\u{f050e}",
+          exec: [Quickshell.env("HOME") + "/.local/bin/toggle-theme-mode.sh"] },
         { name: "Toggle Control Center", subtitle: "System Command", icon: "󰒓",
           exec: ["quickshell", "ipc", "call", "controlcenter", "toggle"] },
         { name: "Toggle Notification Center", subtitle: "System Command", icon: "󰂚",
@@ -255,16 +257,19 @@ PanelWindow {
                                 Layout.alignment: Qt.AlignVCenter
 
                                 IconImage {
+                                    id: appIcon
                                     anchors.fill: parent
-                                    visible: resultItem.modelData.kind === "app"
+                                    visible: resultItem.modelData.kind === "app" && status === Image.Ready
                                     source: resultItem.modelData.kind === "app"
                                         ? Quickshell.iconPath(resultItem.modelData.icon, true) : ""
                                 }
 
                                 Text {
                                     anchors.centerIn: parent
+                                    // Fallback glyph for apps with no resolvable icon.
                                     visible: resultItem.modelData.kind === "command"
-                                    text: resultItem.modelData.icon
+                                        || (resultItem.modelData.kind === "app" && appIcon.status !== Image.Ready)
+                                    text: resultItem.modelData.kind === "command" ? resultItem.modelData.icon : ""
                                     font.family: Appearance.fontFamily
                                     font.pixelSize: 16
                                     color: Theme.accent
@@ -282,7 +287,7 @@ PanelWindow {
                                     font.family: Appearance.fontFamily
                                     font.bold: true
                                     font.pixelSize: 14
-                                    color: "white"
+                                    color: Theme.fg
                                     elide: Text.ElideRight
                                 }
 
@@ -291,7 +296,7 @@ PanelWindow {
                                     text: resultItem.modelData.subtitle
                                     font.family: Appearance.fontFamily
                                     font.pixelSize: 10
-                                    color: Qt.rgba(1, 1, 1, 0.5)
+                                    color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.5)
                                     elide: Text.ElideRight
                                 }
                             }
@@ -313,7 +318,7 @@ PanelWindow {
 
                     Rectangle {
                         anchors.fill: parent
-                        color: Qt.rgba(1, 1, 1, 0.06)
+                        color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.06)
                         radius: Appearance.radiusInner
                     }
 
@@ -331,7 +336,7 @@ PanelWindow {
                             text: "󰍉"
                             font.family: Appearance.fontFamily
                             font.pixelSize: 18
-                            color: Qt.rgba(1, 1, 1, 0.35)
+                            color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.35)
                         }
 
                         Item {
@@ -345,7 +350,7 @@ PanelWindow {
                                 visible: searchInput.text.length === 0
                                 font.family: Appearance.fontFamily
                                 font.pixelSize: 16
-                                color: Qt.rgba(1, 1, 1, 0.25)
+                                color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.25)
                             }
 
                             TextInput {
@@ -354,7 +359,7 @@ PanelWindow {
                                 verticalAlignment: Text.AlignVCenter
                                 font.family: Appearance.fontFamily
                                 font.pixelSize: 16
-                                color: "white"
+                                color: Theme.fg
                                 clip: true
 
                                 onTextChanged: root.refreshResults(text)

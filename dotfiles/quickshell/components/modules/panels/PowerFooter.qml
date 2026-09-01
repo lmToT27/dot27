@@ -29,8 +29,8 @@ RowLayout {
             implicitHeight: 40
             radius: Appearance.radiusInner
             color: mouseArea.containsMouse
-                ? (btn.modelData.danger ? Appearance.critical : Qt.rgba(1, 1, 1, 0.1))
-                : Qt.rgba(1, 1, 1, 0.05)
+                ? (btn.modelData.danger ? Appearance.critical : Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.1))
+                : Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.05)
             Behavior on color { ColorAnimation { duration: Appearance.animFast } }
             scale: mouseArea.pressed ? 0.95 : 1
             Behavior on scale { NumberAnimation { duration: 100 } }
@@ -57,7 +57,7 @@ RowLayout {
                 text: btn.modelData.tooltip
 
                 background: Rectangle {
-                    color: "black"
+                    color: Appearance.tooltipBg
                     radius: Appearance.radiusInner
                 }
 

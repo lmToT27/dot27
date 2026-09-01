@@ -1,4 +1,5 @@
 import QtQuick
+import "../../services"
 
 // Auto-scrolling text: stays still while it fits the given width, only
 // loops once the text is actually wider than that.
@@ -7,7 +8,7 @@ Item {
 
     property string text: ""
     property alias font: label1.font
-    property color color: "white"
+    property color color: Theme.fg
     // Scrolling only runs while this is true (e.g. "is actually playing").
     property bool active: true
 

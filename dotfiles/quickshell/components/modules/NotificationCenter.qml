@@ -47,7 +47,7 @@ Item {
                 Layout.preferredWidth: 32
                 Layout.preferredHeight: 32
                 radius: Appearance.radiusInner
-                color: isDnd ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.18) : Qt.rgba(1, 1, 1, 0.06)
+                color: isDnd ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.18) : Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.06)
                 scale: dndMouseArea.pressed ? 0.95 : 1
                 Behavior on color { ColorAnimation { duration: Appearance.animFast } }
                 Behavior on scale { NumberAnimation { duration: Appearance.animFast } }
@@ -57,7 +57,7 @@ Item {
                     text: dndButton.isDnd ? "󰂛" : "󰂚"
                     font.family: Appearance.fontFamily
                     font.pixelSize: 15
-                    color: dndButton.isDnd ? Theme.accent : Qt.rgba(1, 1, 1, 0.5)
+                    color: dndButton.isDnd ? Theme.accent : Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.5)
                     Behavior on color { ColorAnimation { duration: Appearance.animFast } }
                 }
 
@@ -78,7 +78,7 @@ Item {
                     ? Qt.rgba(Appearance.critical.r, Appearance.critical.g, Appearance.critical.b, 0.28)
                     : clearMouseArea.containsMouse
                         ? Qt.rgba(Appearance.critical.r, Appearance.critical.g, Appearance.critical.b, 0.16)
-                        : Qt.rgba(1, 1, 1, 0.08)
+                        : Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.08)
                 scale: clearMouseArea.pressed ? 0.95 : 1
                 Behavior on color { ColorAnimation { duration: Appearance.animFast } }
                 Behavior on scale { NumberAnimation { duration: Appearance.animFast } }
@@ -90,7 +90,7 @@ Item {
                     font.family: Appearance.fontFamily
                     font.bold: true
                     font.pixelSize: 12
-                    color: (clearMouseArea.pressed || clearMouseArea.containsMouse) ? Appearance.critical : "white"
+                    color: (clearMouseArea.pressed || clearMouseArea.containsMouse) ? Appearance.critical : Theme.fg
                     Behavior on color { ColorAnimation { duration: Appearance.animFast } }
                 }
 
@@ -123,7 +123,7 @@ Item {
                     text: "󰒲"
                     font.family: Appearance.fontFamily
                     font.pixelSize: 64
-                    color: "white"
+                    color: Theme.fg
                 }
 
                 Text {
@@ -131,7 +131,7 @@ Item {
                     text: "No notifications"
                     font.family: Appearance.fontFamily
                     font.pixelSize: 12
-                    color: "white"
+                    color: Theme.fg
                 }
             }
 

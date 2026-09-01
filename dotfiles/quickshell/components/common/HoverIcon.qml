@@ -46,7 +46,7 @@ Item {
         font.family: Appearance.fontFamily
         font.pixelSize: root.fontSize
         font.bold: true
-        color: root.invertOnHover && root.hovered ? "black" : root.textColor
+        color: root.invertOnHover && root.hovered ? Theme.accentContrast : root.textColor
         Behavior on color { ColorAnimation { duration: Appearance.animMedium } }
 
         SequentialAnimation on opacity {

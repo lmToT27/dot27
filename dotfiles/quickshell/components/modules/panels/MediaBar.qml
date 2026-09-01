@@ -15,7 +15,7 @@ Rectangle {
     Layout.fillWidth: true
     Layout.preferredHeight: 120
     radius: Appearance.radiusOuter
-    color: Qt.rgba(1, 1, 1, 0.06)
+    color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.06)
     clip: true
 
     // Three-layer stack for a true pixel-level rounded+blurred backdrop:
@@ -42,10 +42,11 @@ Rectangle {
             visible: status === Image.Ready
         }
 
-        // Dark scrim for text legibility over the art.
+        // Scrim for legibility over the art — follows Theme.bg so it
+        // still contrasts with the Theme.fg text/icons drawn on top.
         Rectangle {
             anchors.fill: parent
-            color: Qt.rgba(0, 0, 0, 0.6)
+            color: Qt.rgba(Theme.bg.r, Theme.bg.g, Theme.bg.b, 0.6)
         }
     }
 
@@ -87,7 +88,7 @@ Rectangle {
             radius: Appearance.radiusInner
             // Only shown directly while art hasn't loaded (behind the
             // fallback note icon below).
-            color: Qt.rgba(1, 1, 1, 0.08)
+            color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.08)
 
             // Same true-clipping structure as the backdrop above: `art`
             // and `artMask` are the hidden source/mask pair, OpacityMask
@@ -154,7 +155,7 @@ Rectangle {
             MarqueeText {
                 Layout.fillWidth: true
                 text: Mpris.hasMedia ? Mpris.title : "No media playing"
-                color: "white"
+                color: Theme.fg
                 font.bold: true
                 font.pixelSize: 15
                 font.family: Appearance.fontFamily
@@ -165,7 +166,7 @@ Rectangle {
                 Layout.fillWidth: true
                 visible: Mpris.artist.length > 0
                 text: Mpris.artist
-                color: Qt.rgba(1, 1, 1, 0.7)
+                color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.7)
                 font.family: Appearance.fontFamily
                 active: Mpris.status === "Playing"
             }
@@ -178,7 +179,7 @@ Rectangle {
             Text {
                 Layout.alignment: Qt.AlignVCenter
                 text: "󰒮"
-                color: "white"
+                color: Theme.fg
                 font.pixelSize: 20
                 font.family: Appearance.fontFamily
                 MouseArea { anchors.fill: parent; anchors.margins: -6; onClicked: Mpris.previous() }
@@ -222,8 +223,10 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
+                        // Play triangle's glyph isn't visually symmetric like pause.
+                        anchors.horizontalCenterOffset: Mpris.status === "Playing" ? 0 : 1
                         text: Mpris.status === "Playing" ? "󰏤" : "󰐊"
-                        color: Theme.onAccent
+                        color: Theme.accentContrast
                         font.pixelSize: 20
                         font.family: Appearance.fontFamily
                     }
@@ -235,7 +238,7 @@ Rectangle {
             Text {
                 Layout.alignment: Qt.AlignVCenter
                 text: "󰒭"
-                color: "white"
+                color: Theme.fg
                 font.pixelSize: 20
                 font.family: Appearance.fontFamily
                 MouseArea { anchors.fill: parent; anchors.margins: -6; onClicked: Mpris.next() }

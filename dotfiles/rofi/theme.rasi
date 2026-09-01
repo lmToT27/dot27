@@ -1,15 +1,10 @@
 // Mirrors the Quickshell floating-pill look (see AppLauncherWindow.qml).
-// Only @accent is pulled from colors.rasi (written by changetheme.sh) —
-// its accent-soft/accent-highlight fields have gone stale before, so
-// selected/highlight styling below is derived from @accent and this
-// file's own bg-hover instead.
+// @accent, @bg-base, @fg, @bg-hover, @placeholder from colors.rasi
+// (mode-aware, written by changetheme.sh).
 @import "~/.cache/theme/colors.rasi"
 
 * {
-    bg-base:        #000000;
-    bg-hover:       #1a1a1a;
     border-color:   #333333;
-    fg:             #ffffff;
 
     background-color: transparent;
     text-color:       @fg;
@@ -46,7 +41,7 @@ prompt {
 
 entry {
     placeholder:       "Search...";
-    placeholder-color: #ffffff4d;
+    placeholder-color: @placeholder;
     cursor:            text;
     vertical-align:    0.5;
 }

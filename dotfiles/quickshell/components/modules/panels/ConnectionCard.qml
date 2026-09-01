@@ -22,7 +22,7 @@ Rectangle {
     Layout.fillWidth: true
     Layout.preferredHeight: 44
     radius: Appearance.radiusInner
-    color: root.active ? Theme.accent : Qt.rgba(1, 1, 1, 0.04)
+    color: root.active ? Theme.accent : Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.04)
     Behavior on color { ColorAnimation { duration: Appearance.animFast } }
 
     RowLayout {
@@ -41,7 +41,7 @@ Rectangle {
             text: root.icon
             font.family: Appearance.fontFamily
             font.pixelSize: 18
-            color: root.active ? Theme.onAccent : Qt.rgba(1, 1, 1, 0.4)
+            color: root.active ? Theme.accentContrast : Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.4)
         }
 
         ColumnLayout {
@@ -55,7 +55,7 @@ Rectangle {
                 font.family: Appearance.fontFamily
                 font.bold: true
                 font.pixelSize: 12
-                color: root.active ? Theme.onAccent : "white"
+                color: root.active ? Theme.accentContrast : Theme.fg
                 elide: Text.ElideRight
             }
 
@@ -64,7 +64,7 @@ Rectangle {
                 text: root.subtitle
                 font.family: Appearance.fontFamily
                 font.pixelSize: 10
-                color: root.active ? Qt.rgba(Theme.onAccent.r, Theme.onAccent.g, Theme.onAccent.b, 0.65) : Qt.rgba(1, 1, 1, 0.55)
+                color: root.active ? Qt.rgba(Theme.accentContrast.r, Theme.accentContrast.g, Theme.accentContrast.b, 0.65) : Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.55)
                 elide: Text.ElideRight
             }
         }

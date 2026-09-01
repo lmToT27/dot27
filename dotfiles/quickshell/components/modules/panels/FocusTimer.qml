@@ -74,7 +74,7 @@ ColumnLayout {
     Text {
         Layout.alignment: Qt.AlignHCenter
         text: root.running ? root.remainingLabel : "Set Focus Timer"
-        color: root.running ? Theme.accent : Qt.rgba(1, 1, 1, 0.45)
+        color: root.running ? Theme.accent : Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.45)
         font.bold: true
         font.pixelSize: 14
         font.family: Appearance.fontFamily
@@ -118,8 +118,9 @@ ColumnLayout {
             Layout.fillWidth: true
             implicitHeight: 22
             radius: 6
-            color: Theme.accent
-            opacity: root.running ? 0.4 : 1
+            // Alpha, not Rectangle.opacity — opacity cascades to the child
+            // Text and double-blends it, washing out its contrast.
+            color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, root.running ? 0.4 : 1)
             scale: setMouseArea.pressed ? 0.95 : 1
             Behavior on scale { NumberAnimation { duration: 100 } }
 
@@ -130,7 +131,7 @@ ColumnLayout {
                 font.family: Appearance.fontFamily
                 font.pixelSize: 11
                 font.bold: true
-                color: Theme.onAccent
+                color: Theme.accentContrast
             }
 
             MouseArea {
@@ -150,8 +151,7 @@ ColumnLayout {
             Layout.fillWidth: true
             implicitHeight: 22
             radius: 6
-            color: Theme.accent
-            opacity: root.running ? 1 : 0.4
+            color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, root.running ? 1 : 0.4)
             scale: stopMouseArea.pressed ? 0.95 : 1
             Behavior on scale { NumberAnimation { duration: 100 } }
 
@@ -162,7 +162,7 @@ ColumnLayout {
                 font.family: Appearance.fontFamily
                 font.pixelSize: 11
                 font.bold: true
-                color: Theme.onAccent
+                color: Theme.accentContrast
             }
 
             MouseArea {

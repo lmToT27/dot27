@@ -25,12 +25,14 @@ require("lazy").setup({
   { import = "plugins" },
 }, lazy_config)
 
--- load theme
-dofile(vim.g.base46_cache .. "defaults")
-dofile(vim.g.base46_cache .. "statusline")
+-- load theme — full recompile (not just dofile-ing the cache) so
+-- chadrc.lua's mode-derived theme (see dot27_theme_for_mode) actually
+-- takes effect if it changed since the cache was last built.
+require("base46").load_all_highlights()
 
 require "options"
 require "autocmds"
+require "theme_sync"
 
 vim.schedule(function()
   require "mappings"

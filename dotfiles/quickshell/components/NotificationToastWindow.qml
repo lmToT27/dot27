@@ -127,7 +127,7 @@ PanelWindow {
                                 text: toastWrapper.appName
                                 font.family: Appearance.fontFamily
                                 font.pixelSize: 10
-                                color: Qt.rgba(1, 1, 1, 0.5)
+                                color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.5)
                                 elide: Text.ElideRight
                             }
 
@@ -137,7 +137,7 @@ PanelWindow {
                                 font.family: Appearance.fontFamily
                                 font.bold: true
                                 font.pixelSize: 13
-                                color: "white"
+                                color: Theme.fg
                                 elide: Text.ElideRight
                             }
 
@@ -146,7 +146,7 @@ PanelWindow {
                                 text: toastWrapper.body
                                 font.family: Appearance.fontFamily
                                 font.pixelSize: 11
-                                color: Qt.rgba(1, 1, 1, 0.55)
+                                color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.55)
                                 wrapMode: Text.WordWrap
                                 maximumLineCount: 2
                                 elide: Text.ElideRight

@@ -22,7 +22,7 @@ Rectangle {
     Layout.preferredWidth: 96
     Layout.preferredHeight: 84
     radius: Appearance.radiusInner
-    color: Qt.rgba(1, 1, 1, 0.05)
+    color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.05)
 
     ColumnLayout {
         anchors.centerIn: parent
@@ -52,7 +52,7 @@ Rectangle {
                 font.family: Appearance.fontFamily
                 font.bold: true
                 font.pixelSize: 16
-                color: "white"
+                color: Theme.fg
             }
         }
 
@@ -77,7 +77,7 @@ Rectangle {
                 text: root.condition
                 font.family: Appearance.fontFamily
                 font.pixelSize: 10
-                color: Qt.rgba(1, 1, 1, 0.55)
+                color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.55)
             }
 
             MouseArea {
@@ -97,7 +97,7 @@ Rectangle {
                 text: root.condition
 
                 background: Rectangle {
-                    color: "black"
+                    color: Appearance.tooltipBg
                     radius: Appearance.radiusInner
                 }
 

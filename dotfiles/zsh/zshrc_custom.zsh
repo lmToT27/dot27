@@ -1,50 +1,21 @@
 setopt prompt_subst
 
-apply_dynamic_theme() {
-    if [ -f "$HOME/.cache/theme/zsh_colors.zsh" ]; then
-        source "$HOME/.cache/theme/zsh_colors.zsh"
-    else
-        export DYNAMIC_ACCENT="#9D7CD8"
-    fi
+source "$HOME/.config/zsh/theme_reload.zsh"
 
-    ZSH_THEME_GIT_PROMPT_PREFIX="%F{${DYNAMIC_ACCENT}} ‹%F{#A9B1D6}"
-    ZSH_THEME_GIT_PROMPT_SUFFIX="%F{${DYNAMIC_ACCENT}}›%f"
-    ZSH_THEME_GIT_PROMPT_DIRTY="%F{#E0AF68}*%f"
-    ZSH_THEME_GIT_PROMPT_CLEAN=""
+_update_dynamic_opts() {
+    export FZF_DEFAULT_OPTS="--preview 'if [ -d \"{}\" ]; then eza --tree --level=4 --icons=always --color=always \"{}\" 2>/dev/null; else case \"{}\" in *.[jJ][pP][gG]|*.[jJ][pP][eE][gG]|*.[pP][nN][gG]|*.[gG][iI][fF]|*.[wW][eE][bB][pP]) chafa -f symbols -s 40x30 \"{}\" 2>/dev/null ;; *) bat --theme=\"\$BAT_THEME\" --style=numbers --color=always --line-range :300 \"{}\" 2>/dev/null ;; esac; fi' ${FZF_COLORS}"
+    export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS"
 
-    PROMPT="%F{${DYNAMIC_ACCENT}}╭─%n@%m %~%f \$(git_prompt_info)
-%F{${DYNAMIC_ACCENT}}╰─➤ %F{#A9B1D6}"
-
-    typeset -g -A ZSH_HIGHLIGHT_STYLES
-    ZSH_HIGHLIGHT_STYLES[command]="fg=${DYNAMIC_ACCENT},bold"
-    ZSH_HIGHLIGHT_STYLES[alias]="fg=${DYNAMIC_ACCENT},bold"
-    ZSH_HIGHLIGHT_STYLES[builtin]="fg=${DYNAMIC_ACCENT},bold"
-    ZSH_HIGHLIGHT_STYLES[hashed-command]="fg=${DYNAMIC_ACCENT},bold"
-    ZSH_HIGHLIGHT_STYLES[function]="fg=${DYNAMIC_ACCENT},bold"
-    ZSH_HIGHLIGHT_STYLES[autodirectory]="fg=${DYNAMIC_ACCENT},bold"
-
-    ZSH_HIGHLIGHT_STYLES[precommand]='fg=#BB9AF7,bold,italic'
-    ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#BB9AF7,bold'
-    ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#F7768E,bold'
-    ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=#E0AF68' 
-    ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=#E0AF68'
-    ZSH_HIGHLIGHT_STYLES[path]='fg=#9ECE6A'                
-    ZSH_HIGHLIGHT_STYLES[path_prefix]='fg=#9ECE6A'
-    ZSH_HIGHLIGHT_STYLES[path_approx]='fg=#9ECE6A,underline'
-    ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=#9ECE6A'
-    ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=#9ECE6A'
-    ZSH_HIGHLIGHT_STYLES[assign]='fg=#A9B1D6'
-    ZSH_HIGHLIGHT_STYLES[back-quoted-argument]='fg=#89DDFF'
-    ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=#89DDFF'
-    ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#89DDFF,bold'
-    ZSH_HIGHLIGHT_STYLES[redirection]='fg=#89DDFF,bold'
+    zstyle ':fzf-tab:complete:*' fzf-preview 'if [ -d "$realpath" ]; then eza --tree --level=4 --icons=always --color=always "$realpath" 2>/dev/null; else case "$realpath" in *.[jJ][pP][gG]|*.[jJ][pP][eE][gG]|*.[pP][nN][gG]|*.[gG][iI][fF]|*.[wW][eE][bB][pP]) chafa -f symbols -s 40x30 "$realpath" 2>/dev/null ;; *) bat --theme="$BAT_THEME" --style=numbers --color=always --line-range :300 "$realpath" 2>/dev/null ;; esac; fi'
+    
+    zstyle ':fzf-tab:*' fzf-flags $=FZF_COLORS --height=51% --layout=reverse --border
 }
 
-apply_dynamic_theme
+_update_dynamic_opts
 
 TRAPUSR1() {
     apply_dynamic_theme
-    
+    _update_dynamic_opts
     if [[ -o zle ]]; then
         zle reset-prompt 2>/dev/null || true
         zle -R 2>/dev/null || true
@@ -58,16 +29,12 @@ alias cls="clear"
 alias ls="eza --icons=always"
 alias ll="eza -al --icons=always"
 alias tree="eza --icons --tree"
-alias cat="bat"
+alias cat="bat --theme=\$BAT_THEME"
 
 export PATH="$HOME/.local/bin:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/go/bin:$HOME/.cargo/bin:$PATH"
-export FZF_DEFAULT_OPTS="--preview 'if [ -d \"{}\" ]; then eza --tree --level=4 --icons=always --color=always \"{}\" 2>/dev/null; else case \"{}\" in *.[jJ][pP][gG]|*.[jJ][pP][eE][gG]|*.[pP][nN][gG]|*.[gG][iI][fF]|*.[wW][eE][bB][pP]) chafa -f symbols -s 40x30 \"{}\" 2>/dev/null ;; *) bat --style=numbers --color=always --line-range :300 \"{}\" 2>/dev/null ;; esac; fi'"
-export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS"
 
 zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
-zstyle ':fzf-tab:complete:*' fzf-preview 'if [ -d "$realpath" ]; then eza --tree --level=4 --icons=always --color=always "$realpath" 2>/dev/null; else case "$realpath" in *.[jJ][pP][gG]|*.[jJ][pP][eE][gG]|*.[pP][nN][gG]|*.[gG][iI][fF]|*.[wW][eE][bB][pP]) chafa -f symbols -s 40x30 "$realpath" 2>/dev/null ;; *) bat --style=numbers --color=always --line-range :300 "$realpath" 2>/dev/null ;; esac; fi'
-zstyle ':fzf-tab:*' fzf-flags --height=51% --layout=reverse --border
 
 bindkey '^F' fzf-file-widget
 bindkey '^T' fzf-file-widget
@@ -96,7 +63,7 @@ function y() {
 
 function runcpp() {
     local filename="$1"
-    [ -z "$filename" ] && echo "\034[31mError: missing filename!\033[0m" && return 1
+    [ -z "$filename" ] && echo "\033[31mError: missing filename!\033[0m" && return 1
     [[ "$filename" != *.cpp ]] && filename="$filename.cpp"
     local basename="${filename%.cpp}"
     g++ "$filename" -o "$basename" && ./"$basename"
@@ -104,7 +71,7 @@ function runcpp() {
 
 function runpy() {
     local filename="$1"
-    [ -z "$filename" ] && echo "\034[31mError: missing filename!\033[0m" && return 1
+    [ -z "$filename" ] && echo "\033[31mError: missing filename!\033[0m" && return 1
     [[ "$filename" != *.py ]] && filename="$filename.py"
     python3 "$filename"
 }
@@ -120,7 +87,7 @@ function fif() {
         --preview '
             file={1}
             case "$file" in ~/*) file="$HOME/${file#~/}" ;; esac
-            bat --style=numbers --color=always --highlight-line {2} -- "$file"
+            bat --theme="$BAT_THEME" --style=numbers --color=always --highlight-line {2} -- "$file"
         ')
 
     if [ -n "$result" ]; then

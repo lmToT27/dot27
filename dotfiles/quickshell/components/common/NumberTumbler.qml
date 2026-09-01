@@ -1,5 +1,6 @@
 import QtQuick
 import "../../config"
+import "../../services"
 
 // Vertical "combination lock" digit picker (Control Center's Focus Timer
 // HH:MM). Snapping/centering come from ListView's own StrictlyEnforceRange
@@ -61,7 +62,7 @@ ListView {
             font.family: Appearance.fontFamily
             font.pixelSize: cell.current ? 20 : 18
             font.bold: cell.current
-            color: cell.current ? "white" : Qt.rgba(1, 1, 1, 0.35)
+            color: cell.current ? Theme.fg : Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.35)
             opacity: cell.current ? 1 : Math.max(0.3, 1 - cell.distance * 0.4)
         }
     }

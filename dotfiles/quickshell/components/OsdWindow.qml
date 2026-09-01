@@ -49,7 +49,7 @@ PanelWindow {
         radius: height / 2
         color: Appearance.tooltipBg
         border.width: 0
-        border.color: Qt.rgba(1, 1, 1, 0.1)
+        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.1)
 
         opacity: root.osdActive ? 1 : 0
         scale: root.osdActive ? 1 : 0.9
@@ -79,7 +79,7 @@ PanelWindow {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 6
                 radius: 3
-                color: Qt.rgba(1, 1, 1, 0.15)
+                color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
 
                 Rectangle {
                     height: parent.height

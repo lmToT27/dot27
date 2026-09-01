@@ -1,5 +1,6 @@
 pragma Singleton
 import QtQuick
+import "../services"
 
 QtObject {
     readonly property string fontFamily: "JetBrainsMono Nerd Font"
@@ -17,8 +18,8 @@ QtObject {
     readonly property int paddingV: 4
     readonly property int moduleGap: 8
 
-    readonly property color surface: Qt.rgba(0, 0, 0, 1)
-    readonly property color tooltipBg: Qt.rgba(0, 0, 0, 1)
+    readonly property color surface: Theme.bg
+    readonly property color tooltipBg: Theme.bg
 
     readonly property color warning: "#e0af68"
     readonly property color critical: "#f7768e"

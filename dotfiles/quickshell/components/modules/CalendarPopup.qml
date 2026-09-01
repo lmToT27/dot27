@@ -50,7 +50,7 @@ PopupWindow {
     readonly property int gridSpacing: 4
     readonly property int cardMargin: 12
     readonly property color weekdayColor: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.6)
-    readonly property color dayColor: Qt.rgba(1, 1, 1, 0.82)
+    readonly property color dayColor: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.82)
 
     function shiftMonth(delta) {
         const d = new Date(viewYear, viewMonth + delta, 1)

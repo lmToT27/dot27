@@ -43,7 +43,7 @@ RowLayout {
         // Pill-shaped, thick enough to read as a real control surface.
         height: 14
         radius: height / 2
-        color: Qt.rgba(1, 1, 1, 0.15)
+        color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.15)
 
         Rectangle {
             height: parent.height
@@ -68,7 +68,7 @@ RowLayout {
 
     Text {
         text: root.value + "%"
-        color: "white"
+        color: Theme.fg
         font.family: Appearance.fontFamily
         font.weight: Font.DemiBold
         Layout.preferredWidth: 34

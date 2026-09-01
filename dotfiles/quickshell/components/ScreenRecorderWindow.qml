@@ -34,7 +34,7 @@ PanelWindow {
         color: Appearance.tooltipBg
         radius: root.pillRadius
         border.width: 0
-        border.color: Qt.rgba(1, 1, 1, 0.1)
+        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.1)
 
         RowLayout {
             anchors.fill: parent
@@ -45,7 +45,7 @@ PanelWindow {
                 id: btn
                 property string iconTxt: ""
                 property string labelTxt: ""
-                property color hoverColor: Qt.rgba(1, 1, 1, 0.1)
+                property color hoverColor: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.1)
                 signal clicked()
 
                 Layout.fillWidth: true
@@ -70,7 +70,7 @@ PanelWindow {
                         text: btn.labelTxt
                         font.family: Appearance.fontFamily
                         font.pixelSize: 12
-                        color: Qt.rgba(1, 1, 1, 0.6)
+                        color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.6)
                     }
                 }
 

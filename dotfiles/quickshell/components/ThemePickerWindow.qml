@@ -55,7 +55,7 @@ PanelWindow {
         color: Appearance.tooltipBg
         radius: root.pillRadius
         border.width: 0
-        border.color: Qt.rgba(1, 1, 1, 0.1)
+        border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.1)
 
         RowLayout {
             anchors.fill: parent
@@ -68,14 +68,14 @@ PanelWindow {
                 radius: Appearance.radiusOuter
                 color: root.isValidHex(colorInput.text) ? colorInput.text : "transparent"
                 border.width: 1
-                border.color: Qt.rgba(1, 1, 1, 0.2)
+                border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.2)
             }
 
             Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 radius: Appearance.radiusOuter
-                color: Qt.rgba(0, 0, 0, 0.4)
+                color: Qt.rgba(Theme.bg.r, Theme.bg.g, Theme.bg.b, 0.4)
 
                 TextInput {
                     id: colorInput
@@ -85,7 +85,7 @@ PanelWindow {
                     verticalAlignment: Text.AlignVCenter
                     font.family: Appearance.fontFamily
                     font.pixelSize: 18
-                    color: "white"
+                    color: Theme.fg
                     text: "#"
                     clip: true
                     selectByMouse: true
@@ -99,14 +99,14 @@ PanelWindow {
                 Layout.preferredWidth: root.swatchSize
                 Layout.preferredHeight: root.swatchSize
                 radius: Appearance.radiusOuter
-                color: Qt.rgba(1, 1, 1, 0.1)
+                color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.1)
 
                 Text {
                     anchors.centerIn: parent
                     text: "󰈋"
                     font.family: Appearance.fontFamily
                     font.pixelSize: 22
-                    color: "white"
+                    color: Theme.fg
                 }
 
                 MouseArea {
@@ -118,7 +118,7 @@ PanelWindow {
                     Rectangle {
                         anchors.fill: parent
                         radius: Appearance.radiusOuter
-                        color: "white"
+                        color: Theme.fg
                         opacity: eyedropperMouseArea.containsMouse ? 0.15 : 0
                         Behavior on opacity { NumberAnimation { duration: 150 } }
                     }

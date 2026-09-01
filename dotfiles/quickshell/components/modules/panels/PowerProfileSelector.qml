@@ -19,7 +19,7 @@ Rectangle {
     Layout.fillWidth: true
     implicitHeight: 36
     radius: Appearance.radiusInner
-    color: Qt.rgba(1, 1, 1, 0.05)
+    color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.05)
 
     RowLayout {
         anchors.fill: parent
@@ -50,7 +50,7 @@ Rectangle {
                         text: segment.modelData.icon
                         font.family: Appearance.fontFamily
                         font.pixelSize: 13
-                        color: segment.active ? Theme.onAccent : Qt.rgba(1, 1, 1, 0.6)
+                        color: segment.active ? Theme.accentContrast : Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.6)
                     }
 
                     Text {
@@ -58,7 +58,7 @@ Rectangle {
                         font.family: Appearance.fontFamily
                         font.pixelSize: 11
                         font.bold: true
-                        color: segment.active ? Theme.onAccent : Qt.rgba(1, 1, 1, 0.6)
+                        color: segment.active ? Theme.accentContrast : Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.6)
                     }
                 }
 

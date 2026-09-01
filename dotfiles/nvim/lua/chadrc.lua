@@ -16,6 +16,26 @@ end
 
 local my_accent = get_dot27_accent()
 
+-- dot27 light/dark sync: base46 has no "tokyonight-day" counterpart to the
+-- built-in "tokyonight" theme, so github_light stands in for light mode.
+-- Live-reload on mode changes is wired in lua/theme_sync.lua.
+M.dot27_dark_theme = "tokyonight"
+M.dot27_light_theme = "github_light"
+
+function M.dot27_theme_for_mode()
+  local mode_file = vim.fn.expand("~/.cache/theme/mode")
+  local file = io.open(mode_file, "r")
+  local mode = "dark"
+  if file then
+    local content = file:read("l")
+    if content == "light" then
+      mode = "light"
+    end
+    file:close()
+  end
+  return mode == "light" and M.dot27_light_theme or M.dot27_dark_theme
+end
+
 vim.api.nvim_create_autocmd({"UIEnter", "ColorScheme"}, {
   callback = function()
     vim.api.nvim_set_hl(0, "NvdashAscii", { fg = my_accent, bold = true })
@@ -25,7 +45,8 @@ vim.api.nvim_create_autocmd({"UIEnter", "ColorScheme"}, {
 
 M.base46 = {
   transparency = true,
-  theme = "chadracula",
+  theme = M.dot27_theme_for_mode(),
+  theme_toggle = { M.dot27_dark_theme, M.dot27_light_theme },
   hl_override = {
     NvdashAscii = { fg = my_accent },
     NvdashButtons = { fg = my_accent },

@@ -18,7 +18,7 @@ Item {
     // Faint lightening reads as "a card among cards" on the sidebar's own
     // black panel. NotificationToastWindow overrides this to "transparent"
     // since its own solid-black backdrop already supplies that fill.
-    property color contentColor: Qt.rgba(1, 1, 1, 0.06)
+    property color contentColor: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.06)
     signal closed()
 
     implicitHeight: cardContent.height
@@ -109,7 +109,7 @@ Item {
                     text: root.appName
                     font.family: Appearance.fontFamily
                     font.pixelSize: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)
+                    color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.5)
                     elide: Text.ElideRight
                 }
 
@@ -120,7 +120,7 @@ Item {
                     font.family: Appearance.fontFamily
                     font.bold: true
                     font.pixelSize: 14
-                    color: "white"
+                    color: Theme.fg
                     elide: Text.ElideRight
                 }
 
@@ -129,7 +129,7 @@ Item {
                     text: root.body
                     font.family: Appearance.fontFamily
                     font.pixelSize: 11
-                    color: Qt.rgba(1, 1, 1, 0.55)
+                    color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.55)
                     wrapMode: Text.WordWrap
                     maximumLineCount: 2
                     elide: Text.ElideRight

@@ -14,7 +14,7 @@ Item {
     readonly property int maxTextWidth: 140
 
     readonly property bool hovered: mouseArea.containsMouse
-    readonly property color contentColor: hovered ? "black" : Theme.accent
+    readonly property color contentColor: hovered ? Theme.accentContrast : Theme.accent
     property bool infoOpen: false
 
     implicitWidth: Math.round(row.implicitWidth + Appearance.paddingH)
