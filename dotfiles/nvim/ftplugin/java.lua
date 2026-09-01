@@ -24,6 +24,19 @@ local config = {
   init_options = {
     bundles = bundles,
   },
+  -- Với các project không có Maven/Gradle (unmanaged), jdtls tự đoán source
+  -- folder và hay đoán sai khi có nhiều package con (mỗi thư mục package bị
+  -- tách thành 1 source root riêng -> import giữa các package báo lỗi).
+  -- Khai báo thẳng root project là source path để khỏi phải đoán.
+  -- Setting này bị bỏ qua nếu project có pom.xml/build.gradle nên không ảnh
+  -- hưởng project dùng build tool.
+  settings = {
+    java = {
+      project = {
+        sourcePaths = { '.' },
+      },
+    },
+  },
   on_attach = function(client, bufnr)
     require('jdtls').setup_dap({ hotcodereplace = 'auto' })
     require('jdtls.dap').setup_dap_main_class_configs()
