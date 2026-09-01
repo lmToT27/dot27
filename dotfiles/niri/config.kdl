@@ -7,4 +7,8 @@ include "visuals.kdl"
 include "rules.kdl"
 include "binds.kdl"
 
+debug {
+    honor-xdg-activation-with-invalid-serial
+}
+
 include optional=true "~/.config/niri-local.kdl" // you can override my config by modifying this file

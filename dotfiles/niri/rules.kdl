@@ -35,7 +35,7 @@ window-rule {
 
 window-rule {
     match app-id=r#"^brave-browser$"#
-    match app-id=r#"^spotify$"#
+    match app-id=r#"^Spotify$"#
     default-column-width { proportion 1.0; }
 }
 
