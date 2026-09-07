@@ -106,3 +106,7 @@ swaybg -i "$CACHE_DIR/blurred_wallpaper.jpg" -m fill </dev/null >/dev/null 2>&1 
 pkill -SIGUSR1 zsh
 pkill -SIGUSR1 nvim
 dconf write /org/gnome/desktop/interface/color-scheme "'$([[ "$THEME_MODE" == "light" ]] && echo default || echo prefer-dark)'" 2>/dev/null || true
+
+GTK3_INI="$HOME/.config/gtk-3.0/settings.ini"
+[[ -f "$GTK3_INI" ]] && awk -i inplace -v v="$([[ "$THEME_MODE" == "light" ]] && echo 0 || echo 1)" '/^gtk-application-prefer-dark-theme=/{$0="gtk-application-prefer-dark-theme="v} 1' "$GTK3_INI"
+thunar -q >/dev/null 2>&1 || true
