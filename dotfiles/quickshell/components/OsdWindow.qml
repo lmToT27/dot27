@@ -8,11 +8,12 @@ import "../services"
 PanelWindow {
     id: root
 
-    readonly property int pillWidth: 220
+    readonly property int pillWidth: isMic ? Math.ceil(contentRow.implicitWidth) + 36 : 220
     readonly property int pillHeight: 40
     readonly property bool isBrightness: OsdState.kind === "brightness"
+    readonly property bool isMic: OsdState.kind === "mic"
     readonly property real level: isBrightness ? BrightnessService.percent : AudioService.volume
-    readonly property bool muted: !isBrightness && AudioService.muted
+    readonly property bool muted: isMic ? AudioService.micMuted : (!isBrightness && AudioService.muted)
     readonly property real shownPct: muted ? 0 : Math.max(0, Math.min(100, level))
 
     anchors { bottom: true; left: false; right: false; top: false }
@@ -57,6 +58,7 @@ PanelWindow {
         Behavior on scale { NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutCubic } }
 
         RowLayout {
+            id: contentRow
             anchors.fill: parent
             anchors.leftMargin: 18
             anchors.rightMargin: 18
@@ -67,6 +69,7 @@ PanelWindow {
                 font.pixelSize: 18
                 color: Theme.accent
                 text: {
+                    if (root.isMic) return root.muted ? "󰍭" : "󰍬"
                     if (root.isBrightness) return "󰃠"
                     if (root.muted || root.level <= 0) return "󰖁"
                     if (root.level < 33) return "󰕿"
@@ -76,6 +79,7 @@ PanelWindow {
             }
 
             Rectangle {
+                visible: !root.isMic
                 Layout.fillWidth: true
                 Layout.preferredHeight: 6
                 radius: 3
@@ -91,6 +95,16 @@ PanelWindow {
             }
 
             Text {
+                visible: root.isMic
+                font.family: Appearance.fontFamily
+                font.pixelSize: 13
+                font.weight: Font.DemiBold
+                color: Theme.accent
+                text: "Microphone " + (root.muted ? "Muted" : "On")
+            }
+
+            Text {
+                visible: !root.isMic
                 Layout.preferredWidth: 34
                 horizontalAlignment: Text.AlignRight
                 font.family: Appearance.fontFamily

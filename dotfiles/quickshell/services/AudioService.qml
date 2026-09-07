@@ -10,6 +10,10 @@ QtObject {
     readonly property int volume: ready ? Math.round(sink.audio.volume * 100) : 0
     readonly property bool muted: ready ? sink.audio.muted : false
 
+    readonly property var source: Pipewire.defaultAudioSource
+    readonly property bool micReady: source !== null && source.audio !== null
+    readonly property bool micMuted: micReady ? source.audio.muted : false
+
     function setVolume(pct) {
         if (ready) sink.audio.volume = Math.max(0, Math.min(100, pct)) / 100
     }
@@ -18,8 +22,12 @@ QtObject {
         if (ready) sink.audio.muted = !sink.audio.muted
     }
 
-    // Keeps the default sink's audio properties actively subscribed/updated.
+    function toggleMicMute() {
+        if (micReady) source.audio.muted = !source.audio.muted
+    }
+
+    // Keeps the default sink/source's audio properties actively subscribed/updated.
     readonly property PwObjectTracker tracker: PwObjectTracker {
-        objects: root.sink ? [root.sink] : []
+        objects: (root.sink ? [root.sink] : []).concat(root.source ? [root.source] : [])
     }
 }

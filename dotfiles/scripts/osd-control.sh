@@ -2,6 +2,7 @@
 # Usage:
 #   osd-control.sh vol up|down|mute
 #   osd-control.sh bri up|down
+#   osd-control.sh mic mute
 #
 # Adjusts the hardware, then tells the shell to flash the OSD pill.
 # No parsing here: OsdWindow.qml reads the fresh volume/brightness straight
@@ -24,5 +25,12 @@ case "$1" in
             down) brightnessctl -q s 5%- ;;
         esac
         quickshell ipc call -- osd show brightness
+        ;;
+
+    mic)
+        case "$2" in
+            mute) wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle ;;
+        esac
+        quickshell ipc call -- osd show mic
         ;;
 esac
