@@ -49,6 +49,7 @@ in
     xdg-utils
     playerctl
     mpv
+    imv
 
     # --- CLI & System Tools ---
     claude-code chafa
@@ -238,6 +239,13 @@ in
       "video/mpeg" = "mpv.desktop";
       "video/ogg" = "mpv.desktop";
       "text/plain" = "nvim.desktop";
+      "image/png" = "imv.desktop";
+      "image/jpeg" = "imv.desktop";
+      "image/gif" = "imv.desktop";
+      "image/webp" = "imv.desktop";
+      "image/bmp" = "imv.desktop";
+      "image/tiff" = "imv.desktop";
+      "image/svg+xml" = "imv.desktop";
     };
   };
 }
