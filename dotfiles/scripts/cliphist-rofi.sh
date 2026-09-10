@@ -8,48 +8,75 @@ CACHE_DIR="$HOME/.cache/cliphist/thumbnails"
 mkdir -p "$CACHE_DIR"
 
 ACCENT_HEX=$(cat "$HOME/.cache/theme/prompt_color.txt" 2>/dev/null || echo "#7aa2f7")
+TEXT_ICON="$CACHE_DIR/text_icon_${ACCENT_HEX//#/}.png"
 
 # -font needs a file path here, not a family name (no fontconfig delegate).
-# Cached per accent color so a theme change doesn't leave a stale icon.
-FONT_FILE=$(fc-match -f '%{file}' "JetBrainsMono Nerd Font")
-TEXT_ICON="$CACHE_DIR/text_icon_${ACCENT_HEX//#/}.png"
-[ -f "$TEXT_ICON" ] || magick -size 128x128 -background none -fill "$ACCENT_HEX" \
-    -font "$FONT_FILE" -gravity center -pointsize 64 label:"󰈔" "$TEXT_ICON"
+# fc-match is only resolved on a cache miss - it's a real fork, wasted on
+# every open otherwise since the icon is already cached almost all the time.
+if [ ! -f "$TEXT_ICON" ]; then
+    FONT_FILE=$(fc-match -f '%{file}' "JetBrainsMono Nerd Font")
+    magick -size 128x128 -background none -fill "$ACCENT_HEX" \
+        -font "$FONT_FILE" -gravity center -pointsize 64 label:"󰈔" "$TEXT_ICON"
+fi
 
 while true; do
     mapfile -t history < <(cliphist list)
 
-    live_ids=$(printf '%s\n' "${history[@]}" | cut -f1)
+    declare -A live_id_set=()
+    for line in "${history[@]}"; do
+        live_id_set["${line%%$'\t'*}"]=1
+    done
     for thumb in "$CACHE_DIR"/*.png; do
         [ -e "$thumb" ] || continue
         [[ "$thumb" == "$CACHE_DIR"/text_icon_*.png ]] && continue
-        id=$(basename "$thumb" .png)
-        grep -qx "$id" <<< "$live_ids" || rm -f "$thumb"
+        id="${thumb##*/}"; id="${id%.png}"
+        [[ -n "${live_id_set[$id]:-}" ]] || rm -f "$thumb"
     done
 
     # Letterboxed onto a square canvas so every thumbnail matches the
-    # glyph icon's dimensions.
+    # glyph icon's dimensions. Backgrounded + waited so N pending images
+    # (e.g. a screenshot tool copying several in a row) don't serialize
+    # into N x decode-time before the panel ever shows up.
     for line in "${history[@]}"; do
         if [[ "$line" == *"[[ binary data"* ]]; then
-            id=$(cut -f1 <<< "$line")
+            id="${line%%$'\t'*}"
             thumb="$CACHE_DIR/$id.png"
-            [ -f "$thumb" ] || cliphist decode <<< "$line" \
-                | magick - -resize 128x128 -background none -gravity center -extent 128x128 "png:$thumb" 2>/dev/null
+            [ -f "$thumb" ] && continue
+            ( cliphist decode <<< "$line" \
+                | magick - -resize 128x128 -background none -gravity center -extent 128x128 "png:$thumb" 2>/dev/null ) &
         fi
     done
+    wait
 
-    index=$(for line in "${history[@]}"; do
-        id=$(cut -f1 <<< "$line")
-        content=$(cut -f2- <<< "$line")
-
-        if [[ "$content" == *"[[ binary data"* ]]; then
-            # "85 KiB png 224x298" -> "85 KiB • png • 224x298"
-            raw=$(sed -n 's/.*\[\[ binary data \(.*\) \]\]/\1/p' <<< "$content")
-            info=$(awk '{ out = $1 " " $2; for (i = 3; i <= NF; i++) out = out " • " $i; print out }' <<< "$raw")
-            printf 'Image (%s)\0icon\x1f%s\n' "$info" "$CACHE_DIR/$id.png"
+    # One awk pass replaces a per-line fork of cut/sed/awk/tr (was 4 forks x
+    # every history entry on every open); the trailing while-loop is pure
+    # bash builtins (read/printf), so rofi's NUL/icon formatting costs zero
+    # extra forks.
+    index=$(awk -F'\t' '
+        {
+            id = $1
+            content = $0
+            sub(/^[^\t]*\t/, "", content)
+            if (content ~ /\[\[ binary data .* \]\]/) {
+                raw = content
+                sub(/.*\[\[ binary data /, "", raw)
+                sub(/ \]\]$/, "", raw)
+                n = split(raw, parts, " ")
+                info = parts[1] " " parts[2]
+                for (i = 3; i <= n; i++) info = info " • " parts[i]
+                printf "%s\timg\t%s\n", id, info
+            } else {
+                clean = content
+                gsub(/\n/, " ", clean)
+                if (length(clean) > 100) clean = substr(clean, 1, 100)
+                printf "%s\ttxt\t%s\n", id, clean
+            }
+        }
+    ' < <(printf '%s\n' "${history[@]}") | while IFS=$'\t' read -r id kind text; do
+        if [[ "$kind" == img ]]; then
+            printf 'Image (%s)\0icon\x1f%s\n' "$text" "$CACHE_DIR/$id.png"
         else
-            clean=$(tr '\n' ' ' <<< "$content" | cut -c 1-100)
-            printf '%s\0icon\x1f%s\n' "$clean" "$TEXT_ICON"
+            printf '%s\0icon\x1f%s\n' "$text" "$TEXT_ICON"
         fi
     done | rofi -dmenu -show-icons -format "i" -theme "$HOME/.config/rofi/theme.rasi" -p " 󰅍 " -kb-custom-1 "Alt+Delete")
 

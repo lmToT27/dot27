@@ -5,3 +5,4 @@ spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
 
 spawn-at-startup "sh" "-c" "swaybg -i ~/.cache/theme/blurred_wallpaper.jpg -m fill"
 spawn-at-startup "sh" "-c" "awww-daemon & sleep 0.5 && awww restore"
+spawn-at-startup "sh" "-c" "~/.local/bin/gen-wallpaper-thumbs.sh"

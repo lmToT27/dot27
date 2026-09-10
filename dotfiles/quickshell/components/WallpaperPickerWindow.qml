@@ -40,6 +40,15 @@ PanelWindow {
         onActivated: WallpaperPickerState.hide()
     }
 
+    // gen-wallpaper-thumbs.sh pre-caches a 280x180 JPEG per wallpaper so the
+    // panel doesn't decode full 4K originals on the render path.
+    function thumbSource(filePath) {
+        var base = filePath.substring(filePath.lastIndexOf('/') + 1)
+        var dot = base.lastIndexOf('.')
+        if (dot > 0) base = base.substring(0, dot)
+        return "file://" + Quickshell.env("HOME") + "/.cache/wallpaper-thumbs/" + base + ".jpg"
+    }
+
     function executeCurrentWallpaper() {
         if (!pathView.currentItem) return
         // Bare "changewallpaper.sh" would rely on quickshell's own PATH,
@@ -131,7 +140,7 @@ PanelWindow {
 
                 Image {
                     anchors.fill: parent
-                    source: thumb.fileUrl
+                    source: root.thumbSource(thumb.filePath)
                     fillMode: Image.PreserveAspectCrop
                     asynchronous: true
                     sourceSize.width: root.thumbWidth
