@@ -125,11 +125,13 @@ for small untracked overrides that don't warrant a NixOS module (see
 "Overriding niri keybinds/rules" below).
 
 `nixos-rebuild switch` defaults to `/etc/nixos`, so once set up you just run
-`sudo nixos-rebuild switch --update-input dot27` from anywhere. The
-`--update-input dot27` part matters: `/etc/nixos/flake.lock` pins this repo's
-input by content hash the same as any remote flake input, so a plain
-`nixos-rebuild switch` silently keeps building whatever `~/dot27` looked like
-the last time the lock was written, even after further edits or a `git pull`.
+`sudo nix flake update dot27 --flake /etc/nixos && sudo nixos-rebuild switch`
+from anywhere. The `nix flake update dot27` part matters: `/etc/nixos/flake.lock`
+pins this repo's input by content hash the same as any remote flake input, so
+a plain `nixos-rebuild switch` silently keeps building whatever `~/dot27`
+looked like the last time the lock was written, even after further edits or a
+`git pull`. (`nixos-rebuild switch --update-input dot27` used to do this in
+one step, but that flag is now a deprecated alias for `nix flake update`.)
 
 ## First-time setup
 
@@ -152,18 +154,20 @@ It does **not** run `nixos-rebuild` itself — review the printed checklist
 (GPU driver section, timezone/locale, `~/.face.icon`) and run it yourself:
 
 ```
-sudo nixos-rebuild switch --update-input dot27
+sudo nix flake update dot27 --flake /etc/nixos
+sudo nixos-rebuild switch
 ```
 
 ## Updating
 
-Pull the latest shared dotfiles, then rebuild with `--update-input dot27` so
+Pull the latest shared dotfiles, then rebuild with `nix flake update dot27` so
 the pinned copy in `/etc/nixos/flake.lock` actually gets refreshed:
 
 ```
 cd ~/dot27
 git pull
-sudo nixos-rebuild switch --update-input dot27
+sudo nix flake update dot27 --flake /etc/nixos
+sudo nixos-rebuild switch
 ```
 
 This applies to any edit under `~/dot27`, not just a `git pull` — the lock
