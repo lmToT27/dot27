@@ -158,10 +158,20 @@ PanelWindow {
             id: card
             width: root.width
             height: root.bodyHeight
-            y: root.launcherOpen ? parent.height - height : parent.height
+            // Always bottom-pinned, tracking height instantly — height's
+            // own Behavior (below) already animates the grow/shrink while
+            // typing. A Behavior on this y would re-chase that constantly
+            // shifting target on every search keystroke, producing a
+            // bounce/jump instead of a smooth resize.
+            y: parent.height - height
 
-            Behavior on y {
-                NumberAnimation { duration: root.morphDuration; easing.type: Easing.OutExpo }
+            // Open/close slide lives entirely in this transform instead,
+            // decoupled from height so searching never touches it.
+            transform: Translate {
+                y: root.launcherOpen ? 0 : root.maxBodyHeight
+                Behavior on y {
+                    NumberAnimation { duration: root.morphDuration; easing.type: Easing.OutExpo }
+                }
             }
 
             Shape {
@@ -215,18 +225,24 @@ PanelWindow {
                 }
             }
 
-            ColumnLayout {
+            Item {
                 anchors.fill: parent
                 anchors.topMargin: root.contentMargin
                 anchors.bottomMargin: root.contentMargin
                 anchors.leftMargin: root.contentMargin + root.bottomDrip
                 anchors.rightMargin: root.contentMargin + root.bottomDrip
-                spacing: root.contentMargin
 
+                // searchBox is anchored to the bottom with a fixed height —
+                // it never reads an animated value, so it can't drift no
+                // matter how listHeight/bodyHeight animate while typing.
+                // resultsList sits above it and is the only thing that grows.
                 ListView {
                     id: resultsList
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: root.listHeight
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: searchBox.top
+                    anchors.bottomMargin: root.results.length > 0 ? root.contentMargin : 0
+                    height: root.listHeight
                     visible: root.results.length > 0
                     clip: true
                     model: root.results
@@ -318,8 +334,10 @@ PanelWindow {
 
                 Item {
                     id: searchBox
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: root.searchBoxHeight
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    height: root.searchBoxHeight
 
                     Rectangle {
                         anchors.fill: parent
