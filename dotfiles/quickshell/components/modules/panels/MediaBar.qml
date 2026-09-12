@@ -40,6 +40,8 @@ Rectangle {
             fillMode: Image.PreserveAspectCrop
             asynchronous: true
             visible: status === Image.Ready
+            sourceSize.width: width
+            sourceSize.height: height
         }
 
         // Scrim for legibility over the art — follows Theme.bg so it
@@ -99,6 +101,8 @@ Rectangle {
                 source: Mpris.artUrl
                 fillMode: Image.PreserveAspectCrop
                 asynchronous: true
+                sourceSize.width: width
+                sourceSize.height: height
                 opacity: 0
             }
 

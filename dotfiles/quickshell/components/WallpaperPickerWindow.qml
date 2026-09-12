@@ -1,6 +1,7 @@
 import QtQuick
 import Qt.labs.folderlistmodel
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Widgets
 import "../config"
@@ -32,7 +33,18 @@ PanelWindow {
     onPickerOpenChanged: {
         if (root.pickerOpen) {
             Qt.callLater(() => pathView.forceActiveFocus())
+            // Self-heal the thumbnail cache: gen-wallpaper-thumbs.sh only
+            // ever auto-runs once at niri startup, so a wallpaper dropped in
+            // mid-session has no cached thumb until this catches it up.
+            // Already-fresh thumbs are skipped by the script itself, so
+            // this stays cheap on every open, not just the first.
+            regenThumbs.running = true
         }
+    }
+
+    Process {
+        id: regenThumbs
+        command: [Quickshell.env("HOME") + "/.local/bin/gen-wallpaper-thumbs.sh"]
     }
 
     Shortcut {
@@ -120,7 +132,7 @@ PanelWindow {
             Keys.onReturnPressed: root.executeCurrentWallpaper()
             Keys.onEnterPressed: root.executeCurrentWallpaper()
 
-            delegate: ClippingRectangle {
+            delegate: Item {
                 id: thumb
                 required property string filePath
                 required property url fileUrl
@@ -128,45 +140,70 @@ PanelWindow {
 
                 width: root.thumbWidth
                 height: root.thumbHeight
-                radius: Appearance.radiusOuter
-                color: Qt.rgba(0, 0, 0, 0.5)
 
                 opacity: thumb.PathView.itemOpacity === undefined ? 1.0 : thumb.PathView.itemOpacity
                 scale: thumb.PathView.itemScale === undefined ? 1.0 : thumb.PathView.itemScale
                 z: thumb.PathView.itemZ === undefined ? 0 : thumb.PathView.itemZ
 
-                border.width: thumb.PathView.isCurrentItem ? 4 : 0
-                border.color: Theme.accent
-
-                Image {
+                ClippingRectangle {
+                    id: clip
                     anchors.fill: parent
-                    source: root.thumbSource(thumb.filePath)
-                    fillMode: Image.PreserveAspectCrop
-                    asynchronous: true
-                    sourceSize.width: root.thumbWidth
-                    sourceSize.height: root.thumbHeight
-                }
+                    radius: Appearance.radiusOuter
+                    color: Qt.rgba(0, 0, 0, 0.5)
 
-                MouseArea {
-                    id: thumbMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-
-                    Rectangle {
+                    Image {
+                        id: thumbImage
                         anchors.fill: parent
-                        color: "white"
-                        opacity: thumbMouseArea.containsMouse ? 0.15 : 0
-                        Behavior on opacity { NumberAnimation { duration: 150 } }
+                        source: root.thumbSource(thumb.filePath)
+                        fillMode: Image.PreserveAspectCrop
+                        asynchronous: true
+                        sourceSize.width: root.thumbWidth
+                        sourceSize.height: root.thumbHeight
+
+                        // Cache miss (e.g. a wallpaper added after the last
+                        // gen-wallpaper-thumbs.sh run, which only fires once at
+                        // niri startup) — fall back to decoding the original
+                        // straight from disk instead of showing nothing.
+                        // sourceSize still caps the decode, so this stays cheap.
+                        onStatusChanged: if (status === Image.Error && source !== thumb.fileUrl) source = thumb.fileUrl
                     }
 
-                    onClicked: {
-                        if (thumb.PathView.isCurrentItem) {
-                            root.executeCurrentWallpaper()
-                        } else {
-                            pathView.currentIndex = thumb.index
+                    MouseArea {
+                        id: thumbMouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+
+                        Rectangle {
+                            anchors.fill: parent
+                            color: "white"
+                            opacity: thumbMouseArea.containsMouse ? 0.15 : 0
+                            Behavior on opacity { NumberAnimation { duration: 150 } }
+                        }
+
+                        onClicked: {
+                            if (thumb.PathView.isCurrentItem) {
+                                root.executeCurrentWallpaper()
+                            } else {
+                                pathView.currentIndex = thumb.index
+                            }
                         }
                     }
+                }
+
+                // Selection ring drawn as a plain Rectangle border, not
+                // routed through ClippingRectangle's ShaderEffectSource —
+                // that renders content+border into a fixed-resolution
+                // texture, which visibly breaks up ("vỡ") once PathView's
+                // continuous scale (0.8→1.0) is applied on top. A native
+                // Rectangle border is vector geometry, redrawn crisply at
+                // every scale, and cheaper besides.
+                Rectangle {
+                    anchors.fill: parent
+                    radius: Appearance.radiusOuter
+                    color: "transparent"
+                    border.width: thumb.PathView.isCurrentItem ? 4 : 0
+                    border.color: Theme.accent
                 }
             }
         }
