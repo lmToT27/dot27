@@ -57,7 +57,7 @@ in
     kitty gh lazygit psmisc fd ripgrep yazi papirus-icon-theme
     wget fastfetch jq p7zip unrar unzip zip brightnessctl btop pavucontrol glow
 
-    pyright
+    pyright uv
 
     # --- C/C++ & Java Environment ---
     gcc clang-tools vscode-extensions.vadimcn.vscode-lldb
