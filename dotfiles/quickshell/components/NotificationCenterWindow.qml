@@ -125,10 +125,7 @@ PanelWindow {
                 anchors.bottomMargin: root.contentMargin + root.flushDrip
                 opacity: root.panelOpen ? 1 : 0
                 Behavior on opacity {
-                    SequentialAnimation {
-                        PauseAnimation { duration: root.panelOpen ? root.morphDuration / 2 : 0 }
-                        NumberAnimation { duration: root.morphDuration / 2; easing.type: Easing.OutCubic }
-                    }
+                    NumberAnimation { duration: root.morphDuration; easing.type: Easing.OutExpo }
                 }
             }
         }

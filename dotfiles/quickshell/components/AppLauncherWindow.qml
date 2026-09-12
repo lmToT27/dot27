@@ -17,6 +17,7 @@ PanelWindow {
     readonly property int contentMargin: 16
     readonly property real cornerRadius: Appearance.controlCenterCornerRadius
     readonly property real bottomDrip: Appearance.radiusOuter
+    readonly property int morphDuration: 350
 
     readonly property bool launcherOpen: AppLauncherState.open
 
@@ -121,11 +122,11 @@ PanelWindow {
 
     visible: false
 
+    Component.onCompleted: root.refreshResults("")
+
     onLauncherOpenChanged: {
         if (root.launcherOpen) {
             root.visible = true
-            searchInput.text = ""
-            root.refreshResults("")
             Qt.callLater(() => searchInput.forceActiveFocus())
         } else {
             closeTimer.restart()
@@ -134,8 +135,13 @@ PanelWindow {
 
     Timer {
         id: closeTimer
-        interval: 350
-        onTriggered: if (!root.launcherOpen) root.visible = false
+        interval: root.morphDuration
+        onTriggered: {
+            if (root.launcherOpen) return
+            root.visible = false
+            searchInput.text = ""
+            root.refreshResults("")
+        }
     }
 
     Shortcut {
@@ -152,11 +158,10 @@ PanelWindow {
             id: card
             width: root.width
             height: root.bodyHeight
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: root.launcherOpen ? 0 : -root.maxBodyHeight
+            y: root.launcherOpen ? parent.height - height : parent.height
 
-            Behavior on anchors.bottomMargin {
-                NumberAnimation { duration: 350; easing.type: Easing.OutExpo }
+            Behavior on y {
+                NumberAnimation { duration: root.morphDuration; easing.type: Easing.OutExpo }
             }
 
             Shape {
