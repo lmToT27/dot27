@@ -107,5 +107,6 @@ Before rebuilding, review:
     the python3.withPackages block) — trim or extend as you like
 
 Then run (from anywhere, /etc/nixos is the default flake path):
-  sudo nixos-rebuild switch --update-input dot27
+  sudo nix flake update dot27 --flake /etc/nixos
+  sudo nixos-rebuild switch
 EOF
