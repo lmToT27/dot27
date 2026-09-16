@@ -150,7 +150,10 @@ in
     };
 
     eza = { enable = true; enableZshIntegration = true; icons = "auto"; };
-    bat.enable = true;
+    bat = {
+      enable = true;
+      themes.tokyonight_night.src = ./dotfiles/bat/tokyonight_night.tmTheme;
+    };
 
     # --- ZSH MODULE ---
     zsh = {
