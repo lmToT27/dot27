@@ -28,4 +28,5 @@ QtObject {
     readonly property int animFast: 150
     readonly property int animMedium: 300
     readonly property int popDuration: 300
+    readonly property int pillResizeDuration: 200
 }

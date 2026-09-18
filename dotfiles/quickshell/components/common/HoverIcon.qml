@@ -25,12 +25,11 @@ Item {
 
     signal clicked()
 
-    implicitWidth: Math.round(Math.max(label.implicitWidth, minContentWidth) + Appearance.paddingH)
+    implicitWidth: Math.round(Math.max(viewport.width, minContentWidth) + Appearance.paddingH)
     implicitHeight: Math.round(Math.max(label.implicitHeight, 20))
 
     Rectangle {
         anchors.fill: parent
-        anchors.margins: 0
         radius: Appearance.radiusInner + 2
         color: root.invertOnHover && root.hovered ? Theme.accent : "transparent"
         border.color: root.borderColor
@@ -38,22 +37,60 @@ Item {
         Behavior on color { ColorAnimation { duration: Appearance.animMedium } }
     }
 
-    Text {
-        id: label
-        x: Math.round((parent.width - width) / 2)
+    // Clips `label` to an animated width so text length changes reveal or
+    // crop the string instead of popping — `measurer` (invisible, always
+    // holding the latest text) supplies the target width immediately,
+    // decoupled from whatever `label` is currently painting.
+    Item {
+        id: viewport
+        width: measurer.implicitWidth
+        height: label.implicitHeight
+        // Left edge fixed, right edge grows/shrinks — except when
+        // minContentWidth floors root wider than the text (e.g. the DND
+        // bell glyph swap), which needs true centering instead.
+        x: root.minContentWidth > width
+            ? Math.round((parent.width - width) / 2)
+            : Math.round(Appearance.paddingH / 2)
         y: Math.round((parent.height - height) / 2)
-        text: root.text
-        font.family: Appearance.fontFamily
-        font.pixelSize: root.fontSize
-        font.bold: true
-        color: root.invertOnHover && root.hovered ? Theme.accentContrast : root.textColor
-        Behavior on color { ColorAnimation { duration: Appearance.animMedium } }
+        clip: true
 
-        SequentialAnimation on opacity {
-            running: root.blinking
-            loops: Animation.Infinite
-            NumberAnimation { to: 0.5; duration: 500 }
-            NumberAnimation { to: 1.0; duration: 500 }
+        Behavior on width {
+            NumberAnimation {
+                duration: Appearance.animFast
+                easing.type: Easing.OutCubic
+                // Shrink: keep painting the old (wider) text until the
+                // narrowing settles, so it visibly crops away instead of
+                // swapping to short text the container then shrinks around.
+                onRunningChanged: if (!running) label.text = measurer.text
+            }
+        }
+
+        Text {
+            id: measurer
+            text: root.text
+            font: label.font
+            visible: false
+
+            // Grow: swap immediately so widening reveals the new text as
+            // it goes. Shrink is handled by the Behavior above instead.
+            onTextChanged: if (implicitWidth > label.implicitWidth) label.text = measurer.text
+        }
+
+        Text {
+            id: label
+            text: root.text
+            font.family: Appearance.fontFamily
+            font.pixelSize: root.fontSize
+            font.bold: true
+            color: root.invertOnHover && root.hovered ? Theme.accentContrast : root.textColor
+            Behavior on color { ColorAnimation { duration: Appearance.animMedium } }
+
+            SequentialAnimation on opacity {
+                running: root.blinking
+                loops: Animation.Infinite
+                NumberAnimation { to: 0.5; duration: 500 }
+                NumberAnimation { to: 1.0; duration: 500 }
+            }
         }
     }
 

@@ -30,10 +30,10 @@ Item {
     clip: false
 
     Behavior on implicitWidth {
-        NumberAnimation { duration: Appearance.animMedium; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: Appearance.pillResizeDuration; easing.type: Easing.OutCubic }
     }
     Behavior on implicitHeight {
-        NumberAnimation { duration: Appearance.animMedium; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: Appearance.pillResizeDuration; easing.type: Easing.OutCubic }
     }
 
     Shape {
@@ -111,14 +111,14 @@ Item {
         // Keeps a centered pill's content centered as its total width
         // changes (separate from children repositioning below).
         Behavior on x {
-            NumberAnimation { duration: Appearance.animMedium; easing.type: Easing.OutCubic }
+            NumberAnimation { duration: Appearance.pillResizeDuration; easing.type: Easing.OutCubic }
         }
 
         // Matches the implicitWidth Behavior above so a sibling
         // growing/shrinking slides content and resizes the pill together,
         // instead of snapping children to their new slot instantly.
         move: Transition {
-            NumberAnimation { properties: "x,y"; duration: Appearance.animMedium; easing.type: Easing.OutCubic }
+            NumberAnimation { properties: "x,y"; duration: Appearance.pillResizeDuration; easing.type: Easing.OutCubic }
         }
 
         onChildrenChanged: {
