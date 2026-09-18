@@ -65,13 +65,18 @@ PanelWindow {
             spacing: 12
 
             Text {
+                // The mute glyph renders visually larger than the other
+                // volume icons at the same pixelSize (fuller Nerd Font
+                // glyph box) — sized down slightly to match.
+                readonly property bool isMuteGlyph: !root.isMic && !root.isBrightness && (root.muted || root.level <= 0)
+
                 font.family: Appearance.fontFamily
-                font.pixelSize: 18
+                font.pixelSize: isMuteGlyph ? 16 : 18
                 color: Theme.accent
                 text: {
                     if (root.isMic) return root.muted ? "󰍭" : "󰍬"
                     if (root.isBrightness) return "󰃠"
-                    if (root.muted || root.level <= 0) return "󰖁"
+                    if (isMuteGlyph) return "󰖁"
                     if (root.level < 33) return "󰕿"
                     if (root.level < 66) return "󰖀"
                     return "󰕾"
