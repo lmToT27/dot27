@@ -42,8 +42,12 @@ for line in "${history[@]}"; do
         id="${line%%$'\t'*}"
         thumb="$CACHE_DIR/$id.png"
         [ -f "$thumb" ] && continue
+        # -thumbnail (not -resize) skips ICC/metadata processing and uses a
+        # cheaper downscale path — matters a lot for a full-screen
+        # screenshot, which can be tens of MB decoded before it's ever
+        # shrunk to 128x128.
         ( cliphist decode <<< "$line" \
-            | magick - -resize 128x128 -background none -gravity center -extent 128x128 "png:$thumb" 2>/dev/null ) &
+            | magick - -strip -thumbnail 128x128 -background none -gravity center -extent 128x128 "png:$thumb" 2>/dev/null ) &
     fi
 done
 wait

@@ -62,9 +62,18 @@ PanelWindow {
         resultsList.positionViewAtIndex(root.currentIndex, ListView.Contain)
     }
 
+    // Bumped every time thumbsProc finishes, and folded into each thumb URL
+    // below as a cache-busting query string — QML's Image never reloads a
+    // source string that hasn't textually changed, so without this a
+    // thumbnail that was still being generated (e.g. a huge screenshot)
+    // when the list first rendered would stay blank until the panel was
+    // closed and reopened.
+    property int thumbTick: 0
+
     Process {
         id: listProc
         command: ["cliphist", "list"]
+        onRunningChanged: if (running) listWatchdog.restart(); else listWatchdog.stop()
         stdout: StdioCollector {
             onStreamFinished: {
                 const lines = text.split("\n").filter(l => l.length > 0)
@@ -85,12 +94,29 @@ PanelWindow {
                         raw: line,
                         isImage: isImage,
                         text: display,
-                        thumb: "file://" + root.cacheDir + id + ".png"
+                        thumb: "file://" + root.cacheDir + id + ".png?t=" + root.thumbTick
                     }
                 })
                 root.refreshResults(searchInput.text)
             }
         }
+    }
+
+    // Both processes should be fast (metadata-only / cache-hit self-skip),
+    // but a huge new screenshot mid-decode is the one case that can run
+    // long — and Process.running = true is a no-op while already running,
+    // so a stuck run would silently swallow every open until it finishes on
+    // its own. These stop-and-retry so the panel never wedges: a still-slow
+    // job just gets picked back up next open instead of hanging forever.
+    Timer {
+        id: listWatchdog
+        interval: 5000
+        onTriggered: listProc.running = false
+    }
+    Timer {
+        id: thumbsWatchdog
+        interval: 10000
+        onTriggered: thumbsProc.running = false
     }
 
     // Generates/prunes thumbnails — see cliphist-thumbs.sh. Self-skips on a
@@ -99,6 +125,13 @@ PanelWindow {
     Process {
         id: thumbsProc
         command: [Quickshell.env("HOME") + "/.local/bin/cliphist-thumbs.sh"]
+        onRunningChanged: if (running) thumbsWatchdog.restart(); else thumbsWatchdog.stop()
+        onExited: {
+            // Pick up any thumbnail that just finished generating while the
+            // list was already showing.
+            root.thumbTick++
+            listProc.running = true
+        }
     }
 
     // Command is set per-call in deleteCurrent() — the raw cliphist line is

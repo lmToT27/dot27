@@ -1,7 +1,16 @@
 // ~/dot27/dotfiles/niri/autostart.kdl
 
 spawn-at-startup "quickshell"
-spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
+// Two type-specific watchers, not one generic `wl-paste --watch` — cliphist's
+// own recommendation, since a single untyped watcher can intermittently miss
+// an offer (e.g. a screenshot's image data) depending on what else is
+// negotiating the clipboard at that moment.
+//
+// Images route through cliphist-store-image.sh (recompresses before
+// `cliphist store`) instead of calling cliphist directly — see that
+// script for why.
+spawn-at-startup "sh" "-c" "wl-paste --type text --watch cliphist store"
+spawn-at-startup "sh" "-c" "wl-paste --type image --watch ~/.local/bin/cliphist-store-image.sh"
 
 spawn-at-startup "sh" "-c" "swaybg -i ~/.cache/theme/blurred_wallpaper.jpg -m fill"
 spawn-at-startup "sh" "-c" "awww-daemon & sleep 0.5 && awww restore"
