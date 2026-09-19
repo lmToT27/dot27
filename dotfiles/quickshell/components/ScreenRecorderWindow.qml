@@ -24,6 +24,37 @@ PanelWindow {
 
     visible: ScreenRecorderState.open
 
+    onVisibleChanged: {
+        if (root.visible) {
+            root.currentIndex = 0
+            Qt.callLater(() => buttonRow.forceActiveFocus())
+        }
+    }
+
+    readonly property var recordActions: [
+        { icon: "󰍭", label: "No Audio", action: () => ScreenRecorder.startNoAudio() },
+        { icon: "󰍬", label: "Mic + Audio", action: () => ScreenRecorder.startMicAndAudio() },
+        { icon: "󰕾", label: "System Audio", action: () => ScreenRecorder.startSystemAudio() }
+    ]
+    readonly property var stopActions: [
+        { icon: "󰓛", label: "Stop", action: () => ScreenRecorder.stop(), danger: true }
+    ]
+    readonly property var activeActions: ScreenRecorder.recording ? root.stopActions : root.recordActions
+    property int currentIndex: 0
+
+    onActiveActionsChanged: root.currentIndex = 0
+
+    function activate(idx) {
+        if (idx < 0 || idx >= root.activeActions.length) return
+        root.activeActions[idx].action()
+        ScreenRecorderState.hide()
+    }
+
+    function moveSelection(delta) {
+        if (root.activeActions.length === 0) return
+        root.currentIndex = (root.currentIndex + delta + root.activeActions.length) % root.activeActions.length
+    }
+
     Shortcut {
         sequence: "Escape"
         onActivated: ScreenRecorderState.hide()
@@ -37,21 +68,30 @@ PanelWindow {
         border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.1)
 
         RowLayout {
+            id: buttonRow
             anchors.fill: parent
             anchors.margins: root.contentMargin
             spacing: 12
+            focus: true
+
+            Keys.onLeftPressed: root.moveSelection(-1)
+            Keys.onRightPressed: root.moveSelection(1)
+            Keys.onReturnPressed: root.activate(root.currentIndex)
+            Keys.onEnterPressed: root.activate(root.currentIndex)
 
             component RecordButton: Rectangle {
                 id: btn
-                property string iconTxt: ""
-                property string labelTxt: ""
-                property color hoverColor: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.1)
-                signal clicked()
+                required property int index
+                required property var modelData
+                readonly property bool current: index === root.currentIndex
+                readonly property color highlightColor: modelData.danger
+                    ? Qt.rgba(1, 0.2, 0.2, 0.3)
+                    : Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.18)
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 radius: root.buttonRadius
-                color: mouseArea.containsMouse ? hoverColor : "transparent"
+                color: (mouseArea.containsMouse || btn.current) ? highlightColor : "transparent"
 
                 Behavior on color { ColorAnimation { duration: 150 } }
 
@@ -60,14 +100,14 @@ PanelWindow {
                     spacing: 4
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: btn.iconTxt
+                        text: btn.modelData.icon
                         font.family: Appearance.fontFamily
                         font.pixelSize: 24
                         color: Theme.accent
                     }
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: btn.labelTxt
+                        text: btn.modelData.label
                         font.family: Appearance.fontFamily
                         font.pixelSize: 12
                         color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.6)
@@ -79,49 +119,14 @@ PanelWindow {
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: btn.clicked()
+                    onEntered: root.currentIndex = btn.index
+                    onClicked: root.activate(btn.index)
                 }
             }
 
-            RecordButton {
-                visible: !ScreenRecorder.recording
-                iconTxt: "󰍭"
-                labelTxt: "No Audio"
-                onClicked: {
-                    ScreenRecorder.startNoAudio()
-                    ScreenRecorderState.hide()
-                }
-            }
-
-            RecordButton {
-                visible: !ScreenRecorder.recording
-                iconTxt: "󰍬"
-                labelTxt: "Mic + Audio"
-                onClicked: {
-                    ScreenRecorder.startMicAndAudio()
-                    ScreenRecorderState.hide()
-                }
-            }
-
-            RecordButton {
-                visible: !ScreenRecorder.recording
-                iconTxt: "󰕾"
-                labelTxt: "System Audio"
-                onClicked: {
-                    ScreenRecorder.startSystemAudio()
-                    ScreenRecorderState.hide()
-                }
-            }
-
-            RecordButton {
-                visible: ScreenRecorder.recording
-                iconTxt: "󰓛"
-                labelTxt: "Stop"
-                hoverColor: Qt.rgba(1, 0.2, 0.2, 0.3)
-                onClicked: {
-                    ScreenRecorder.stop()
-                    ScreenRecorderState.hide()
-                }
+            Repeater {
+                model: root.activeActions
+                delegate: RecordButton {}
             }
         }
     }
