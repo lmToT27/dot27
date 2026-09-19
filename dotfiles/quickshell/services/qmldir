@@ -4,6 +4,8 @@ singleton ControlCenterState 1.0 ControlCenterState.qml
 singleton TopbarState 1.0 TopbarState.qml
 singleton NotificationCenterState 1.0 NotificationCenterState.qml
 singleton AppLauncherState 1.0 AppLauncherState.qml
+singleton ClipboardState 1.0 ClipboardState.qml
+singleton EmojiPickerState 1.0 EmojiPickerState.qml
 singleton WallpaperPickerState 1.0 WallpaperPickerState.qml
 singleton ThemePickerState 1.0 ThemePickerState.qml
 singleton ScreenRecorderState 1.0 ScreenRecorderState.qml

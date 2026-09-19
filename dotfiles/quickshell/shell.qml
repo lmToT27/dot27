@@ -90,7 +90,47 @@ ShellRoot {
     Variants {
         model: Quickshell.screens
 
+        ClickCatcher {
+            required property var modelData
+            screen: modelData
+            active: ClipboardState.open
+            onDismissRequested: ClipboardState.hide()
+        }
+    }
+
+    Variants {
+        model: Quickshell.screens
+
+        ClickCatcher {
+            required property var modelData
+            screen: modelData
+            active: EmojiPickerState.open
+            onDismissRequested: EmojiPickerState.hide()
+        }
+    }
+
+    Variants {
+        model: Quickshell.screens
+
         AppLauncherWindow {
+            required property var modelData
+            screen: modelData
+        }
+    }
+
+    Variants {
+        model: Quickshell.screens
+
+        ClipboardWindow {
+            required property var modelData
+            screen: modelData
+        }
+    }
+
+    Variants {
+        model: Quickshell.screens
+
+        EmojiPickerWindow {
             required property var modelData
             screen: modelData
         }
