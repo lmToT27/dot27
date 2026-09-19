@@ -55,14 +55,19 @@ Item {
         clip: true
 
         Behavior on width {
-            NumberAnimation {
-                duration: Appearance.animFast
-                easing.type: Easing.OutCubic
-                // Shrink: keep painting the old (wider) text until the
-                // narrowing settles, so it visibly crops away instead of
-                // swapping to short text the container then shrinks around.
-                onRunningChanged: if (!running) label.text = measurer.text
-            }
+            NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutCubic }
+        }
+
+        // Guarantees `label.text` always converges to `root.text`, on a
+        // fixed timer rather than "when the width animation finishes" —
+        // two different-but-equal-length titles (common: ActiveWindow's
+        // fixed 18-char truncation + a monospace font means most long
+        // titles measure identically) never change `viewport.width` at
+        // all, so a width-driven trigger would silently never fire.
+        Timer {
+            id: swapTimer
+            interval: Appearance.animFast
+            onTriggered: label.text = measurer.text
         }
 
         Text {
@@ -72,8 +77,11 @@ Item {
             visible: false
 
             // Grow: swap immediately so widening reveals the new text as
-            // it goes. Shrink is handled by the Behavior above instead.
-            onTextChanged: if (implicitWidth > label.implicitWidth) label.text = measurer.text
+            // it goes. Shrink (or same-width): swap after the crop plays.
+            onTextChanged: {
+                if (implicitWidth > label.implicitWidth) label.text = measurer.text
+                else swapTimer.restart()
+            }
         }
 
         Text {
