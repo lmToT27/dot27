@@ -128,7 +128,7 @@ PopupWindow {
 
                 Repeater {
                     model: root.daysInMonth
-                    delegate: Rectangle {
+                    delegate: Item {
                         id: cell
                         required property int index
                         readonly property int day: index + 1
@@ -138,10 +138,6 @@ PopupWindow {
 
                         Layout.preferredWidth: root.cellSize
                         Layout.preferredHeight: root.cellSize
-                        radius: width / 2
-                        // Today gets a soft accent glow instead of a solid
-                        // filled circle — the number itself lights up.
-                        color: isToday ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.18) : "transparent"
 
                         Text {
                             anchors.fill: parent
