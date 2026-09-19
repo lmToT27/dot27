@@ -9,8 +9,14 @@ QtObject {
     property bool open: false
     property var emoji: []
 
-    function toggle() { root.open = !root.open }
-    function show() { root.open = true }
+    // These three bottom-flush drawers all dock to the same screen edge —
+    // opening one closes the other two so they can't stack/overlap.
+    function toggle() { root.open ? root.hide() : root.show() }
+    function show() {
+        AppLauncherState.hide()
+        ClipboardState.hide()
+        root.open = true
+    }
     function hide() { root.open = false }
 
     onOpenChanged: if (root.open) generator.running = true
