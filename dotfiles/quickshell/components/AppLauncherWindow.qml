@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Shapes
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Widgets
 import "../config"
@@ -49,9 +50,53 @@ PanelWindow {
     property var results: []
     property int currentIndex: 0
 
-    function refreshResults(query) {
-        const q = query.trim().toLowerCase()
+    readonly property string ollamaModel: "llama3.2"
+    property string aiQuery: ""
+    property bool aiLoading: false
+    property string aiAnswer: ""
+    property string aiAnsweredQuery: ""
 
+    function tryEvalMath(expr) {
+        if (!/[0-9]/.test(expr)) return null
+        if (!/^[0-9+\-*/%.() \t^]+$/.test(expr)) return null
+        if (!/[+\-*/^%]/.test(expr)) return null
+        try {
+            const n = Function('"use strict"; return (' + expr.replace(/\^/g, "**") + ")")()
+            if (typeof n !== "number" || !isFinite(n)) return null
+            return String(Math.round(n * 1e10) / 1e10)
+        } catch (e) {
+            return null
+        }
+    }
+
+    function aiResultItem() {
+        if (root.aiLoading) {
+            return { kind: "ai", name: "Thinking…", subtitle: "Asking " + root.ollamaModel + " via Ollama", icon: "\u{f06a9}" }
+        }
+        if (root.aiAnsweredQuery === root.aiQuery && root.aiAnswer.length > 0) {
+            return { kind: "ai", name: root.aiAnswer, subtitle: "Enter to copy answer · Esc to close", icon: "\u{f06a9}", isAnswer: true }
+        }
+        return { kind: "ai", name: "Ask AI: \"" + root.aiQuery + "\"", subtitle: "Enter to send to Ollama", icon: "\u{f06a9}" }
+    }
+
+    function refreshResults(query) {
+        const q = query.trim()
+
+        if (q.startsWith("?")) {
+            root.aiQuery = q.slice(1).trim()
+            root.results = root.aiQuery.length === 0 ? [] : [root.aiResultItem()]
+            root.currentIndex = 0
+            return
+        }
+
+        const mathResult = root.tryEvalMath(q)
+        if (mathResult !== null) {
+            root.results = [{ kind: "math", name: "= " + mathResult, subtitle: "Math result — Enter to copy", icon: "\u{f00ec}" }]
+            root.currentIndex = 0
+            return
+        }
+
+        const ql = q.toLowerCase()
         const commands = root.systemCommands.map(c => ({
             kind: "command", name: c.name, subtitle: c.subtitle, icon: c.icon, exec: c.exec
         }))
@@ -65,15 +110,50 @@ PanelWindow {
             }))
 
         const combined = commands.concat(apps)
-        root.results = q.length === 0 ? combined : combined.filter(item => item.name.toLowerCase().includes(q))
+        root.results = ql.length === 0 ? combined : combined.filter(item => item.name.toLowerCase().includes(ql))
         root.currentIndex = 0
+    }
+
+    Process {
+        id: ollamaProcess
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root.aiLoading = false
+                try {
+                    const data = JSON.parse(text)
+                    root.aiAnswer = data.error ? ("Ollama: " + data.error) : ((data.response || "").trim() || "(empty response)")
+                } catch (e) {
+                    root.aiAnswer = "Ollama error — is `ollama serve` running?"
+                }
+                root.aiAnsweredQuery = root.aiQuery
+                root.refreshResults(searchInput.text)
+            }
+        }
     }
 
     function executeCurrent() {
         if (root.currentIndex < 0 || root.currentIndex >= root.results.length) return
         const item = root.results[root.currentIndex]
-        if (item.kind === "app") item.entry.execute()
-        else Quickshell.execDetached(item.exec)
+
+        if (item.kind === "app") {
+            item.entry.execute()
+        } else if (item.kind === "command") {
+            Quickshell.execDetached(item.exec)
+        } else if (item.kind === "math") {
+            Quickshell.execDetached(["wl-copy", item.name.slice(2)])
+        } else if (item.kind === "ai") {
+            if (root.aiLoading) return
+            if (root.aiAnsweredQuery === root.aiQuery && root.aiAnswer.length > 0) {
+                Quickshell.execDetached(["wl-copy", root.aiAnswer])
+            } else if (root.aiQuery.length > 0) {
+                root.aiLoading = true
+                ollamaProcess.command = ["curl", "-s", "--max-time", "60", "http://localhost:11434/api/generate",
+                    "-d", JSON.stringify({ model: root.ollamaModel, prompt: root.aiQuery, stream: false })]
+                ollamaProcess.running = true
+                root.refreshResults(searchInput.text)
+            }
+            return
+        }
         AppLauncherState.hide()
     }
 
@@ -86,7 +166,12 @@ PanelWindow {
     readonly property real maxListHeight: root.maxVisibleItems * root.itemHeight
     readonly property real maxBodyHeight: root.searchBoxHeight + maxListHeight + contentMargin * 3
 
-    readonly property real targetListHeight: Math.min(root.results.length, root.maxVisibleItems) * root.itemHeight
+    readonly property real aiAnswerMaxHeight: root.itemHeight * 5
+    readonly property bool aiAnswerShown: root.results.length === 1 && root.results[0].kind === "ai" && root.results[0].isAnswer === true
+
+    readonly property real targetListHeight: root.aiAnswerShown
+        ? (resultsList.currentItem ? resultsList.currentItem.height : root.itemHeight)
+        : Math.min(root.results.length, root.maxVisibleItems) * root.itemHeight
     readonly property real targetBodyHeight: root.searchBoxHeight + (root.results.length > 0 ? targetListHeight + contentMargin : 0) + contentMargin * 2
 
     property real listHeight: targetListHeight
@@ -140,6 +225,9 @@ PanelWindow {
             if (root.launcherOpen) return
             root.visible = false
             searchInput.text = ""
+            root.aiAnswer = ""
+            root.aiAnsweredQuery = ""
+            root.aiLoading = false
             root.refreshResults("")
         }
     }
@@ -254,8 +342,12 @@ PanelWindow {
                         id: resultItem
                         required property var modelData
                         required property int index
+                        readonly property bool isAiAnswer: modelData.kind === "ai" && modelData.isAnswer === true
+                        readonly property real answerOverhead: 16 + subtitleText.implicitHeight + 4
                         width: resultsList.width
-                        height: root.itemHeight
+                        height: resultItem.isAiAnswer
+                            ? Math.min(Math.max(root.itemHeight, answerText.implicitHeight + resultItem.answerOverhead), root.aiAnswerMaxHeight)
+                            : root.itemHeight
 
                         Rectangle {
                             anchors.fill: parent
@@ -270,12 +362,14 @@ PanelWindow {
                             anchors.fill: parent
                             anchors.leftMargin: 12
                             anchors.rightMargin: 12
+                            anchors.topMargin: resultItem.isAiAnswer ? 8 : 0
+                            anchors.bottomMargin: resultItem.isAiAnswer ? 8 : 0
                             spacing: 12
 
                             Item {
                                 Layout.preferredWidth: 24
                                 Layout.preferredHeight: 24
-                                Layout.alignment: Qt.AlignVCenter
+                                Layout.alignment: resultItem.isAiAnswer ? Qt.AlignTop : Qt.AlignVCenter
 
                                 IconImage {
                                     id: appIcon
@@ -287,10 +381,8 @@ PanelWindow {
 
                                 Text {
                                     anchors.centerIn: parent
-                                    // Fallback glyph for apps with no resolvable icon.
-                                    visible: resultItem.modelData.kind === "command"
-                                        || (resultItem.modelData.kind === "app" && appIcon.status !== Image.Ready)
-                                    text: resultItem.modelData.kind === "command" ? resultItem.modelData.icon : ""
+                                    visible: resultItem.modelData.kind !== "app" || appIcon.status !== Image.Ready
+                                    text: resultItem.modelData.kind !== "app" ? resultItem.modelData.icon : ""
                                     font.family: Appearance.fontFamily
                                     font.pixelSize: 16
                                     color: Theme.accent
@@ -299,11 +391,13 @@ PanelWindow {
 
                             ColumnLayout {
                                 Layout.fillWidth: true
-                                Layout.alignment: Qt.AlignVCenter
-                                spacing: 1
+                                Layout.fillHeight: resultItem.isAiAnswer
+                                Layout.alignment: resultItem.isAiAnswer ? Qt.AlignTop : Qt.AlignVCenter
+                                spacing: resultItem.isAiAnswer ? 4 : 1
 
                                 Text {
                                     Layout.fillWidth: true
+                                    visible: !resultItem.isAiAnswer
                                     text: resultItem.modelData.name
                                     font.family: Appearance.fontFamily
                                     font.bold: true
@@ -313,6 +407,7 @@ PanelWindow {
                                 }
 
                                 Text {
+                                    id: subtitleText
                                     Layout.fillWidth: true
                                     text: resultItem.modelData.subtitle
                                     font.family: Appearance.fontFamily
@@ -320,12 +415,33 @@ PanelWindow {
                                     color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.5)
                                     elide: Text.ElideRight
                                 }
+
+                                Flickable {
+                                    visible: resultItem.isAiAnswer
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    clip: true
+                                    contentWidth: width
+                                    contentHeight: answerText.implicitHeight
+                                    boundsBehavior: Flickable.StopAtBounds
+
+                                    Text {
+                                        id: answerText
+                                        width: parent.width
+                                        text: resultItem.modelData.name
+                                        wrapMode: Text.WordWrap
+                                        font.family: Appearance.fontFamily
+                                        font.pixelSize: 13
+                                        color: Theme.fg
+                                    }
+                                }
                             }
                         }
 
                         MouseArea {
                             anchors.fill: parent
                             hoverEnabled: true
+                            enabled: !resultItem.isAiAnswer
                             onEntered: root.currentIndex = resultItem.index
                             onClicked: root.executeCurrent()
                         }
@@ -369,7 +485,7 @@ PanelWindow {
                             Text {
                                 anchors.fill: parent
                                 verticalAlignment: Text.AlignVCenter
-                                text: "Search apps & commands…"
+                                text: "Search, type math, or ? to ask AI…"
                                 visible: searchInput.text.length === 0
                                 font.family: Appearance.fontFamily
                                 font.pixelSize: 16

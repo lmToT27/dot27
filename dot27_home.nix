@@ -46,6 +46,7 @@ in
     hyprpicker
     hyprlock
     wl-screenrec
+    ollama
     xdg-utils
     playerctl
     mpv
@@ -210,6 +211,16 @@ in
       lyricsPlus
       ncsVisualizer
     ];
+  };
+
+  systemd.user.services.ollama = {
+    Unit.Description = "Ollama local LLM server";
+    Service = {
+      ExecStart = "${pkgs.ollama}/bin/ollama serve";
+      Restart = "on-failure";
+      Environment = "OLLAMA_KEEP_ALIVE=0";
+    };
+    Install.WantedBy = [ "default.target" ];
   };
 
   programs.git.enable = true;
