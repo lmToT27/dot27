@@ -81,8 +81,8 @@ function fif() {
     local query="$1"
     local result=$(rg --column --line-number --no-heading --color=always --smart-case -H -- "$query" | \
     fzf --ansi --disabled --query "$query" \
-        --bind "start:reload:rg --column --line-number --no-heading --color=always --smart-case -H -- '{q}'" \
-        --bind "change:reload:rg --column --line-number --no-heading --color=always --smart-case -H -- '{q}'" \
+        --bind "start:reload:rg --column --line-number --no-heading --color=always --smart-case -H -- {q}" \
+        --bind "change:reload:rg --column --line-number --no-heading --color=always --smart-case -H -- {q}" \
         --delimiter : \
         --preview-window 'up:61%:+{2}-/2' \
         --preview '
