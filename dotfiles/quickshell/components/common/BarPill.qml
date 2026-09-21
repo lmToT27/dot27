@@ -29,11 +29,20 @@ Item {
     
     clip: false
 
+    // Content (HoverIcon's own text-crop Behavior) owns the deliberate,
+    // user-visible morph pace via pillResizeDuration — this Behavior only
+    // exists for children that pop in/out without animating their own
+    // width (e.g. NotificationIndicator glyph swap, MediaWidget appearing).
+    // It must stay fast relative to that: re-triggering a long ease on a
+    // target that's ALREADY mid-animation (bodyWidth tracks HoverIcon's
+    // animated width every frame) compounds into a visible lag — the pill
+    // looks frozen, then chases the text after the fact. animFast keeps it
+    // essentially glued to whatever content is already doing.
     Behavior on implicitWidth {
-        NumberAnimation { duration: Appearance.pillResizeDuration; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutCubic }
     }
     Behavior on implicitHeight {
-        NumberAnimation { duration: Appearance.pillResizeDuration; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutCubic }
     }
 
     Shape {
@@ -109,16 +118,18 @@ Item {
         spacing: Appearance.moduleGap
 
         // Keeps a centered pill's content centered as its total width
-        // changes (separate from children repositioning below).
+        // changes (separate from children repositioning below). Fast, for
+        // the same reason as the implicitWidth Behaviors above — this
+        // chases a width that may already be mid-animation.
         Behavior on x {
-            NumberAnimation { duration: Appearance.pillResizeDuration; easing.type: Easing.OutCubic }
+            NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutCubic }
         }
 
         // Matches the implicitWidth Behavior above so a sibling
         // growing/shrinking slides content and resizes the pill together,
         // instead of snapping children to their new slot instantly.
         move: Transition {
-            NumberAnimation { properties: "x,y"; duration: Appearance.pillResizeDuration; easing.type: Easing.OutCubic }
+            NumberAnimation { properties: "x,y"; duration: Appearance.animFast; easing.type: Easing.OutCubic }
         }
 
         onChildrenChanged: {

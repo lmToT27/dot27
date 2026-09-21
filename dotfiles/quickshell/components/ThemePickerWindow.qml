@@ -24,13 +24,22 @@ PanelWindow {
     WlrLayershell.namespace: "quickshell:theme-picker"
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
-    visible: root.pickerOpen
+    visible: false
 
     onPickerOpenChanged: {
         if (root.pickerOpen) {
+            root.visible = true
             colorInput.text = "#"
             Qt.callLater(() => colorInput.forceActiveFocus())
+        } else {
+            hideTimer.restart()
         }
+    }
+
+    Timer {
+        id: hideTimer
+        interval: Appearance.animFast + 50
+        onTriggered: if (!root.pickerOpen) root.visible = false
     }
 
     Shortcut {
@@ -56,6 +65,11 @@ PanelWindow {
         radius: root.pillRadius
         border.width: 0
         border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.1)
+
+        opacity: root.pickerOpen ? 1 : 0
+        scale: root.pickerOpen ? 1 : 0.9
+        Behavior on opacity { NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutCubic } }
+        Behavior on scale { NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutBack } }
 
         RowLayout {
             anchors.fill: parent

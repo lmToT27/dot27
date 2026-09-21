@@ -28,10 +28,11 @@ PanelWindow {
     WlrLayershell.namespace: "quickshell:wallpaper-picker"
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
-    visible: root.pickerOpen
+    visible: false
 
     onPickerOpenChanged: {
         if (root.pickerOpen) {
+            root.visible = true
             Qt.callLater(() => pathView.forceActiveFocus())
             // Self-heal the thumbnail cache: gen-wallpaper-thumbs.sh only
             // ever auto-runs once at niri startup, so a wallpaper dropped in
@@ -39,7 +40,15 @@ PanelWindow {
             // Already-fresh thumbs are skipped by the script itself, so
             // this stays cheap on every open, not just the first.
             regenThumbs.running = true
+        } else {
+            hideTimer.restart()
         }
+    }
+
+    Timer {
+        id: hideTimer
+        interval: Appearance.animFast + 50
+        onTriggered: if (!root.pickerOpen) root.visible = false
     }
 
     Process {
@@ -76,6 +85,11 @@ PanelWindow {
         radius: root.pillRadius
         color: Appearance.tooltipBg
         border.width: 0
+
+        opacity: root.pickerOpen ? 1 : 0
+        scale: root.pickerOpen ? 1 : 0.9
+        Behavior on opacity { NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutCubic } }
+        Behavior on scale { NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutBack } }
 
         FolderListModel {
             id: wallpaperFolder

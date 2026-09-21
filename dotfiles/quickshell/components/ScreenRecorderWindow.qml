@@ -22,13 +22,24 @@ PanelWindow {
     WlrLayershell.namespace: "quickshell:screen-recorder"
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
-    visible: ScreenRecorderState.open
+    readonly property bool open: ScreenRecorderState.open
 
-    onVisibleChanged: {
-        if (root.visible) {
+    visible: false
+
+    onOpenChanged: {
+        if (root.open) {
+            root.visible = true
             root.currentIndex = 0
             Qt.callLater(() => buttonRow.forceActiveFocus())
+        } else {
+            hideTimer.restart()
         }
+    }
+
+    Timer {
+        id: hideTimer
+        interval: Appearance.animFast + 50
+        onTriggered: if (!root.open) root.visible = false
     }
 
     readonly property var recordActions: [
@@ -66,6 +77,11 @@ PanelWindow {
         radius: root.pillRadius
         border.width: 0
         border.color: Qt.rgba(Theme.fg.r, Theme.fg.g, Theme.fg.b, 0.1)
+
+        opacity: root.open ? 1 : 0
+        scale: root.open ? 1 : 0.9
+        Behavior on opacity { NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutCubic } }
+        Behavior on scale { NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutBack } }
 
         RowLayout {
             id: buttonRow

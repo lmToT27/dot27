@@ -54,8 +54,16 @@ Item {
         y: Math.round((parent.height - height) / 2)
         clip: true
 
+        // Every HoverIcon lives inside a BarPill, whose own resize Behavior
+        // (implicitWidth/x/move in BarPill.qml) chases this width — using
+        // Appearance.pillResizeDuration here instead of animFast keeps both
+        // in lockstep instead of the pill lagging behind an already-settled
+        // text reveal. InOutCubic (not OutCubic) because OutCubic front-loads
+        // most of the width change into the first ~40% of the duration —
+        // chasing that with another eased Behavior in BarPill reads as an
+        // instant pop plus an imperceptible tail, not a morph.
         Behavior on width {
-            NumberAnimation { duration: Appearance.animFast; easing.type: Easing.OutCubic }
+            NumberAnimation { duration: Appearance.pillResizeDuration; easing.type: Easing.InOutCubic }
         }
 
         // Guarantees `label.text` always converges to `root.text`, on a
@@ -66,7 +74,7 @@ Item {
         // all, so a width-driven trigger would silently never fire.
         Timer {
             id: swapTimer
-            interval: Appearance.animFast
+            interval: Appearance.pillResizeDuration
             onTriggered: label.text = measurer.text
         }
 

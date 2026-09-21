@@ -8,12 +8,15 @@ QtObject {
 
     property bool open: false
 
-    // These three bottom-flush drawers all dock to the same screen edge —
-    // opening one closes the other two so they can't stack/overlap.
+    // Opening the launcher closes every other panel it could visually
+    // overlap or steal focus from.
     function toggle() { root.open ? root.hide() : root.show() }
     function show() {
         ClipboardState.hide()
         EmojiPickerState.hide()
+        ThemePickerState.hide()
+        WallpaperPickerState.hide()
+        ScreenRecorderState.hide()
         root.open = true
     }
     function hide() { root.open = false }
