@@ -12,8 +12,8 @@
 case "$1" in
     vol)
         case "$2" in
-            up)   wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ ;;
-            down) wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- ;;
+            up)   wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q MUTED || wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ ;;
+            down) wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q MUTED || wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- ;;
             mute) wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;
         esac
         quickshell ipc call -- osd show volume

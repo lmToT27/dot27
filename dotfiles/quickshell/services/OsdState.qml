@@ -8,10 +8,12 @@ QtObject {
 
     property bool active: false
     property string kind: "volume"
+    property int trigger: 0
 
     function show(newKind) {
         root.kind = newKind
         root.active = true
+        root.trigger++
         hideTimer.restart()
     }
 
