@@ -157,6 +157,24 @@ ShellRoot {
     Variants {
         model: Quickshell.screens
 
+        WifiListWindow {
+            required property var modelData
+            screen: modelData
+        }
+    }
+
+    Variants {
+        model: Quickshell.screens
+
+        BluetoothListWindow {
+            required property var modelData
+            screen: modelData
+        }
+    }
+
+    Variants {
+        model: Quickshell.screens
+
         ScreenRecorderWindow {
             required property var modelData
             screen: modelData

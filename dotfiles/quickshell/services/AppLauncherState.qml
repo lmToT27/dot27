@@ -17,6 +17,8 @@ QtObject {
         ThemePickerState.hide()
         WallpaperPickerState.hide()
         ScreenRecorderState.hide()
+        WifiListState.hide()
+        BluetoothListState.hide()
         root.open = true
     }
     function hide() { root.open = false }

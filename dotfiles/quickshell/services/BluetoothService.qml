@@ -9,6 +9,8 @@ QtObject {
     property string controllerAlias: ""
     property int connectedCount: 0
     property bool powered: true
+    property var connectedMacs: ({})
+    property bool _baselined: false
 
     function togglePower() {
         Quickshell.execDetached(["bluetoothctl", "power", root.powered ? "off" : "on"])
@@ -26,6 +28,10 @@ QtObject {
         }
     }
 
+    function _notifyConnection(name, connected) {
+        Quickshell.execDetached(["notify-send", "-a", "Bluetooth", connected ? "Connected" : "Disconnected", name])
+    }
+
     readonly property Process refresh: Process {
         command: ["sh", "-c", "bluetoothctl show | grep -E 'Alias|Powered'; bluetoothctl devices Connected"]
         stdout: StdioCollector {
@@ -39,7 +45,25 @@ QtObject {
         root.controllerAlias = aliasLine ? aliasLine.split(":").slice(1).join(":").trim() : ""
         const poweredLine = lines.find(l => l.trim().startsWith("Powered:"))
         if (poweredLine) root.powered = poweredLine.includes("yes")
-        root.connectedCount = lines.filter(l => l.startsWith("Device")).length
+
+        const nowConnected = {}
+        lines.forEach(l => {
+            const m = l.match(/^Device (\S+) (.+)$/)
+            if (m) nowConnected[m[1]] = m[2]
+        })
+
+        if (root._baselined) {
+            for (const mac in nowConnected) {
+                if (!root.connectedMacs[mac]) root._notifyConnection(nowConnected[mac], true)
+            }
+            for (const mac in root.connectedMacs) {
+                if (!nowConnected[mac]) root._notifyConnection(root.connectedMacs[mac], false)
+            }
+        }
+        root._baselined = true
+
+        root.connectedMacs = nowConnected
+        root.connectedCount = Object.keys(nowConnected).length
     }
 
     Component.onCompleted: refresh.running = true

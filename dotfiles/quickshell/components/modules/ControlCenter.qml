@@ -7,9 +7,8 @@ import "panels"
 
 // Control Center's content: focus timer, Wi-Fi/Bluetooth status, weather +
 // system monitor, media bar, and volume/brightness sliders. Long-pressing
-// either connectivity card launches that protocol's own management GUI as
-// a niri floating window (see ../../../niri/rules.kdl's wifi-float /
-// blueman-manager rules) rather than an in-panel device list.
+// either connectivity card opens that protocol's native device list
+// (WifiListWindow / BluetoothListWindow).
 // Pure content Item — no window, no background of its own. Embedded by
 // ControlCenterWindow.qml, which owns the actual surface, slide animation,
 // and corner shaping.
@@ -65,9 +64,7 @@ Item {
                     subtitle: !NetworkService.wifiRadioEnabled ? "Off"
                         : (NetworkService.kind === "wifi" ? "Connected" : "Disconnected")
                     onToggled: NetworkService.toggleRadio()
-                    // nmtui in a floating terminal — `--class wifi-float`
-                    // is what the niri rule keys off of.
-                    onLongPressed: Quickshell.execDetached(["kitty", "--class", "wifi-float", "-e", "nmtui"])
+                    onLongPressed: WifiListState.toggle()
                 }
 
                 ConnectionCard {
@@ -79,7 +76,7 @@ Item {
                     subtitle: !BluetoothService.powered ? "Off"
                         : (BluetoothService.connectedCount > 0 ? "Connected" : "Disconnected")
                     onToggled: BluetoothService.togglePower()
-                    onLongPressed: Quickshell.execDetached(["blueman-manager"])
+                    onLongPressed: BluetoothListState.toggle()
                 }
             }
         }

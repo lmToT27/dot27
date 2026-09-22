@@ -9,6 +9,8 @@ singleton EmojiPickerState 1.0 EmojiPickerState.qml
 singleton WallpaperPickerState 1.0 WallpaperPickerState.qml
 singleton ThemePickerState 1.0 ThemePickerState.qml
 singleton ScreenRecorderState 1.0 ScreenRecorderState.qml
+singleton WifiListState 1.0 WifiListState.qml
+singleton BluetoothListState 1.0 BluetoothListState.qml
 singleton OsdState 1.0 OsdState.qml
 singleton DropzoneState 1.0 DropzoneState.qml
 singleton NotificationHistory 1.0 NotificationHistory.qml
