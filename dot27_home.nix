@@ -14,12 +14,6 @@ let
     '';
   };
 
-  # Quick Note runs as a plain `qml` process, deliberately NOT through
-  # quickshell — quickshell 0.3.0 constructs its QCoreApplication with
-  # argc=0, which crashes any WebEngineView on startup (open, unmerged
-  # upstream fix: github.com/quickshell-mirror/quickshell/pull/351). A
-  # normal Qt Quick process has a real argc/argv, so WebEngineView (and
-  # therefore KaTeX, for real inline LaTeX math rendering) works.
   quicknote = pkgs.writeShellScriptBin "quicknote" ''
     export QML2_IMPORT_PATH="${pkgs.qt6.qtwebengine}/lib/qt-6/qml:${pkgs.qt6.qtdeclarative}/lib/qt-6/qml''${QML2_IMPORT_PATH:+:$QML2_IMPORT_PATH}"
     export QTWEBENGINE_DISABLE_SANDBOX=1
@@ -67,6 +61,8 @@ in
     imv
 
     # --- CLI & System Tools ---
+    lua5_1
+    luarocks
     claude-code chafa
     thunar thunar-archive-plugin imagemagick
     kitty gh lazygit psmisc fd ripgrep yazi papirus-icon-theme
@@ -130,7 +126,12 @@ in
     QT_QPA_PLATFORMTHEME = "qt6ct";
     DOTNET_ROOT = "${config.home.homeDirectory}/.dotnet";
     FZF_CTRL_R_OPTS = "--preview '' --preview-window hidden";
-  };
+  } // (
+    let suffix = pkgs.stdenv.cc.suffixSalt; in {
+      "NIX_CFLAGS_COMPILE_${suffix}" = "-I${pkgs.readline.dev}/include";
+      "NIX_LDFLAGS_${suffix}" = "-L${pkgs.readline}/lib -L${pkgs.ncurses}/lib";
+    }
+  );
 
   # ==========================================
   # SHELL & TERMINAL TOOLS
