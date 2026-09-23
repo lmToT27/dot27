@@ -40,6 +40,7 @@ design conventions if you're editing `dotfiles/quickshell`.
 | `Mod+V` | Clipboard history |
 | `Mod+Shift+V` | Wipe clipboard history |
 | `Mod+Period` | Emoji picker |
+| `Mod+Grave` | Quick Note — standalone note app (see below) |
 
 **Screenshot / recording / lock**
 
@@ -67,7 +68,7 @@ design conventions if you're editing `dotfiles/quickshell`.
 | Key | Action |
 |---|---|
 | Volume Up / Down / Mute | Adjust volume, flashes the OSD |
-| Mic Mute | Toggle microphone mute |
+| Mic Mute (or `Mod+I`) | Toggle microphone mute |
 | Brightness Up / Down | Adjust brightness, flashes the OSD |
 | Play/Pause, Stop, Next, Prev | Media player control |
 
@@ -92,6 +93,15 @@ design conventions if you're editing `dotfiles/quickshell`.
   profile switching, and Lock/Log Out/Reboot/Power Off.
 - **Notification Center** (`Mod+N`) keeps notification history; "Clear All"
   dismisses everything at once.
+- **Quick Note** (`Mod+Grave`) is a standalone note app (`dotfiles/quicknote/`)
+  — deliberately *not* a quickshell panel, since quickshell can't host a
+  `WebEngineView` without crashing (see the file's own comments). Plain
+  Markdown editing with an Edit/Preview toggle (`Ctrl+E`); Preview renders
+  Markdown and any `$inline$`/`$$block$$` math via a vendored KaTeX, matching
+  the current wallpaper theme. Content persists across restarts via
+  `Qt.labs.settings`; closing is just niri's normal `Mod+Q`, no custom
+  hide/toggle logic — repeat `Mod+Grave` presses focus the existing window
+  instead of spawning duplicates.
 - **Lock screen**: typing with Caps Lock on shows an accent-colored border
   around the password field instead of the usual dim outline.
 
@@ -102,7 +112,7 @@ This repo only holds the **shared, machine-agnostic** half of the setup:
 ```
 flake.nix        # standalone flake, exposes homeManagerModules.default
 dot27_home.nix   # home-manager module: packages, program configs, dotfiles symlinks
-dotfiles/        # niri, quickshell, nvim, kitty, zsh, scripts, hyprlock, rofi, cava configs
+dotfiles/        # niri, quickshell, quicknote, nvim, kitty, zsh, scripts, hyprlock, rofi, cava configs
 etc-nixos/*.example  # templates for the personal half, see below
 ```
 
