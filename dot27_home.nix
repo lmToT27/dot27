@@ -13,6 +13,19 @@ let
         --suffix NIXPKGS_QT6_QML_IMPORT_PATH : "${pkgs.qt6.qt5compat}/lib/qt-6/qml"
     '';
   };
+
+  # Quick Note runs as a plain `qml` process, deliberately NOT through
+  # quickshell — quickshell 0.3.0 constructs its QCoreApplication with
+  # argc=0, which crashes any WebEngineView on startup (open, unmerged
+  # upstream fix: github.com/quickshell-mirror/quickshell/pull/351). A
+  # normal Qt Quick process has a real argc/argv, so WebEngineView (and
+  # therefore KaTeX, for real inline LaTeX math rendering) works.
+  quicknote = pkgs.writeShellScriptBin "quicknote" ''
+    export QML2_IMPORT_PATH="${pkgs.qt6.qtwebengine}/lib/qt-6/qml:${pkgs.qt6.qtdeclarative}/lib/qt-6/qml''${QML2_IMPORT_PATH:+:$QML2_IMPORT_PATH}"
+    export QTWEBENGINE_DISABLE_SANDBOX=1
+    export QTWEBENGINEPROCESS_PATH="${pkgs.qt6.qtwebengine}/libexec/QtWebEngineProcess"
+    exec ${pkgs.qt6.qtdeclarative}/bin/qml "${config.home.homeDirectory}/dot27/dotfiles/quicknote/main.qml" "$@"
+  '';
 in
 {
   home.stateVersion = "26.05";
@@ -36,6 +49,7 @@ in
     awww
     swaybg
     quickshellWithQt5Compat
+    quicknote
     rofi
     rofimoji
     libnotify

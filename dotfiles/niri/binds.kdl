@@ -8,6 +8,7 @@ binds {
     Mod+V { spawn "quickshell" "ipc" "call" "clipboard" "toggle"; }
     Mod+Shift+V { spawn "sh" "-c" "cliphist wipe && notify-send 'Clipboard' 'Deleted all clipboard history!'"; }
     Mod+Period { spawn "quickshell" "ipc" "call" "emojipicker" "toggle"; }
+    Mod+Grave repeat=false { spawn "~/.local/bin/quicknote-open.sh"; }
 
     Mod+Shift+S { screenshot; }
     Mod+Shift+R { spawn "quickshell" "ipc" "call" "screenrecorder" "toggle"; }

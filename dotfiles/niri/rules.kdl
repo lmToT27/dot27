@@ -61,3 +61,10 @@ window-rule {
     default-window-height { fixed 420; }
 }
 
+window-rule {
+    match title="^Quick Note$"
+    open-floating true
+    default-column-width { fixed 520; }
+    default-window-height { fixed 600; }
+}
+
