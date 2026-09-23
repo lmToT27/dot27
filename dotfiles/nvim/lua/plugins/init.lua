@@ -276,42 +276,4 @@ return {
     "mfussenegger/nvim-jdtls",
     ft = "java",
   },
-
-  -- JUPYTER / MOLTEN (notebook cells inline via image.nvim + kitty)
-  {
-    "3rd/image.nvim",
-    opts = {
-      backend = "kitty",
-      max_width_window_percentage = math.huge,
-      max_height_window_percentage = 60,
-    },
-  },
-
-  {
-    "benlubas/molten-nvim",
-    version = "^1.0.0",
-    dependencies = { "3rd/image.nvim" },
-    build = ":UpdateRemotePlugins",
-    ft = { "python", "markdown" },
-    init = function()
-      vim.g.molten_image_provider = "image.nvim"
-      vim.g.molten_auto_open_output = true
-      vim.g.molten_wrap_output = true
-      vim.g.molten_output_win_max_height = 20
-    end,
-    keys = {
-      { "<leader>mi", "<cmd>MoltenInit<cr>", desc = "Molten: init kernel" },
-      { "<leader>me", "<cmd>MoltenEvaluateOperator<cr>", desc = "Molten: evaluate operator" },
-      { "<leader>mr", "<cmd>MoltenReevaluateCell<cr>", desc = "Molten: re-eval cell" },
-      { "<leader>mv", ":<C-u>MoltenEvaluateVisual<cr>gv", mode = "v", desc = "Molten: eval visual" },
-      { "<leader>mh", "<cmd>MoltenHideOutput<cr>", desc = "Molten: hide output" },
-      { "<leader>md", "<cmd>MoltenDelete<cr>", desc = "Molten: delete cell" },
-    },
-  },
-
-  {
-    "GCBallesteros/jupytext.nvim",
-    ft = "python",
-    opts = { style = "markdown" },
-  },
 }

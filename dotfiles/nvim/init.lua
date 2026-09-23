@@ -13,6 +13,15 @@ vim.opt.rtp:prepend(lazypath)
 
 local lazy_config = require "configs.lazy"
 
+if lazy_config.performance and lazy_config.performance.rtp and lazy_config.performance.rtp.disabled_plugins then
+  for i, plugin in ipairs(lazy_config.performance.rtp.disabled_plugins) do
+    if plugin == "rplugin" then
+      table.remove(lazy_config.performance.rtp.disabled_plugins, i)
+      break
+    end
+  end
+end
+
 -- load plugins
 require("lazy").setup({
   {

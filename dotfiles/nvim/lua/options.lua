@@ -1,5 +1,6 @@
 require "nvchad.options"
 
+vim.g.loaded_python3_provider = nil
 vim.opt.timeoutlen = 200
 vim.opt.clipboard = "unnamedplus"
 vim.opt.tabstop = 4
