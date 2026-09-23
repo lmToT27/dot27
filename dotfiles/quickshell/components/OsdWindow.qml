@@ -91,6 +91,7 @@ PanelWindow {
 
     onOsdActiveChanged: {
         if (root.osdActive) {
+            root.syncDisplay()
             root.visible = true
         } else {
             hideTimer.restart()
