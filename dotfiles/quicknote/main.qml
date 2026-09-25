@@ -104,6 +104,7 @@ Window {
             "h1,h2,h3,h4,h5,h6{color:" + root.accentColor + ";}" +
             "code{font-family:'JetBrainsMono Nerd Font',monospace;color:" + root.accentColor + ";" +
             "background:rgba(127,127,127,0.15);padding:1px 4px;border-radius:4px;}" +
+            "::-webkit-scrollbar{display:none;}" +
             "</style></head><body>" +
             root.mdToHtml(root.noteText) +
             "<script src=\"" + root.katexDir + "/katex.min.js\"></script>" +
