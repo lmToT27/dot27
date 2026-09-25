@@ -47,13 +47,9 @@ window-rule {
     open-floating true
 }
 
-
 window-rule {
-    match app-id=r#"^xdg-desktop-portal.*"# is-active=true
     match app-id=r#"^[Tt]hunar.*$"# is-active=true
-    match title="^Open File$" is-active=true
-    match title="^Save File$" is-active=true
-    opacity 0.98
+    opacity 0.92
 }
 
 window-rule {
