@@ -136,7 +136,8 @@ for small untracked overrides that don't warrant a NixOS module (see
 
 `nixos-rebuild switch` defaults to `/etc/nixos`, so once set up you just run
 `sudo nix flake update dot27 --flake /etc/nixos && sudo nixos-rebuild switch`
-from anywhere. The `nix flake update dot27` part matters: `/etc/nixos/flake.lock`
+from anywhere (aliased to `rebuild-os` — see `dotfiles/zsh/zshrc_custom.zsh`).
+The `nix flake update dot27` part matters: `/etc/nixos/flake.lock`
 pins this repo's input by content hash the same as any remote flake input, so
 a plain `nixos-rebuild switch` silently keeps building whatever `~/dot27`
 looked like the last time the lock was written, even after further edits or a
@@ -176,9 +177,11 @@ the pinned copy in `/etc/nixos/flake.lock` actually gets refreshed:
 ```
 cd ~/dot27
 git pull
-sudo nix flake update dot27 --flake /etc/nixos
-sudo nixos-rebuild switch
+rebuild-os
 ```
+
+`rebuild-os` is just the `sudo nix flake update dot27 --flake /etc/nixos &&
+sudo nixos-rebuild switch` pair above, aliased in `dotfiles/zsh/zshrc_custom.zsh`.
 
 This applies to any edit under `~/dot27`, not just a `git pull` — the lock
 only moves when you explicitly tell it to.

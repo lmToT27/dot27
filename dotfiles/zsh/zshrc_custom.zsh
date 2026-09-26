@@ -30,6 +30,7 @@ alias ls="eza --icons=always"
 alias ll="eza -al --icons=always"
 alias tree="eza --icons --tree"
 alias cat="bat --theme=\$BAT_THEME"
+alias rebuild-os="sudo nix flake update dot27 --flake /etc/nixos && sudo nixos-rebuild switch"
 
 export PATH="$HOME/.local/bin:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/go/bin:$HOME/.cargo/bin:$PATH"
 export UV_TOOL_BIN_DIR="$HOME/.cargo/bin" # .local/bin is dot27's scripts symlink, keep uv tools out of it
