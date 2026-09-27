@@ -67,7 +67,6 @@ in
     thunar thunar-archive-plugin imagemagick
     kitty gh lazygit psmisc fd ripgrep yazi papirus-icon-theme
     wget fastfetch jq p7zip unrar unzip zip brightnessctl btop pavucontrol glow
-
     pyright uv
 
     # --- C/C++ & Java Environment ---
@@ -87,9 +86,7 @@ in
       ];
     })
     obsidian
-    godot_4
     pinta
-    blender
     cava
   ];
 
