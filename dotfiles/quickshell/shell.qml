@@ -23,7 +23,6 @@ ShellRoot {
 
     Variants {
         model: Quickshell.screens
-
         ClickCatcher {
             required property var modelData
             screen: modelData
@@ -34,7 +33,6 @@ ShellRoot {
 
     Variants {
         model: Quickshell.screens
-
         ClickCatcher {
             required property var modelData
             screen: modelData
@@ -45,7 +43,6 @@ ShellRoot {
 
     Variants {
         model: Quickshell.screens
-
         ClickCatcher {
             required property var modelData
             screen: modelData
@@ -56,7 +53,6 @@ ShellRoot {
 
     Variants {
         model: Quickshell.screens
-
         ClickCatcher {
             required property var modelData
             screen: modelData
@@ -67,7 +63,6 @@ ShellRoot {
 
     Variants {
         model: Quickshell.screens
-
         ClickCatcher {
             required property var modelData
             screen: modelData
@@ -78,7 +73,6 @@ ShellRoot {
 
     Variants {
         model: Quickshell.screens
-
         ClickCatcher {
             required property var modelData
             screen: modelData
@@ -87,10 +81,8 @@ ShellRoot {
         }
     }
 
-
     Variants {
         model: Quickshell.screens
-
         ClickCatcher {
             required property var modelData
             screen: modelData
@@ -101,7 +93,6 @@ ShellRoot {
 
     Variants {
         model: Quickshell.screens
-
         ClickCatcher {
             required property var modelData
             screen: modelData
@@ -110,120 +101,55 @@ ShellRoot {
         }
     }
 
-    Variants {
-        model: Quickshell.screens
-
-        AppLauncherWindow {
-            required property var modelData
-            screen: modelData
-        }
+    AppLauncherWindow {
+        screen: Quickshell.cursorScreen
     }
 
-    Variants {
-        model: Quickshell.screens
-
-        ClipboardWindow {
-            required property var modelData
-            screen: modelData
-        }
+    ClipboardWindow {
+        screen: Quickshell.cursorScreen
     }
 
-    Variants {
-        model: Quickshell.screens
-
-        EmojiPickerWindow {
-            required property var modelData
-            screen: modelData
-        }
+    EmojiPickerWindow {
+        screen: Quickshell.cursorScreen
     }
 
-    Variants {
-        model: Quickshell.screens
-
-        WallpaperPickerWindow {
-            required property var modelData
-            screen: modelData
-        }
+    WallpaperPickerWindow {
+        screen: Quickshell.cursorScreen
     }
 
-    Variants {
-        model: Quickshell.screens
-
-        ThemePickerWindow {
-            required property var modelData
-            screen: modelData
-        }
+    ThemePickerWindow {
+        screen: Quickshell.cursorScreen
     }
 
-    Variants {
-        model: Quickshell.screens
-
-        WifiListWindow {
-            required property var modelData
-            screen: modelData
-        }
+    WifiListWindow {
+        screen: Quickshell.cursorScreen
     }
 
-    Variants {
-        model: Quickshell.screens
-
-        BluetoothListWindow {
-            required property var modelData
-            screen: modelData
-        }
+    BluetoothListWindow {
+        screen: Quickshell.cursorScreen
     }
 
-    Variants {
-        model: Quickshell.screens
-
-        ScreenRecorderWindow {
-            required property var modelData
-            screen: modelData
-        }
+    ScreenRecorderWindow {
+        screen: Quickshell.cursorScreen
     }
 
-    Variants {
-        model: Quickshell.screens
-
-        ControlCenterWindow {
-            required property var modelData
-            screen: modelData
-        }
+    ControlCenterWindow {
+        screen: Quickshell.cursorScreen
     }
 
-    Variants {
-        model: Quickshell.screens
-
-        NotificationCenterWindow {
-            required property var modelData
-            screen: modelData
-        }
+    NotificationCenterWindow {
+        screen: Quickshell.cursorScreen
     }
 
-    Variants {
-        model: Quickshell.screens
-
-        NotificationToastWindow {
-            required property var modelData
-            screen: modelData
-        }
+    NotificationToastWindow {
+        screen: Quickshell.cursorScreen
     }
 
-    Variants {
-        model: Quickshell.screens
-
-        OsdWindow {
-            required property var modelData
-            screen: modelData
-        }
+    OsdWindow {
+        screen: Quickshell.cursorScreen
     }
 
-    Variants {
-        model: Quickshell.screens
-
-        DropzoneWindow {
-            required property var modelData
-            screen: modelData
-        }
+    DropzoneWindow {
+        screen: Quickshell.cursorScreen
     }
 }
